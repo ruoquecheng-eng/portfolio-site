@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">Wanzheng Ning technical and academic portfolio</title>
+  <desc id="desc">A conceptual portfolio system graphic connecting communication engineering, network diagnostics, mathematical modeling, and research.</desc>
+  <defs>
+    <pattern id="grid" width="54" height="54" patternUnits="userSpaceOnUse">
+      <path d="M54 0H0V54" fill="none" stroke="#55728e" stroke-opacity=".13"/>
+    </pattern>
+  </defs>
+
+  <rect width="1200" height="630" fill="#10243c"/>
+  <rect width="1200" height="630" fill="url(#grid)"/>
+  <rect x="48" y="48" width="1104" height="534" rx="12" fill="none" stroke="#35536f"/>
+
+  <g font-family="Bahnschrift, Segoe UI, sans-serif">
+    <text x="92" y="125" fill="#68d5dc" font-size="16" font-weight="650" letter-spacing="1.7">TECHNICAL + ACADEMIC PORTFOLIO</text>
+    <text x="92" y="224" fill="#edf6fa" font-size="68" font-weight="650" letter-spacing="-2">Wanzheng Ning</text>
+    <text x="92" y="278" fill="#afc3d2" font-size="25">Communication engineering, network systems,</text>
+    <text x="92" y="314" fill="#afc3d2" font-size="25">mathematical modeling and research</text>
+
+    <g transform="translate(92 413)">
+      <circle cx="12" cy="12" r="10" fill="#10243c" stroke="#68d5dc" stroke-width="3"/>
+      <path d="M22 12H165" stroke="#68d5dc" stroke-width="3"/>
+      <circle cx="177" cy="12" r="10" fill="#10243c" stroke="#68d5dc" stroke-width="3"/>
+      <path d="M187 12H330" stroke="#68d5dc" stroke-width="3"/>
+      <circle cx="342" cy="12" r="10" fill="#10243c" stroke="#68d5dc" stroke-width="3"/>
+      <path d="M352 12H495" stroke="#68d5dc" stroke-width="3"/>
+      <circle cx="507" cy="12" r="10" fill="#10243c" stroke="#68d5dc" stroke-width="3"/>
+
+      <g fill="#dcebf4" font-size="14" font-weight="600">
+        <text x="0" y="52">Observe</text>
+        <text x="154" y="52">Build</text>
+        <text x="316" y="52">Validate</text>
+        <text x="476" y="52">Explain</text>
+      </g>
+    </g>
+
+    <g transform="translate(827 119)">
+      <circle cx="137" cy="137" r="112" fill="#142e49" stroke="#35536f"/>
+      <g fill="none" stroke="#55728e" stroke-width="2">
+        <path d="M58 177L109 90 175 116 211 64M58 177L153 202 175 116M109 90L153 202M175 116L226 190"/>
+      </g>
+      <path d="M58 177L109 90 175 116 211 64" fill="none" stroke="#68d5dc" stroke-width="4"/>
+      <g fill="#10243c" stroke="#68d5dc" stroke-width="3">
+        <circle cx="58" cy="177" r="10"/><circle cx="109" cy="90" r="10"/><circle cx="175" cy="116" r="10"/><circle cx="211" cy="64" r="10"/>
+      </g>
+      <g fill="#10243c" stroke="#718aa2" stroke-width="2">
+        <circle cx="153" cy="202" r="8"/><circle cx="226" cy="190" r="8"/>
+      </g>
+    </g>
+
+    <text x="844" y="435" fill="#91a9bd" font-family="Cascadia Mono, Consolas, monospace" font-size="11">CONCEPTUAL SYSTEM MAP</text>
+    <text x="92" y="542" fill="#7892a8" font-size="14">Evidence-led case studies and scoped research records</text>
+  </g>
+</svg>

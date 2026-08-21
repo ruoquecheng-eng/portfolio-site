@@ -1,0 +1,72 @@
+{
+  "schemaVersion": 1,
+  "slug": "netsage",
+  "title": "NetSage",
+  "type": "Android network diagnostics",
+  "summary": "A local-first, rule-based Android application that maps network symptoms and logs to ranked candidate causes, matched evidence, and troubleshooting actions.",
+  "repository": "https://github.com/lbrswne/NetSage",
+  "commit": "ed692cba339343f32898b05e3a35878070d575d7",
+  "features": [
+    "Log and symptom input",
+    "One-click diagnosis",
+    "Top-cause ranking with rule-derived confidence",
+    "Matched evidence and repair suggestions",
+    "Scenario and sample libraries",
+    "Troubleshooting checklists and action branches",
+    "History, favorites, report copy, and command templates",
+    "Offline reference, privacy onboarding, and local persistence"
+  ],
+  "implementation": [
+    "Kotlin and Jetpack Compose Android client",
+    "Rule-based diagnosis with explicit evidence mapping",
+    "SharedPreferences and Gson for local persistence",
+    "Retained FastAPI health and diagnosis endpoints"
+  ],
+  "limitations": [
+    "The diagnostic engine is rule-based, not a machine-learning model.",
+    "No verified real-user performance metrics are published.",
+    "Cloud synchronization, PDF export, and real-time packet capture are outside the verified scope."
+  ],
+  "facts": [
+    {
+      "id": "netsage.version.commit",
+      "publicText": "Verified against main commit ed692cba",
+      "status": "verified",
+      "sourceType": "repository",
+      "lastVerified": "2026-08-22",
+      "public": true
+    },
+    {
+      "id": "netsage.engine",
+      "publicText": "Local rule-based network diagnosis",
+      "status": "verified",
+      "sourceType": "source_code",
+      "lastVerified": "2026-08-22",
+      "public": true
+    },
+    {
+      "id": "netsage.output",
+      "publicText": "Ranks up to three candidate causes using rule-derived confidence values, matched evidence, and suggested actions",
+      "status": "verified",
+      "sourceType": "source_code",
+      "lastVerified": "2026-08-22",
+      "public": true
+    },
+    {
+      "id": "netsage.ownership",
+      "publicText": "",
+      "status": "needs_confirmation",
+      "sourceType": "user_confirmation",
+      "lastVerified": "2026-08-22",
+      "public": false
+    },
+    {
+      "id": "netsage.metrics.target",
+      "publicText": "",
+      "status": "not_public_yet",
+      "sourceType": "readme_target",
+      "lastVerified": "2026-08-22",
+      "public": false
+    }
+  ]
+}

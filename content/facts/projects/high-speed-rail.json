@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "slug": "high-speed-rail",
+  "title": "Lightweight Recycled Carbon Fiber Carriage Design",
+  "type": "Interdisciplinary engineering design",
+  "summary": "A five-person course team concept exploring recycled carbon-fiber composites for selected non-critical high-speed rail carbody components. The team report records my role as \"Proposed Design\"; the project does not establish train-level energy savings.",
+  "role": "Proposed Design",
+  "facts": [
+    {
+      "id": "rail.role",
+      "publicText": "Team report records my role as \"Proposed Design\"",
+      "status": "verified",
+      "sourceType": "team_report",
+      "lastVerified": "2026-08-22",
+      "public": true
+    },
+    {
+      "id": "rail.scope",
+      "publicText": "Team concept focused on selected non-critical carbody components, layered composites, and interfaces with the existing metal frame or chassis",
+      "status": "verified",
+      "sourceType": "team_report",
+      "lastVerified": "2026-08-22",
+      "public": true
+    },
+    {
+      "id": "rail.energy.result",
+      "publicText": "",
+      "status": "not_public_yet",
+      "sourceType": "unverified_claim",
+      "lastVerified": "2026-08-22",
+      "public": false
+    }
+  ]
+}

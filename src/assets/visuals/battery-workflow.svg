@@ -1,0 +1,102 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1240 650" role="img" aria-labelledby="title desc">
+  <title id="title">Conceptual battery modeling workflow</title>
+  <desc id="desc">A conceptual four-question modeling workflow using fully simulated battery data generated with semi-empirical assumptions, from degradation stages through robust cascade-utilization strategy.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0L10 5 0 10Z" fill="#2b71c9"/>
+    </marker>
+  </defs>
+
+  <rect width="1240" height="650" rx="12" fill="#f7fafc"/>
+  <rect x="1" y="1" width="1238" height="648" rx="11" fill="none" stroke="#bccbd7"/>
+
+  <g font-family="Bahnschrift, Segoe UI, sans-serif">
+    <text x="56" y="58" fill="#142a42" font-size="23" font-weight="650">Battery RUL and cascade-utilization workflow</text>
+    <text x="56" y="86" fill="#536c82" font-size="13" letter-spacing="1.2">CONCEPTUAL MODELING WORKFLOW</text>
+
+    <g transform="translate(56 118)">
+      <rect width="1128" height="48" rx="6" fill="#e9eff4"/>
+      <text x="18" y="30" fill="#405c73" font-size="14" font-weight="650">DATA BOUNDARY</text>
+      <text x="176" y="30" fill="#536c82" font-size="14">Fully simulated data with semi-empirical assumptions; no measured experimental rows</text>
+    </g>
+
+    <g fill="none" stroke="#2b71c9" stroke-width="3" marker-end="url(#arrow)">
+      <path d="M318 304H374"/>
+      <path d="M600 304H656"/>
+      <path d="M882 304H938"/>
+    </g>
+
+    <g>
+      <g transform="translate(56 210)">
+        <rect width="262" height="188" rx="9" fill="#ffffff" stroke="#8fa5b8"/>
+        <circle cx="35" cy="34" r="16" fill="#2b71c9"/>
+        <text x="35" y="39" fill="#ffffff" font-size="14" font-weight="700" text-anchor="middle">1</text>
+        <text x="62" y="40" fill="#142a42" font-size="17" font-weight="650">Degradation stages</text>
+        <path d="M28 88C70 91 94 94 123 107s54 16 83 50" fill="none" stroke="#2b71c9" stroke-width="3"/>
+        <path d="M28 137H225" fill="none" stroke="#c4d1db"/>
+        <circle cx="123" cy="107" r="5" fill="#62c5cf" stroke="#287985"/>
+        <text x="28" y="174" fill="#536c82" font-size="12">Continuous change-point regression</text>
+      </g>
+
+      <g transform="translate(338 210)">
+        <rect width="262" height="188" rx="9" fill="#ffffff" stroke="#8fa5b8"/>
+        <circle cx="35" cy="34" r="16" fill="#2b71c9"/>
+        <text x="35" y="39" fill="#ffffff" font-size="14" font-weight="700" text-anchor="middle">2</text>
+        <text x="62" y="40" fill="#142a42" font-size="17" font-weight="650">SOH and RUL</text>
+        <g fill="none" stroke="#2b71c9" stroke-width="2">
+          <path d="M33 147L74 118 111 126 151 87 190 75 228 51"/>
+          <path d="M33 142L74 128 111 114 151 101 190 82 228 65" stroke="#62c5cf"/>
+        </g>
+        <g fill="#2b71c9">
+          <circle cx="74" cy="118" r="4"/><circle cx="111" cy="126" r="4"/><circle cx="151" cy="87" r="4"/><circle cx="190" cy="75" r="4"/>
+        </g>
+        <text x="28" y="174" fill="#536c82" font-size="12">Ridge regression and censored AFT</text>
+      </g>
+
+      <g transform="translate(620 210)">
+        <rect width="262" height="188" rx="9" fill="#ffffff" stroke="#8fa5b8"/>
+        <circle cx="35" cy="34" r="16" fill="#2b71c9"/>
+        <text x="35" y="39" fill="#ffffff" font-size="14" font-weight="700" text-anchor="middle">3</text>
+        <text x="62" y="40" fill="#142a42" font-size="17" font-weight="650">Compatibility graph</text>
+        <g fill="none" stroke="#8ba0b3" stroke-width="1.5">
+          <path d="M57 91L116 70 170 103 215 68M57 91L98 139 170 103M116 70L98 139M98 139L205 143M170 103L205 143M215 68L170 103"/>
+        </g>
+        <g fill="#ffffff" stroke="#2b71c9" stroke-width="3">
+          <circle cx="57" cy="91" r="9"/><circle cx="116" cy="70" r="9"/><circle cx="170" cy="103" r="9"/><circle cx="215" cy="68" r="9"/><circle cx="98" cy="139" r="9"/><circle cx="205" cy="143" r="9"/>
+        </g>
+        <text x="28" y="174" fill="#536c82" font-size="12">Screening and epsilon-constraint MILP</text>
+      </g>
+
+      <g transform="translate(902 210)">
+        <rect width="282" height="188" rx="9" fill="#e8f4fb" stroke="#2b71c9" stroke-width="2"/>
+        <circle cx="35" cy="34" r="16" fill="#2b71c9"/>
+        <text x="35" y="39" fill="#ffffff" font-size="14" font-weight="700" text-anchor="middle">4</text>
+        <text x="62" y="40" fill="#142a42" font-size="17" font-weight="650">Robust strategy</text>
+        <g transform="translate(30 66)">
+          <rect x="0" y="67" width="38" height="31" fill="#8ca5ba"/>
+          <rect x="54" y="45" width="38" height="53" fill="#6e8faa"/>
+          <rect x="108" y="23" width="38" height="75" fill="#4d80b4"/>
+          <rect x="162" y="8" width="38" height="90" fill="#2b71c9"/>
+          <path d="M0 105H220" stroke="#8fa5b8"/>
+        </g>
+        <text x="28" y="174" fill="#536c82" font-size="12">Stress scenarios, probability and CVaR</text>
+      </g>
+    </g>
+
+    <g transform="translate(56 442)">
+      <rect width="1128" height="126" rx="8" fill="#ffffff" stroke="#bccbd7"/>
+      <text x="20" y="32" fill="#142a42" font-size="15" font-weight="650">VALIDATION BOUNDARY</text>
+      <g fill="#536c82" font-size="13">
+        <text x="20" y="61">Battery-level train, validation and test separation</text>
+        <text x="20" y="88">Internal holdout metrics and reproducibility checks</text>
+        <text x="586" y="61">No industrial deployment claim</text>
+        <text x="586" y="88">No measured experimental dataset claim</text>
+      </g>
+      <g fill="#2b71c9">
+        <circle cx="10" cy="57" r="3"/><circle cx="10" cy="84" r="3"/><circle cx="576" cy="57" r="3"/><circle cx="576" cy="84" r="3"/>
+      </g>
+    </g>
+
+    <text x="56" y="614" fill="#536c82" font-family="Cascadia Mono, Consolas, monospace" font-size="11">ILLUSTRATIVE PROCESS MAP. RESULTS REQUIRE THEIR SIMULATION AND HOLDOUT LABELS.</text>
+  </g>
+</svg>

@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "slug": "scenic-guide",
+  "title": "Scenic Guide Digital Human",
+  "type": "Competition software project",
+  "summary": "A competition prototype to which I contributed, combining text and voice interaction, route guidance, attraction narration, and knowledge management for a scenic-area visitor experience. It was not a production deployment and received no award.",
+  "facts": [
+    {
+      "id": "guide.visitor.features",
+      "publicText": "Prototype features include text and voice questions, speech playback, route guidance, narration, history, and feedback",
+      "status": "verified",
+      "sourceType": "source_code",
+      "lastVerified": "2026-08-22",
+      "public": true
+    },
+    {
+      "id": "guide.competition.award",
+      "publicText": "No award",
+      "status": "verified",
+      "sourceType": "user_record",
+      "lastVerified": "2026-08-22",
+      "public": false
+    },
+    {
+      "id": "guide.production",
+      "publicText": "",
+      "status": "not_public_yet",
+      "sourceType": "unverified_claim",
+      "lastVerified": "2026-08-22",
+      "public": false
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "facts": [
+    {
+      "id": "education.institution",
+      "publicText": "Northeastern University at Qinhuangdao",
+      "status": "verified",
+      "sourceType": "manuscript",
+      "lastVerified": "2026-08-22",
+      "public": true
+    },
+    {
+      "id": "education.program",
+      "publicText": "Undergraduate student in Communication Engineering",
+      "status": "verified",
+      "sourceType": "user_record",
+      "lastVerified": "2026-08-22",
+      "public": true
+    },
+    {
+      "id": "education.graduation",
+      "publicText": "",
+      "status": "needs_confirmation",
+      "sourceType": "user_confirmation",
+      "lastVerified": "2026-08-22",
+      "public": false
+    }
+  ]
+}

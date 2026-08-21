@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 640" role="img" aria-labelledby="title desc">
+  <title id="title">Conceptual signal map</title>
+  <desc id="desc">A restrained conceptual network diagram showing signals moving from observation through analysis to evidence.</desc>
+  <defs>
+    <linearGradient id="trace" x1="120" y1="530" x2="760" y2="105" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#5c78e8"/>
+      <stop offset="1" stop-color="#62d8df"/>
+    </linearGradient>
+    <pattern id="grid" width="48" height="48" patternUnits="userSpaceOnUse">
+      <path d="M48 0H0V48" fill="none" stroke="#5f7896" stroke-opacity=".16"/>
+    </pattern>
+  </defs>
+
+  <rect width="880" height="640" rx="12" fill="#10243c"/>
+  <rect x="1" y="1" width="878" height="638" rx="11" fill="url(#grid)" stroke="#35536f"/>
+
+  <g fill="none" stroke="#35536f" stroke-width="1.5">
+    <path d="M116 501C222 467 233 383 341 359S507 341 568 255 679 152 768 125"/>
+    <path d="M116 501C197 534 280 516 341 459S472 386 568 423 700 383 768 330"/>
+    <path d="M206 205C278 209 302 264 380 270S504 217 568 255"/>
+    <path d="M380 270C414 336 450 375 510 376"/>
+  </g>
+
+  <path d="M116 501C222 467 233 383 341 359S507 341 568 255 679 152 768 125" fill="none" stroke="url(#trace)" stroke-linecap="round" stroke-width="4"/>
+
+  <g fill="#10243c" stroke="#68d5dc" stroke-width="3">
+    <circle cx="116" cy="501" r="12"/>
+    <circle cx="341" cy="359" r="12"/>
+    <circle cx="568" cy="255" r="12"/>
+    <circle cx="768" cy="125" r="12"/>
+  </g>
+
+  <g fill="#10243c" stroke="#7088a3" stroke-width="2">
+    <circle cx="206" cy="205" r="8"/>
+    <circle cx="380" cy="270" r="8"/>
+    <circle cx="510" cy="376" r="8"/>
+    <circle cx="341" cy="459" r="8"/>
+    <circle cx="568" cy="423" r="8"/>
+    <circle cx="768" cy="330" r="8"/>
+  </g>
+
+  <g font-family="Bahnschrift, Segoe UI, sans-serif">
+    <text x="48" y="58" fill="#dcebf4" font-size="18" font-weight="650">SIGNAL / SYSTEM / EVIDENCE</text>
+    <text x="48" y="86" fill="#9db2c5" font-size="13" letter-spacing="1.4">CONCEPTUAL SIGNAL MAP</text>
+
+    <g fill="#dcebf4" font-size="15" font-weight="600">
+      <text x="88" y="541">Observe</text>
+      <text x="309" y="399">Model</text>
+      <text x="537" y="295">Test</text>
+      <text x="721" y="93">Explain</text>
+    </g>
+
+    <g fill="#91a9bd" font-size="12">
+      <text x="62" y="568">network symptoms</text>
+      <text x="288" y="426">rules and structure</text>
+      <text x="521" y="322">bounded validation</text>
+      <text x="708" y="159">traceable evidence</text>
+    </g>
+  </g>
+
+  <g transform="translate(48 586)" fill="#91a9bd" font-family="Cascadia Mono, Consolas, monospace" font-size="11">
+    <rect width="222" height="28" rx="4" fill="#162e49" stroke="#35536f"/>
+    <text x="12" y="18">ILLUSTRATIVE, NOT MEASURED</text>
+  </g>
+</svg>

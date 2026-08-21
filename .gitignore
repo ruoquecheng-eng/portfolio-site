@@ -1,0 +1,12 @@
+content/evidence/
+dist/
+node_modules/
+.venv/
+qa-artifacts/
+tmp/
+.DS_Store
+Thumbs.db
+*.log
+.env
+.env.*
+!*.env.example

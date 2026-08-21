@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 1,
+  "slug": "hypergraph-tensor",
+  "title": "Edge-Local Spectral Information and Size-Dependent Scaling in Edge-Size-Weighted Nonuniform Hypergraph Tensors",
+  "author": "Wanzheng Ning",
+  "statusText": "Manuscript in preparation",
+  "summary": "The current manuscript draft examines local combinatorial information in a size-homogeneous weighted nonuniform hypergraph adjacency tensor. It develops a neighbor-profile spectral bound and studies edge-local separation, equality, quotient reduction, and loose-star scaling within that tensor model.",
+  "objects": [
+    "Nonuniform hypergraphs",
+    "Nonnegative tensors",
+    "Spectral radius",
+    "Edge-size profiles"
+  ],
+  "techniques": [
+    "Collatz-Wielandt scaling",
+    "Edge-local profile analysis",
+    "Explicit separation constructions",
+    "Tensor-equitable quotient reduction",
+    "Loose-star asymptotics"
+  ],
+  "keywords": [
+    "nonnegative tensors",
+    "spectral radius",
+    "nonuniform hypergraphs",
+    "edge-local profiles",
+    "loose-star asymptotics"
+  ],
+  "facts": [
+    {
+      "id": "hypergraph.status",
+      "publicText": "Manuscript in preparation",
+      "status": "verified",
+      "sourceType": "current_manuscript",
+      "lastVerified": "2026-08-22",
+      "public": true
+    },
+    {
+      "id": "hypergraph.authorship",
+      "publicText": "Single-author manuscript",
+      "status": "verified",
+      "sourceType": "manuscript",
+      "lastVerified": "2026-08-22",
+      "public": true
+    },
+    {
+      "id": "hypergraph.venue",
+      "publicText": "",
+      "status": "needs_confirmation",
+      "sourceType": "user_confirmation",
+      "lastVerified": "2026-08-22",
+      "public": false
+    },
+    {
+      "id": "hypergraph.pdf",
+      "publicText": "",
+      "status": "not_public_yet",
+      "sourceType": "publication_permission",
+      "lastVerified": "2026-08-22",
+      "public": false
+    }
+  ]
+}

@@ -1,0 +1,97 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 520" role="img" aria-labelledby="title desc">
+  <title id="title">NetSage conceptual diagnostic flow</title>
+  <desc id="desc">An eight-stage conceptual flow from network symptoms to retesting. It explicitly identifies the rule engine as not being a machine learning model.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0L10 5 0 10Z" fill="#2879cf"/>
+    </marker>
+  </defs>
+
+  <rect width="1280" height="520" rx="12" fill="#f7fafc"/>
+  <rect x="1" y="1" width="1278" height="518" rx="11" fill="none" stroke="#bccbd7"/>
+
+  <g font-family="Bahnschrift, Segoe UI, sans-serif">
+    <text x="56" y="58" fill="#142a42" font-size="23" font-weight="650">NetSage diagnostic pipeline</text>
+    <text x="56" y="86" fill="#536c82" font-size="13" letter-spacing="1.2">CONCEPTUAL DIAGNOSTIC FLOW</text>
+
+    <g fill="none" stroke="#2879cf" stroke-width="3" marker-end="url(#arrow)">
+      <path d="M190 176H274"/>
+      <path d="M426 176H510"/>
+      <path d="M662 176H746"/>
+      <path d="M898 176H982"/>
+      <path d="M1098 226V300"/>
+      <path d="M982 350H898"/>
+      <path d="M746 350H662"/>
+      <path d="M510 350H426"/>
+    </g>
+
+    <g>
+      <g transform="translate(56 126)">
+        <rect width="134" height="100" rx="8" fill="#ffffff" stroke="#8fa5b8"/>
+        <text x="16" y="31" fill="#2879cf" font-size="12" font-weight="700">INPUT</text>
+        <text x="16" y="58" fill="#142a42" font-size="16" font-weight="650">Log or</text>
+        <text x="16" y="80" fill="#142a42" font-size="16" font-weight="650">symptom</text>
+      </g>
+
+      <g transform="translate(274 126)">
+        <rect width="152" height="100" rx="8" fill="#ffffff" stroke="#8fa5b8"/>
+        <text x="16" y="31" fill="#2879cf" font-size="12" font-weight="700">MATCH</text>
+        <text x="16" y="58" fill="#142a42" font-size="16" font-weight="650">Feature</text>
+        <text x="16" y="80" fill="#142a42" font-size="16" font-weight="650">matching</text>
+      </g>
+
+      <g transform="translate(510 126)">
+        <rect width="152" height="100" rx="8" fill="#e8f4fb" stroke="#2879cf" stroke-width="2"/>
+        <text x="16" y="31" fill="#2879cf" font-size="12" font-weight="700">EVALUATE</text>
+        <text x="16" y="58" fill="#142a42" font-size="16" font-weight="650">Rule engine</text>
+        <text x="16" y="80" fill="#536c82" font-size="12">Not an ML model</text>
+      </g>
+
+      <g transform="translate(746 126)">
+        <rect width="152" height="100" rx="8" fill="#ffffff" stroke="#8fa5b8"/>
+        <text x="16" y="31" fill="#2879cf" font-size="12" font-weight="700">RANK</text>
+        <text x="16" y="58" fill="#142a42" font-size="16" font-weight="650">Top three</text>
+        <text x="16" y="80" fill="#142a42" font-size="16" font-weight="650">causes</text>
+      </g>
+
+      <g transform="translate(982 126)">
+        <rect width="180" height="100" rx="8" fill="#ffffff" stroke="#8fa5b8"/>
+        <text x="16" y="31" fill="#2879cf" font-size="12" font-weight="700">EXPLAIN</text>
+        <text x="16" y="58" fill="#142a42" font-size="16" font-weight="650">Confidence</text>
+        <text x="16" y="80" fill="#142a42" font-size="16" font-weight="650">and evidence</text>
+      </g>
+
+      <g transform="translate(982 300)">
+        <rect width="180" height="100" rx="8" fill="#ffffff" stroke="#8fa5b8"/>
+        <text x="16" y="31" fill="#2879cf" font-size="12" font-weight="700">RECOMMEND</text>
+        <text x="16" y="58" fill="#142a42" font-size="16" font-weight="650">Repair</text>
+        <text x="16" y="80" fill="#142a42" font-size="16" font-weight="650">suggestion</text>
+      </g>
+
+      <g transform="translate(746 300)">
+        <rect width="152" height="100" rx="8" fill="#ffffff" stroke="#8fa5b8"/>
+        <text x="16" y="31" fill="#2879cf" font-size="12" font-weight="700">ACT</text>
+        <text x="16" y="58" fill="#142a42" font-size="16" font-weight="650">Action</text>
+        <text x="16" y="80" fill="#142a42" font-size="16" font-weight="650">flow</text>
+      </g>
+
+      <g transform="translate(510 300)">
+        <rect width="152" height="100" rx="8" fill="#ffffff" stroke="#8fa5b8"/>
+        <text x="16" y="31" fill="#2879cf" font-size="12" font-weight="700">VERIFY</text>
+        <text x="16" y="69" fill="#142a42" font-size="16" font-weight="650">Retest</text>
+      </g>
+
+      <g transform="translate(274 300)">
+        <rect width="152" height="100" rx="8" fill="#f0f7f4" stroke="#4a9272"/>
+        <text x="16" y="31" fill="#35775b" font-size="12" font-weight="700">RECORD</text>
+        <text x="16" y="58" fill="#142a42" font-size="16" font-weight="650">Local history</text>
+        <text x="16" y="80" fill="#536c82" font-size="12">Device persistence</text>
+      </g>
+    </g>
+
+    <g transform="translate(56 448)">
+      <rect width="1168" height="34" rx="5" fill="#e9eff4"/>
+      <text x="16" y="22" fill="#536c82" font-size="12">Conceptual sequence based on verified application capabilities. It is not a measured network topology or machine-learning pipeline.</text>
+    </g>
+  </g>
+</svg>

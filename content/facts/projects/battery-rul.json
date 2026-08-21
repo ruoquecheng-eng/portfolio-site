@@ -1,0 +1,76 @@
+{
+  "schemaVersion": 1,
+  "slug": "battery-rul",
+  "title": "Lithium-Ion Battery Remaining Useful Life Prediction and Cascade Utilization Screening",
+  "type": "Competition modeling project",
+  "dataBoundary": "Fully simulated data with semi-empirical generation assumptions",
+  "summary": "A four-part competition modeling workflow on fully simulated data with semi-empirical generation assumptions, connecting degradation-stage detection, SOH and RUL estimation, compatibility graphs, multi-objective grouping, and robust stress testing.",
+  "workflow": [
+    "Q1: continuous three-segment change-point regression",
+    "Q2: Ridge SOH estimation and censored Weibull AFT RUL prediction",
+    "Q3: scenario gates, compatibility graphs, and epsilon-constraint MILP",
+    "Q4: probability compatibility, stress scenarios, CVaR, and robust strategy comparison"
+  ],
+  "validation": [
+    "Battery-level train, validation, and test separation",
+    "Q3 member set frozen before hidden-truth audit",
+    "Independent Q4 calibration and final holdout pools",
+    "Clean-package reproduction and final validation checks"
+  ],
+  "limitations": [
+    "All numerical results come from fully simulated data generated with semi-empirical assumptions; no row is measured experimental data.",
+    "REU is a relative economic unit, not a currency estimate.",
+    "Proxy safety gates do not replace thermal, electrical, mechanical, or regulatory testing.",
+    "The audit covers 599 configured candidate columns within the stated candidate-generation rules."
+  ],
+  "facts": [
+    {
+      "id": "battery.data.scale",
+      "publicText": "418,430 generated cycle records across 360 simulated battery trajectories; no row is measured experimental data",
+      "status": "verified",
+      "sourceType": "dataset_metadata",
+      "lastVerified": "2026-08-22",
+      "public": true
+    },
+    {
+      "id": "battery.q1.result",
+      "publicText": "Simulated-data result: median knee at 944 cycles and knee MAE of 60.3 cycles",
+      "status": "verified",
+      "sourceType": "model_output",
+      "lastVerified": "2026-08-22",
+      "public": true
+    },
+    {
+      "id": "battery.q2.result",
+      "publicText": "Internal holdout on simulated data: SOH RMSE 0.175 percentage points; RUL MAE 49.4 cycles and RMSE 70.0 cycles",
+      "status": "verified",
+      "sourceType": "model_output",
+      "lastVerified": "2026-08-22",
+      "public": true
+    },
+    {
+      "id": "battery.q3.result",
+      "publicText": "Simulated-data audit of 599 candidate columns selected F014: 18 groups, 196 cells, 40.8% utilization, and 25.53 REU net value",
+      "status": "verified",
+      "sourceType": "model_output",
+      "lastVerified": "2026-08-22",
+      "public": true
+    },
+    {
+      "id": "battery.q4.result",
+      "publicText": "Simulated-data analysis calibrated p0 = 0.80; robust strategy S0 formed 6 groups with 27.5% utilization and 43.80 REU value",
+      "status": "verified",
+      "sourceType": "model_output",
+      "lastVerified": "2026-08-22",
+      "public": true
+    },
+    {
+      "id": "battery.competition.result",
+      "publicText": "",
+      "status": "needs_confirmation",
+      "sourceType": "user_confirmation",
+      "lastVerified": "2026-08-22",
+      "public": false
+    }
+  ]
+}
