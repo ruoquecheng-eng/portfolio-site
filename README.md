@@ -1,6 +1,11 @@
 # Wanzheng Ning Portfolio
 
-Local-first static portfolio for technical and academic work.
+Static technical and academic portfolio, published at [ruoquecheng-eng.github.io/portfolio-site](https://ruoquecheng-eng.github.io/portfolio-site/).
+
+## GitHub accounts
+
+- [`lbrswne`](https://github.com/lbrswne) - NetSage and original project repositories
+- [`ruoquecheng-eng`](https://github.com/ruoquecheng-eng) - Portfolio source repository and GitHub Pages hosting
 
 ## Commands
 
@@ -10,7 +15,7 @@ npm run qa
 npm run serve
 ```
 
-The local preview is served from `dist/`. No deployment command is included in this version.
+The local preview is served from `dist/`.
 
 For full browser QA, use the project-local Python environment:
 
@@ -29,4 +34,4 @@ That check also regenerates `output/pdf/wanzheng-ning-resume.pdf` from the print
 
 ## Deployment configuration
 
-`site.config.json` contains a provisional GitHub Pages origin and `/` base path. Confirm the final repository path before any public deployment, then update `canonicalOrigin` and `basePath` and rebuild.
+`site.config.json` contains the production GitHub Pages origin and `/portfolio-site/` base path. Pushes to `main` run `.github/workflows/deploy-pages.yml`, build `dist/`, and publish it through GitHub Pages.

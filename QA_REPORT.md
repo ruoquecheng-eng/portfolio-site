@@ -81,4 +81,4 @@ These are content-release blockers, not local implementation defects:
 - optional personal contact and academic metrics after verification
 - manuscript downloads only after release permission
 
-Public deployment was intentionally not attempted.
+GitHub Pages deployment was subsequently enabled at `https://ruoquecheng-eng.github.io/portfolio-site/`; the published routes and static assets returned HTTP 200 after deployment.
