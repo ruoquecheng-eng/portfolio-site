@@ -33,6 +33,7 @@ const mimeTypes = new Map([
   ['.json', 'application/json; charset=utf-8'],
   ['.map', 'application/json; charset=utf-8'],
   ['.mjs', 'text/javascript; charset=utf-8'],
+  ['.pdf', 'application/pdf'],
   ['.png', 'image/png'],
   ['.svg', 'image/svg+xml; charset=utf-8'],
   ['.txt', 'text/plain; charset=utf-8'],

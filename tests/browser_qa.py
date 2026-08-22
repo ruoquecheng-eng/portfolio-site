@@ -66,7 +66,7 @@ def check_page(page, name, route, viewport_name, issues):
     if console_errors:
         issues.append(f"{viewport_name}/{name}: console errors {console_errors}")
 
-    if viewport_name in {"mobile", "desktop"} and name in {"home", "projects", "netsage", "battery", "research", "resume"}:
+    if viewport_name in {"mobile", "desktop"} and name in {"home", "projects", "netsage", "battery", "research", "jensen", "resume"}:
         page.screenshot(path=str(OUTPUT / f"{name}-{viewport_name}.png"), full_page=True)
 
 
@@ -100,6 +100,17 @@ def run():
         after_theme = page.locator("html").get_attribute("data-theme-preference")
         if before_theme == after_theme:
             issues.append("theme: toggle did not change data-theme")
+
+        manuscript_path = "/assets/documents/subcritical-hyperbolicity-jensen-polynomials-riemann-xi.pdf"
+        page.goto(f"{BASE_URL}/research/jensen-polynomials/", wait_until="networkidle")
+        manuscript_links = page.locator(f'a[href$="{manuscript_path}"]')
+        if manuscript_links.count() < 2:
+            issues.append("jensen manuscript: expected view and download links")
+        manuscript_response = page.request.get(f"{BASE_URL}{manuscript_path}")
+        if not manuscript_response.ok:
+            issues.append(f"jensen manuscript: HTTP {manuscript_response.status}")
+        elif "application/pdf" not in manuscript_response.headers.get("content-type", ""):
+            issues.append("jensen manuscript: response is not application/pdf")
 
         page.goto(f"{BASE_URL}/resume/", wait_until="networkidle")
         page.emulate_media(media="print")

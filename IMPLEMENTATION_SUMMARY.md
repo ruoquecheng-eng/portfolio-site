@@ -6,7 +6,7 @@ Reviewed: 22 August 2026
 
 The portfolio is implemented as a static, data-driven site and published through GitHub Pages. It has eight public routes, a generated 404 page, a printable resume, responsive navigation, system/light/dark themes, reduced-motion handling, and a fact-publication boundary.
 
-No underlying project source repository, manuscript, dataset, log, or database was modified by this implementation.
+No underlying project source repository, manuscript source, dataset, log, or database was modified by this implementation. The user's first submitted Jensen manuscript was copied unchanged into the public portfolio after explicit approval.
 
 ## Public routes
 
@@ -55,10 +55,10 @@ The following remain deliberately unpublished:
 - GPA, rank, IELTS, email, LinkedIn, and unconfirmed graduation dates
 - unverified NetSage ownership, store release, user counts, or performance metrics
 - competition name, team size, result, or award details without evidence
-- manuscript PDFs and the intended venue for the hypergraph tensor draft
+- the hypergraph tensor manuscript PDF and its intended venue
 - private screenshots, datasets, logs, databases, source archives, and environment files
 
-Research statuses use the lowest verified wording: the Jensen manuscript is described as submitted to the International Journal of Number Theory; the hypergraph tensor manuscript is described as in preparation. Neither is called accepted or published.
+Research statuses use the lowest verified wording: the Jensen manuscript is described as submitted to the International Journal of Number Theory; the hypergraph tensor manuscript is described as in preparation. Neither is called accepted or published. The first submitted Jensen version is available as a 22-page PDF with a title-page preview.
 
 ## Visual provenance
 
@@ -67,6 +67,7 @@ Source-backed local previews:
 - NetSage application icon
 - three battery-modeling result figures
 - high-speed rail digital prototype image
+- Jensen manuscript title-page preview, rendered from the approved public PDF
 
 The battery figures and rail image are included for local review only until reuse/publication permission is confirmed.
 

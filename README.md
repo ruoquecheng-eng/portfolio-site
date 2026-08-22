@@ -30,7 +30,8 @@ That check also regenerates `output/pdf/wanzheng-ning-resume.pdf` from the print
 - Public facts live in `content/facts/`.
 - Private source paths and hashes live in `content/evidence/` and are ignored by Git.
 - The build only renders facts with `status: verified` and `public: true`.
-- Do not copy source repositories, manuscript PDFs, datasets, logs, databases, or environment files into this project.
+- Do not copy source repositories, datasets, logs, databases, or environment files into this project.
+- Manuscript PDFs may be public only when the user explicitly approves the exact file and the build QA allowlists that exact path.
 
 ## Deployment configuration
 
