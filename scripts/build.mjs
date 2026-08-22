@@ -350,7 +350,33 @@ const researchBody = `
     ${researchItem({depth: 1, href: "research/jensen-polynomials/", record: jensen, question: "How far can effective hyperbolicity of xi-associated Jensen polynomials be pushed toward the cubic endpoint scale?"})}
     ${researchItem({depth: 1, href: "research/hypergraph-tensor/", record: hypergraph, question: "What spectral information is carried by the arrangement of vertex profiles inside nonuniform hyperedges?"})}
   </section>
-  <section class="section research-policy"><div class="section-heading"><p>Publication policy</p><h2>Status is stated at the lowest verified level.</h2></div><p>Submitted does not mean accepted or published. Manuscript in preparation does not imply submission. PDF downloads remain unavailable until public-release permission is confirmed.</p></section>`;
+  <section class="section research-policy"><div class="section-heading"><p>Publication policy</p><h2>Status is stated at the lowest verified level.</h2></div><p>Submitted does not mean accepted or published. Manuscript in preparation does not imply submission. Only files explicitly approved for public release are linked; the first submitted Jensen manuscript is available, while the hypergraph draft remains private.</p></section>`;
+
+const manuscriptFeature = (record) => {
+  const manuscript = record.manuscript;
+  if (!manuscript || manuscript.public !== true || manuscript.status !== "verified") return "";
+  const manuscriptHref = local(2, `assets/${manuscript.file}`);
+  const previewHref = local(2, `assets/${manuscript.preview}`);
+  const downloadName = path.posix.basename(manuscript.file);
+  return `
+      <section class="section manuscript-feature" aria-labelledby="manuscript-heading">
+        <figure class="manuscript-preview">
+          <a href="${manuscriptHref}" aria-label="Open the submitted manuscript PDF">
+            <img src="${previewHref}" width="${manuscript.previewWidth}" height="${manuscript.previewHeight}" alt="Title page of the submitted Jensen polynomial manuscript" loading="lazy" decoding="async">
+          </a>
+          <figcaption>Title page from the first submitted version.</figcaption>
+        </figure>
+        <div class="manuscript-copy">
+          <p class="manuscript-label">Submitted manuscript · ${escapeHtml(manuscript.date)}</p>
+          <h2 id="manuscript-heading">Read the first submitted version.</h2>
+          <p>This ${escapeHtml(manuscript.pages)}-page file documents the work as submitted. Making it available here does not indicate peer-review acceptance or publication.</p>
+          <div class="manuscript-actions">
+            <a class="button" href="${manuscriptHref}" target="_blank" rel="noopener">View manuscript <span aria-hidden="true">↗</span></a>
+            <a class="text-link" href="${manuscriptHref}" download="${escapeHtml(downloadName)}">Download PDF <span aria-hidden="true">↓</span></a>
+          </div>
+        </div>
+      </section>`;
+};
 
 const researchDetailBody = (record, kind) => {
   const isJensen = kind === "jensen";
@@ -368,11 +394,12 @@ const researchDetailBody = (record, kind) => {
       <header class="paper-hero">
         <div>${status(record.statusText)}<p class="project-type">Single-author research manuscript</p><h1>${escapeHtml(record.title)}</h1><p>Wanzheng Ning</p></div>
       </header>
+      ${manuscriptFeature(record)}
       <section class="section paper-question"><div class="section-heading"><p>Research question</p><h2>${escapeHtml(question)}</h2></div>${formula}</section>
       <section class="section split-section"><div><h2>Non-specialist summary</h2><p>${escapeHtml(record.summary)}</p></div><div><h2>Current contribution</h2><p>${escapeHtml(contribution)}</p></div></section>
       <section class="section"><div class="two-column-lists"><div><h2>Mathematical objects</h2>${textList(record.objects)}</div><div><h2>Core techniques</h2>${textList(record.techniques)}</div></div></section>
       <section class="section keyword-section"><h2>Keywords</h2><ul class="keyword-list">${record.keywords.map((keyword) => `<li>${escapeHtml(keyword)}</li>`).join("")}</ul></section>
-      <section class="section limitations paper-access"><div><h2>Access and status boundary</h2><p>The portfolio does not provide a manuscript download. The status above is the lowest level supported by the current file evidence and should not be read as acceptance or publication.</p></div><a class="button-secondary" href="${local(2, "research/")}">Back to research</a></section>
+      <section class="section limitations paper-access"><div><h2>Access and status boundary</h2><p>${isJensen ? "The first submitted version is available above. Its public availability does not change the verified submission status or imply acceptance or publication." : "The portfolio does not provide a manuscript download. The status above is the lowest level supported by the current file evidence and should not be read as acceptance or publication."}</p></div><a class="button-secondary" href="${local(2, "research/")}">Back to research</a></section>
     </article>`;
 };
 

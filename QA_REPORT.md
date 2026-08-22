@@ -9,7 +9,7 @@ Pass. The current local build has no known structural, browser, responsive, inte
 ## Build and structural checks
 
 - `npm run build`: passed; generated eight routes plus `404.html`.
-- `npm run qa`: passed; checked nine HTML pages and 24 public files.
+- `npm run qa`: passed; checked nine HTML pages and the complete public output, including the single allowlisted manuscript PDF.
 - Internal route targets, required metadata, manifest, sitemap, asset references, and expected output files passed.
 - `content/evidence/` is excluded from the public build.
 - The public output was checked for private Windows source paths, placeholder text, and unsupported publication wording.
@@ -37,7 +37,7 @@ The checks covered:
 - reduced-motion behavior
 - print header suppression
 
-Desktop and mobile screenshots for Home, Projects, NetSage, Battery RUL, Research, and Resume are stored in the Git-ignored `qa-artifacts/` directory for local review.
+Desktop and mobile screenshots for Home, Projects, NetSage, Battery RUL, Research, Jensen manuscript, and Resume are stored in the Git-ignored `qa-artifacts/` directory for local review.
 
 ## Manual visual review
 
@@ -68,6 +68,7 @@ The Resume route was exported by headless Chrome and verified with `pdfinfo` plu
 - Battery metrics are framed as internal simulation/holdout results, not deployment performance.
 - NetSage is described as local-first and rule-based, not as an ML/LLM system.
 - Research status is separated from acceptance/publication.
+- The Jensen PDF is the exact 22-page first submitted version approved by the user; its page link and PDF response are tested, while other PDFs remain blocked by an explicit allowlist.
 - No award is claimed for the Scenic Guide project.
 - High-speed rail work is identified as a five-person course-team concept with the user's role stated as `Proposed Design`; no train-level energy saving is claimed.
 
@@ -79,6 +80,6 @@ These are content-release blockers, not local implementation defects:
 - public reuse/authorship confirmation for the rail prototype image
 - final canonical domain/repository path
 - optional personal contact and academic metrics after verification
-- manuscript downloads only after release permission
+- any additional manuscript download not explicitly approved and allowlisted
 
 GitHub Pages deployment was subsequently enabled at `https://ruoquecheng-eng.github.io/portfolio-site/`; the published routes and static assets returned HTTP 200 after deployment.

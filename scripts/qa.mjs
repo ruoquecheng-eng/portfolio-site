@@ -6,6 +6,9 @@ import { fileURLToPath } from 'node:url';
 const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const distRoot = path.resolve(projectRoot, process.env.QA_DIST ?? 'dist');
 const issues = [];
+const allowedPublicPdfs = new Set([
+  'assets/documents/subcritical-hyperbolicity-jensen-polynomials-riemann-xi.pdf',
+]);
 
 const requiredPages = new Map([
   ['Home', ['index.html']],
@@ -30,6 +33,8 @@ const requiredAssets = new Map([
   ['battery compatibility figure', ['assets/images/battery-compatibility-graph.webp']],
   ['battery strategy figure', ['assets/images/battery-strategy-comparison.webp']],
   ['high-speed rail image', ['assets/images/high-speed-carriage.webp']],
+  ['Jensen manuscript title page', ['assets/images/jensen-manuscript-title-page.png']],
+  ['Jensen submitted manuscript', ['assets/documents/subcritical-hyperbolicity-jensen-polynomials-riemann-xi.pdf']],
 ]);
 
 function relativeName(file) {
@@ -294,20 +299,31 @@ function checkResearchAndProjectFacts(pageFiles, htmlByName) {
     (attribute(tag, 'href') ?? '').replace(/\/$/, '') === 'https://github.com/lbrswne/NetSage');
   if (!repositoryLink) addIssue('truthfulness', 'NetSage page is missing the verified repository link');
 
-  const jensenText = visibleText(htmlByName.get(pageFiles.get('Jensen Polynomials research')) ?? '');
+  const jensenHtml = htmlByName.get(pageFiles.get('Jensen Polynomials research')) ?? '';
+  const jensenText = visibleText(jensenHtml);
   if (!/Submitted to the International Journal of Number Theory/i.test(jensenText)) {
     addIssue('truthfulness', 'Jensen page must use the verified status: Submitted to the International Journal of Number Theory');
   }
   if (/\b(?:under review|accepted|published)\b/i.test(jensenText)) {
     addIssue('truthfulness', 'Jensen page exposes an unsupported publication status');
   }
+  const jensenPdfLinks = (jensenHtml.match(/<a\b[^>]*>/gi) ?? [])
+    .map((tag) => attribute(tag, 'href') ?? '')
+    .filter((href) => /\.pdf(?:[?#]|$)/i.test(href));
+  if (!jensenPdfLinks.some((href) => href.endsWith('assets/documents/subcritical-hyperbolicity-jensen-polynomials-riemann-xi.pdf'))) {
+    addIssue('research', 'Jensen page is missing the approved submitted-manuscript PDF link');
+  }
 
-  const hypergraphText = visibleText(htmlByName.get(pageFiles.get('Hypergraph Tensor research')) ?? '');
+  const hypergraphHtml = htmlByName.get(pageFiles.get('Hypergraph Tensor research')) ?? '';
+  const hypergraphText = visibleText(hypergraphHtml);
   if (!/Manuscript in preparation/i.test(hypergraphText)) {
     addIssue('truthfulness', 'Hypergraph Tensor page must use the verified status: Manuscript in preparation');
   }
   if (/\b(?:submitted|under review|accepted|published)\b/i.test(hypergraphText)) {
     addIssue('truthfulness', 'Hypergraph Tensor page exposes an unsupported publication status');
+  }
+  if (/\.pdf(?:[?#]|$)/i.test(hypergraphHtml)) {
+    addIssue('privacy', 'Hypergraph Tensor page must not expose a manuscript PDF');
   }
 }
 
@@ -364,9 +380,12 @@ async function main() {
     }
   }
 
-  const forbiddenFile = /(?:^|\/)(?:content\/evidence|evidence)(?:\/|$)|(?:^|\/)\.env(?:\.|$)|SOURCES\.json$|\.(?:pdf|db|sqlite\d*|log|bak|pem|key|p12|pfx)$/i;
+  const forbiddenFile = /(?:^|\/)(?:content\/evidence|evidence)(?:\/|$)|(?:^|\/)\.env(?:\.|$)|SOURCES\.json$|\.(?:db|sqlite\d*|log|bak|pem|key|p12|pfx)$/i;
   for (const name of fileNames) {
     if (forbiddenFile.test(name)) addIssue('privacy', `Forbidden or private file in dist: ${name}`);
+    if (/\.pdf$/i.test(name) && !allowedPublicPdfs.has(name)) {
+      addIssue('privacy', `Unapproved PDF in dist: ${name}`);
+    }
   }
 
   const readableExtensions = new Set(['.css', '.html', '.js', '.json', '.mjs', '.svg', '.txt', '.webmanifest', '.xml']);
@@ -385,7 +404,10 @@ async function main() {
     checkLinks(file, html, fileSet, htmlByName);
     for (const reference of extractReferences(html)) {
       if (/\.pdf(?:[?#]|$)/i.test(reference.value)) {
-        addIssue('privacy', `${name}: public PDF link is not allowed: ${reference.value}`);
+        const resolved = targetCandidates(file, reference.value);
+        if (!resolved.candidates.some((candidate) => allowedPublicPdfs.has(candidate))) {
+          addIssue('privacy', `${name}: unapproved public PDF link: ${reference.value}`);
+        }
       }
     }
   }
