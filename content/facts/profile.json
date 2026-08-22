@@ -7,8 +7,20 @@
   },
   "links": [
     {
-      "label": "GitHub",
-      "url": "https://github.com/lbrswne"
+      "label": "lbrswne",
+      "url": "https://github.com/lbrswne",
+      "purpose": "NetSage and original project repositories",
+      "status": "verified",
+      "lastVerified": "2026-08-22",
+      "public": true
+    },
+    {
+      "label": "ruoquecheng-eng",
+      "url": "https://github.com/ruoquecheng-eng",
+      "purpose": "Portfolio source repository and GitHub Pages hosting",
+      "status": "verified",
+      "lastVerified": "2026-08-22",
+      "public": true
     }
   ],
   "facts": [

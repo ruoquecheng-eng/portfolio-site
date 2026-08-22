@@ -28,6 +28,7 @@ const escapeHtml = (value = "") => String(value)
   .replaceAll("'", "&#39;");
 
 const publicFacts = (record) => (record.facts || []).filter((fact) => fact.public === true && fact.status === "verified" && fact.publicText);
+const publicLinks = (profile.links || []).filter((link) => link.public === true && link.status === "verified" && link.label && link.url);
 const prefix = (depth) => "../".repeat(depth);
 const local = (depth, target = "") => `${prefix(depth)}${target}`;
 const canonical = (route) => `${config.canonicalOrigin}${config.basePath.replace(/\/$/, "")}${route}`;
@@ -62,7 +63,7 @@ const nav = (depth, active) => {
     <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav">Menu</button>
     <nav class="site-nav" id="site-nav" aria-label="Primary navigation">
       ${items.map(([key, label, href]) => `<a href="${local(depth, href)}"${active === key ? ' aria-current="page"' : ""}>${label}</a>`).join("")}
-      <a href="https://github.com/lbrswne" rel="me noopener">GitHub</a>
+      <a href="${local(depth, "resume/#github-accounts")}">GitHub accounts</a>
       <button class="theme-toggle" type="button" aria-label="Switch color theme" title="Switch color theme"><span aria-hidden="true">◐</span><span class="sr-only">Switch color theme</span></button>
     </nav>`;
 };
@@ -100,8 +101,13 @@ const page = ({ title, description, route, depth, active, body, schema, bodyClas
   <main id="main">${body}</main>
   <footer class="site-footer">
     <div><strong>Wanzheng Ning</strong><p>Communication engineering, network diagnostics, modeling, and research.</p></div>
-    <div><a href="${local(depth, "projects/")}">Projects</a><a href="${local(depth, "research/")}">Research</a><a href="${local(depth, "resume/")}">Resume</a></div>
-    <p class="footer-note">Facts last reviewed 22 August 2026. Built as a local working portfolio.</p>
+    <div>
+      <a href="${local(depth, "projects/")}">Projects</a>
+      <a href="${local(depth, "research/")}">Research</a>
+      <a href="${local(depth, "resume/")}">Resume</a>
+      ${publicLinks.map((link) => `<a href="${escapeHtml(link.url)}" rel="me noopener">GitHub · ${escapeHtml(link.label)}</a>`).join("")}
+    </div>
+    <p class="footer-note">Facts last reviewed 22 August 2026. Maintained as a verified static portfolio.</p>
   </footer>
   <script src="${local(depth, "scripts/main.js")}" defer></script>
 </body>
@@ -382,7 +388,12 @@ const resumeBody = `
     <section class="resume-section"><h2>Competitions</h2><div class="resume-entry"><div><strong>Mathematical modeling project</strong><span>Competition modeling project</span></div><p>Four-part battery reliability and utilization workflow on fully simulated data generated with semi-empirical assumptions.</p></div><div class="resume-entry"><div><strong>Scenic Guide Digital Human</strong><span>Competition software project</span></div><p>Tourism guide prototype to which I contributed, with conversational and voice interaction, route guidance, narration, and knowledge management. No award is claimed.</p></div></section>
     <section class="resume-section"><h2>Technical skills</h2><dl class="skills-context"><div><dt>Network and mobile</dt><dd>Kotlin, Jetpack Compose, Android, network diagnostics, DNS/TLS/HTTP troubleshooting concepts</dd></div><div><dt>Modeling and research</dt><dd>Python, change-point regression, survival modeling, graph methods, mathematical optimization, asymptotic analysis, LaTeX</dd></div><div><dt>Software</dt><dd>FastAPI, JSON, Git</dd></div></dl></section>
     <section class="resume-section"><h2>Languages</h2><p>Chinese</p></section>
-    <section class="resume-section resume-contact"><h2>Links</h2><p><a href="https://github.com/lbrswne" rel="me noopener">github.com/lbrswne</a></p></section>
+    <section class="resume-section resume-contact" id="github-accounts">
+      <h2>GitHub accounts</h2>
+      <dl class="skills-context account-list">
+        ${publicLinks.map((link) => `<div><dt><a href="${escapeHtml(link.url)}" rel="me noopener">${escapeHtml(link.label)}</a></dt><dd>${escapeHtml(link.purpose)}</dd></div>`).join("")}
+      </dl>
+    </section>
   </article>`;
 
 const routes = [
@@ -397,7 +408,7 @@ const routes = [
       active: "home",
       body: homeBody,
       bodyClass: "home-page",
-      schema: {"@context": "https://schema.org", "@type": "Person", name: profile.hero.name, affiliation: {"@type": "CollegeOrUniversity", name: "Northeastern University at Qinhuangdao"}, url: canonical("/"), sameAs: ["https://github.com/lbrswne"], knowsAbout: ["Communication engineering", "Network diagnostics", "Mathematical modeling", "Hypergraph tensors"]}
+      schema: {"@context": "https://schema.org", "@type": "Person", name: profile.hero.name, affiliation: {"@type": "CollegeOrUniversity", name: "Northeastern University at Qinhuangdao"}, url: canonical("/"), sameAs: publicLinks.map((link) => link.url), knowsAbout: ["Communication engineering", "Network diagnostics", "Mathematical modeling", "Hypergraph tensors"]}
     })
   },
   {

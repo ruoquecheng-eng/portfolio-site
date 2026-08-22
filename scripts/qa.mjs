@@ -311,6 +311,31 @@ function checkResearchAndProjectFacts(pageFiles, htmlByName) {
   }
 }
 
+function checkProfileLinks(pageFiles, htmlByName) {
+  const requiredAccounts = [
+    ['lbrswne', 'https://github.com/lbrswne'],
+    ['ruoquecheng-eng', 'https://github.com/ruoquecheng-eng'],
+  ];
+  const home = htmlByName.get(pageFiles.get('Home')) ?? '';
+  const resume = htmlByName.get(pageFiles.get('Resume')) ?? '';
+
+  for (const [label, url] of requiredAccounts) {
+    for (const [pageLabel, html] of [['Home footer', home], ['Resume', resume]]) {
+      const hasLink = (html.match(/<a\b[^>]*>/gi) ?? []).some((tag) =>
+        (attribute(tag, 'href') ?? '').replace(/\/$/, '') === url);
+      if (!hasLink) addIssue('profile', `${pageLabel} is missing GitHub account ${label}`);
+    }
+  }
+
+  const resumeText = visibleText(resume);
+  if (!/NetSage and original project repositories/i.test(resumeText)) {
+    addIssue('profile', 'Resume does not identify the purpose of the lbrswne account');
+  }
+  if (!/Portfolio source repository and GitHub Pages hosting/i.test(resumeText)) {
+    addIssue('profile', 'Resume does not identify the purpose of the ruoquecheng-eng account');
+  }
+}
+
 async function main() {
   try {
     const canonicalDist = await realpath(distRoot);
@@ -366,6 +391,7 @@ async function main() {
   }
 
   checkResearchAndProjectFacts(pageFiles, htmlByName);
+  checkProfileLinks(pageFiles, htmlByName);
 
   const css = [...fileSet]
     .filter((name) => name.toLowerCase().endsWith('.css'))

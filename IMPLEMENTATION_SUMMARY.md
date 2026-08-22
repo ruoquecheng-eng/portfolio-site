@@ -4,9 +4,9 @@ Reviewed: 22 August 2026
 
 ## Outcome
 
-The local working portfolio is implemented as a static, data-driven site. It has eight public routes, a generated 404 page, a printable resume, responsive navigation, system/light/dark themes, reduced-motion handling, and a fact-publication boundary.
+The portfolio is implemented as a static, data-driven site and published through GitHub Pages. It has eight public routes, a generated 404 page, a printable resume, responsive navigation, system/light/dark themes, reduced-motion handling, and a fact-publication boundary.
 
-No source repository, manuscript, dataset, log, database, deployment, or GitHub repository was modified by this implementation.
+No underlying project source repository, manuscript, dataset, log, or database was modified by this implementation.
 
 ## Public routes
 
@@ -100,10 +100,9 @@ npm run serve
 
 Then open `http://127.0.0.1:4173/`.
 
-## Next steps before public deployment
+## Next steps before future public updates
 
-1. Confirm the final public repository path and update `site.config.json` canonical origin/base path.
-2. Confirm permission to publish the battery figures and high-speed rail image, or replace them with cleared alternatives.
-3. Add confirmed contact details, dates, grades, awards, and manuscript links only after evidence review.
-4. Add NetSage screenshots, test metrics, users, and personal contribution wording only when verified.
-5. Run the complete build, static QA, browser QA, privacy scan, and PDF check after every fact or asset update.
+1. Confirm public-use permission for the battery figures and high-speed rail image; replace them promptly if permission is not available.
+2. Add confirmed contact details, dates, grades, awards, and manuscript links only after evidence review.
+3. Add NetSage screenshots, test metrics, users, and personal contribution wording only when verified.
+4. Run the complete build, static QA, browser QA, privacy scan, and PDF check after every fact or asset update.
