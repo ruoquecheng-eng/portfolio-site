@@ -23,6 +23,7 @@ ROUTES = [
     ("netsage", "/projects/netsage/"),
     ("battery", "/projects/battery-rul/"),
     ("high-speed-rail", "/projects/high-speed-rail/"),
+    ("engineerplus-demo", "/projects/high-speed-rail/demo/#overview"),
     ("research", "/research/"),
     ("jensen", "/research/jensen-polynomials/"),
     ("hypergraph", "/research/hypergraph-tensor/"),
@@ -67,7 +68,7 @@ def check_page(page, name, route, viewport_name, issues):
     if console_errors:
         issues.append(f"{viewport_name}/{name}: console errors {console_errors}")
 
-    if viewport_name in {"mobile", "desktop"} and name in {"home", "projects", "netsage", "battery", "high-speed-rail", "research", "jensen", "resume"}:
+    if viewport_name in {"mobile", "desktop"} and name in {"home", "projects", "netsage", "battery", "high-speed-rail", "engineerplus-demo", "research", "jensen", "resume"}:
         page.screenshot(path=str(OUTPUT / f"{name}-{viewport_name}.png"), full_page=True)
 
 
@@ -143,6 +144,81 @@ def run():
             issues.append("high-speed rail: team context is missing")
         if page.get_by_text("Independent design and implementation", exact=True).count() < 1:
             issues.append("high-speed rail: independent front-end role is missing")
+        if page.get_by_role("link", name="Open interactive demo").count() != 1:
+            issues.append("high-speed rail: primary interactive-demo action is missing")
+        if page.locator('a[href*="/demo/#"]').count() != 8:
+            issues.append("high-speed rail: expected image and text deep links for four demo modules")
+
+        demo_requests = []
+        page.on("request", lambda request: demo_requests.append(request.url))
+        page.goto(f"{BASE_URL}/projects/high-speed-rail/demo/", wait_until="networkidle")
+        page.keyboard.press("Tab")
+        if page.locator(":focus").inner_text().strip() != "Skip to workspace":
+            issues.append("EngineerPlus demo: first keyboard focus is not the skip link")
+        page.goto(f"{BASE_URL}/projects/high-speed-rail/demo/#capital", wait_until="networkidle")
+        if page.get_by_text("Interactive concept prototype", exact=True).count() != 1:
+            issues.append("EngineerPlus demo: prototype boundary label is missing")
+        if page.get_by_text("Illustrative data only", exact=True).count() != 1:
+            issues.append("EngineerPlus demo: illustrative-data boundary label is missing")
+        if page.locator('[data-module-link]').count() != 5 or not page.locator("#capital").is_visible():
+            issues.append("EngineerPlus demo: #capital deep link did not select the capital module")
+        page.locator('[data-module-link="risk"]').click()
+        page.go_back(wait_until="networkidle")
+        if not page.locator("#capital").is_visible():
+            issues.append("EngineerPlus demo: browser back did not restore the capital hash module")
+        page.go_forward(wait_until="networkidle")
+        if not page.locator("#risk").is_visible():
+            issues.append("EngineerPlus demo: browser forward did not restore the risk hash module")
+        page.goto(f"{BASE_URL}/projects/high-speed-rail/demo/#capital", wait_until="networkidle")
+
+        initial_investors = int(page.locator('[data-capital-investors]').inner_text())
+        page.locator('[name="investor"]').fill("Browser QA Fund")
+        page.locator('[name="amount"]').fill("75")
+        page.locator('[name="type"]').select_option("green")
+        page.get_by_role("button", name="Add to session model").click()
+        if int(page.locator('[data-capital-investors]').inner_text()) != initial_investors + 1:
+            issues.append("EngineerPlus demo: capital submission did not update the investor count")
+        page.reload(wait_until="networkidle")
+        if int(page.locator('[data-capital-investors]').inner_text()) != initial_investors + 1:
+            issues.append("EngineerPlus demo: session state did not survive a same-tab refresh")
+        fresh_tab = desktop.new_page()
+        fresh_tab.goto(f"{BASE_URL}/projects/high-speed-rail/demo/#capital", wait_until="networkidle")
+        if fresh_tab.locator('[data-capital-investors]').inner_text() != "24":
+            issues.append("EngineerPlus demo: session state leaked into a separate tab")
+        fresh_tab.close()
+
+        page.goto(f"{BASE_URL}/projects/high-speed-rail/demo/#risk", wait_until="networkidle")
+        page.locator('[name="guarantee"]').fill("100")
+        page.locator('[name="climate"]').fill("5")
+        if page.locator('[data-risk-coverage]').inner_text() != "50" or page.locator('[data-risk-state]').inner_text() != "Review required":
+            issues.append("EngineerPlus demo: risk sliders did not update the simplified formula state")
+
+        page.goto(f"{BASE_URL}/projects/high-speed-rail/demo/#compliance", wait_until="networkidle")
+        page.locator('[name="projectId"]').fill("HSR-QA-001")
+        page.get_by_role("button", name="Run simulated check").click()
+        page.get_by_text("Simulated workflow complete for HSR-QA-001.", exact=False).wait_for(timeout=5000)
+        if page.locator('.compliance-steps .is-complete').count() != 4:
+            issues.append("EngineerPlus demo: compliance workflow did not finish all four deterministic steps")
+
+        page.goto(f"{BASE_URL}/projects/high-speed-rail/demo/#impact", wait_until="networkidle")
+        baseline = page.locator('[data-impact-carbon]').inner_text()
+        page.locator('[data-impact-region]').select_option("vic")
+        page.locator('[data-impact-scenario]').select_option("lightweight")
+        if page.locator('[data-impact-carbon]').inner_text() == baseline:
+            issues.append("EngineerPlus demo: impact filters did not update local example data")
+        page.locator('[data-map-region="qld"]').press("Enter")
+        if page.locator('[data-impact-region]').input_value() != "qld":
+            issues.append("EngineerPlus demo: keyboard map selection did not update the region")
+
+        page.get_by_role("button", name="Reset demo").click()
+        if page.locator('[data-impact-region]').input_value() != "all":
+            issues.append("EngineerPlus demo: reset did not restore the impact region")
+        page.goto(f"{BASE_URL}/projects/high-speed-rail/demo/#capital", wait_until="networkidle")
+        if page.locator('[data-capital-investors]').inner_text() != "24":
+            issues.append("EngineerPlus demo: reset did not restore capital state")
+        external_demo_requests = [url for url in demo_requests if not url.startswith(BASE_URL)]
+        if external_demo_requests:
+            issues.append(f"EngineerPlus demo: external requests detected {external_demo_requests}")
 
         page.goto(f"{BASE_URL}/resume/", wait_until="networkidle")
         page.emulate_media(media="print")

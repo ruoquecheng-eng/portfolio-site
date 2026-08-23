@@ -363,24 +363,28 @@ const batteryBody = `
 const railModules = [
   {
     title: "Capital Pooling",
+    hash: "capital",
     image: "engineerplus-capital-pooling.webp",
     alt: "EngineerPlus capital pooling interface with an investor form, illustrative metrics, and an allocation chart",
     description: "A simulated capital-allocation and investment-information interface. The displayed amounts and changes are demo values."
   },
   {
     title: "Risk Simulator",
+    hash: "risk",
     image: "engineerplus-risk-simulator.webp",
     alt: "EngineerPlus risk simulator with guarantee and climate sliders, a coverage display, and a process diagram",
     description: "A slider-driven interaction based on a simple client-side formula. It demonstrates interface behavior, not a validated risk model."
   },
   {
     title: "Compliance Hub",
+    hash: "compliance",
     image: "engineerplus-compliance-hub.webp",
     alt: "EngineerPlus compliance workflow mockup showing staged checks and simulated node confirmations",
     description: "A timed browser workflow that visualizes staged verification. It does not connect to a blockchain or regulatory service."
   },
   {
     title: "Impact Dashboard",
+    hash: "impact",
     image: "engineerplus-impact-dashboard.webp",
     alt: "EngineerPlus impact dashboard with illustrative social and carbon charts and a regional map",
     description: "Charts and a map present illustrative social, carbon, and regional indicators rather than live project-impact data."
@@ -395,6 +399,7 @@ const highSpeedRailBody = `
         <h1>${escapeHtml(rail.title)}</h1>
         <p>${escapeHtml(rail.summary)}</p>
         <div class="case-meta">${status("Supporting work")}${status(`${railEngineering.context} · ${railEngineering.role}`)}${status(engineerPlus.role)}</div>
+        <div class="hero-actions"><a class="button" href="${local(2, "projects/high-speed-rail/demo/")}">Open interactive demo <span aria-hidden="true">→</span></a></div>
       </div>
       <figure class="rail-hero-figure">
         <img src="${local(2, "assets/images/engineerplus-overview.webp")}" width="1440" height="900" alt="EngineerPlus home interface linking to capital pooling, risk simulation, compliance, and impact modules" fetchpriority="high" decoding="async">
@@ -411,8 +416,10 @@ const highSpeedRailBody = `
       <div class="rail-module-grid">
         ${railModules.map((module) => `
           <figure class="rail-module">
-            <img src="${local(2, `assets/images/${module.image}`)}" width="1440" height="900" alt="${escapeHtml(module.alt)}" loading="lazy" decoding="async">
-            <figcaption><strong>${escapeHtml(module.title)}</strong><span>Illustrative interface data</span><p>${escapeHtml(module.description)}</p></figcaption>
+            <a class="rail-module-preview" href="${local(2, `projects/high-speed-rail/demo/#${module.hash}`)}" aria-label="Open ${escapeHtml(module.title)} in the interactive demo">
+              <img src="${local(2, `assets/images/${module.image}`)}" width="1440" height="900" alt="${escapeHtml(module.alt)}" loading="lazy" decoding="async">
+            </a>
+            <figcaption><strong>${escapeHtml(module.title)}</strong><span>Illustrative interface data</span><p>${escapeHtml(module.description)}</p><a class="text-link" href="${local(2, `projects/high-speed-rail/demo/#${module.hash}`)}">Open module <span aria-hidden="true">→</span></a></figcaption>
           </figure>`).join("")}
       </div>
     </section>
@@ -439,6 +446,172 @@ const highSpeedRailBody = `
     </section>
     <section class="section final-link"><p>Return to the project index to compare this supporting project with the primary engineering and modeling case studies.</p><a class="button-secondary" href="${local(2, "projects/")}">Back to projects</a></section>
   </article>`;
+
+const engineerPlusDemo = () => `<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>EngineerPlus Interactive Demo | Wanzheng Ning</title>
+  <meta name="description" content="An interactive concept prototype for capital, risk, compliance, and impact workflows in a high-speed rail project.">
+  <link rel="canonical" href="${escapeHtml(canonical("/projects/high-speed-rail/demo/"))}">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="EngineerPlus Interactive Demo | Wanzheng Ning">
+  <meta property="og:description" content="A static, interactive concept prototype using illustrative data only.">
+  <meta property="og:url" content="${escapeHtml(canonical("/projects/high-speed-rail/demo/"))}">
+  <meta property="og:image" content="${escapeHtml(`${config.canonicalOrigin}${config.basePath}assets/images/engineerplus-overview.webp`)}">
+  <meta property="og:image:alt" content="EngineerPlus high-speed rail concept-prototype overview">
+  <link rel="icon" href="${local(3, "assets/favicon.svg")}" type="image/svg+xml">
+  <link rel="stylesheet" href="${local(3, "styles/engineerplus-demo.css")}">
+</head>
+<body>
+  <a class="demo-skip" href="#demo-main">Skip to workspace</a>
+  <header class="demo-header">
+    <a class="demo-brand" href="#overview" aria-label="EngineerPlus overview">
+      <span class="demo-brand-mark" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M5 23V9h7v6h8V9h7v14h-7v-3h-8v3Z"/></svg></span>
+      <span><strong>EngineerPlus</strong><small>High-speed rail concept</small></span>
+    </a>
+    <div class="demo-boundaries" aria-label="Prototype boundaries"><span>Interactive concept prototype</span><span>Illustrative data only</span></div>
+    <div class="demo-header-actions">
+      <a class="demo-back" href="../">Back to case study</a>
+      <button class="demo-reset" type="button" data-reset-demo>Reset demo</button>
+    </div>
+  </header>
+  <nav class="demo-nav" aria-label="Demo modules">
+    <a href="#overview" data-module-link="overview">Overview</a>
+    <a href="#capital" data-module-link="capital">Capital Pooling</a>
+    <a href="#risk" data-module-link="risk">Risk Simulator</a>
+    <a href="#compliance" data-module-link="compliance">Compliance Hub</a>
+    <a href="#impact" data-module-link="impact">Impact Dashboard</a>
+  </nav>
+  <main class="demo-main" id="demo-main" tabindex="-1">
+    <p class="demo-announcement" role="status" aria-live="polite" data-global-status></p>
+    <section class="demo-panel" id="overview" data-module="overview" aria-labelledby="overview-title">
+      <div class="module-heading"><div><p>Overview</p><h1 id="overview-title">Four workflows, one inspectable prototype.</h1></div><p>This rebuilt static application demonstrates interface behavior without accounts, uploads, external services, or claims of operational performance.</p></div>
+      <div class="overview-grid">
+        <a class="overview-card" href="#capital"><span>01</span><h2>Capital Pooling</h2><p>Add an illustrative investor and inspect session-only allocation changes.</p><strong>Open module →</strong></a>
+        <a class="overview-card" href="#risk"><span>02</span><h2>Risk Simulator</h2><p>Adjust two assumptions and inspect a transparent simplified formula.</p><strong>Open module →</strong></a>
+        <a class="overview-card" href="#compliance"><span>03</span><h2>Compliance Hub</h2><p>Run a deterministic four-stage simulated verification workflow.</p><strong>Open module →</strong></a>
+        <a class="overview-card" href="#impact"><span>04</span><h2>Impact Dashboard</h2><p>Filter fixed example indicators by region and planning scenario.</p><strong>Open module →</strong></a>
+      </div>
+      <aside class="boundary-note"><strong>What this demo is</strong><p>A front-end interaction and information-architecture concept. Values are fixed examples or session calculations; none are live project results.</p></aside>
+    </section>
+
+    <section class="demo-panel" id="capital" data-module="capital" aria-labelledby="capital-title" hidden>
+      <div class="module-heading"><div><p>Capital Pooling</p><h1 id="capital-title">Model a sample capital contribution.</h1></div><p>Entries update this browser tab only. The form does not authenticate investors, upload documents, or transfer funds.</p></div>
+      <div class="metric-row" aria-label="Illustrative capital summary">
+        <div><span>Illustrative pool</span><strong data-capital-total>$4,200M</strong></div>
+        <div><span>Example investors</span><strong data-capital-investors>24</strong></div>
+        <div><span>Session entries</span><strong data-capital-submissions>0</strong></div>
+      </div>
+      <div class="workspace-grid">
+        <form class="demo-card demo-form" data-capital-form novalidate>
+          <div class="card-heading"><div><p>Session input</p><h2>Add an example investor</h2></div><span>Local only</span></div>
+          <label>Investor name<input name="investor" autocomplete="off" maxlength="60" required placeholder="Example Infrastructure Fund"></label>
+          <div class="form-columns">
+            <label>Investment type<select name="type"><option value="public">Public capital</option><option value="institutional">Institutional</option><option value="green">Green bond</option></select></label>
+            <label>Amount (USD millions)<input name="amount" type="number" min="1" max="500" step="1" value="50" required></label>
+          </div>
+          <label>Illustrative ESG score <span data-esg-output>72</span><input name="esg" type="range" min="0" max="100" value="72"></label>
+          <label class="check-row"><input name="certification" type="checkbox"><span>Mark sample certification as reviewed. This is not document verification.</span></label>
+          <button class="primary-action" type="submit">Add to session model</button>
+          <p class="form-status" role="status" aria-live="polite" data-capital-status></p>
+        </form>
+        <div class="demo-card chart-card">
+          <div class="card-heading"><div><p>Composition</p><h2>Illustrative allocation</h2></div><span>USD millions</span></div>
+          <div class="allocation-bar" data-allocation-bar aria-label="Capital allocation chart"></div>
+          <ul class="chart-legend" data-allocation-legend></ul>
+          <svg class="line-chart" viewBox="0 0 640 240" role="img" aria-labelledby="capital-chart-title capital-chart-desc">
+            <title id="capital-chart-title">Illustrative capital trend</title><desc id="capital-chart-desc">A session-only line chart that changes when the example form is submitted.</desc>
+            <g class="chart-grid"><path d="M50 35H615M50 92H615M50 149H615M50 206H615"/></g>
+            <path class="chart-area" data-capital-area></path><path class="chart-line" data-capital-line></path><g data-capital-points></g>
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <section class="demo-panel" id="risk" data-module="risk" aria-labelledby="risk-title" hidden>
+      <div class="module-heading"><div><p>Risk Simulator</p><h1 id="risk-title">Change assumptions, see the formula.</h1></div><p>This is an interaction demo built on a two-input arithmetic rule, not a forecast, financial model, or engineering risk assessment.</p></div>
+      <div class="workspace-grid risk-layout">
+        <form class="demo-card demo-form" data-risk-form>
+          <div class="card-heading"><div><p>Inputs</p><h2>Scenario assumptions</h2></div><span>Editable</span></div>
+          <label>Government guarantee index <output data-guarantee-output>120</output><input name="guarantee" type="range" min="100" max="150" value="120"></label>
+          <label>Climate risk index <output data-climate-output>3.0</output><input name="climate" type="range" min="1" max="5" step="0.5" value="3"></label>
+          <div class="formula-box"><span>Simplified demo formula</span><code>coverage = guarantee − (climate × 10)</code></div>
+        </form>
+        <div class="demo-card risk-result">
+          <div class="card-heading"><div><p>Calculated output</p><h2>Illustrative coverage</h2></div><span data-risk-state>Illustrative buffer</span></div>
+          <strong class="risk-value"><span data-risk-coverage>90</span><small> index points</small></strong>
+          <div class="risk-meter" role="meter" aria-label="Illustrative coverage" aria-valuemin="50" aria-valuemax="140" aria-valuenow="90"><span data-risk-meter></span></div>
+          <p data-risk-explanation>The simplified output remains above the demonstration review threshold.</p>
+          <ol class="risk-flow" aria-label="Illustrative risk communication flow"><li>Inputs</li><li>Formula</li><li>Coverage</li><li>Review note</li></ol>
+        </div>
+      </div>
+    </section>
+
+    <section class="demo-panel" id="compliance" data-module="compliance" aria-labelledby="compliance-title" hidden>
+      <div class="module-heading"><div><p>Compliance Hub</p><h1 id="compliance-title">Run a simulated verification sequence.</h1></div><p>The deterministic animation represents interface states only. It does not contact regulators, nodes, ledgers, or blockchain networks.</p></div>
+      <div class="workspace-grid compliance-layout">
+        <form class="demo-card demo-form" data-compliance-form>
+          <div class="card-heading"><div><p>Simulated workflow</p><h2>Example project check</h2></div><span>No network</span></div>
+          <label>Example project ID<input name="projectId" autocomplete="off" maxlength="32" required pattern="[A-Za-z0-9-]+" placeholder="HSR-NSW-2040"></label>
+          <button class="primary-action" type="submit">Run simulated check</button>
+          <button class="secondary-action" type="button" data-compliance-rerun hidden>Run again</button>
+          <p class="form-status" role="status" aria-live="polite" data-compliance-status>Ready for an example project ID.</p>
+        </form>
+        <div class="demo-card compliance-progress-card">
+          <div class="card-heading"><div><p>Progress</p><h2>Deterministic sequence</h2></div><span>Simulated workflow</span></div>
+          <div class="progress-track" role="progressbar" aria-label="Simulated compliance progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span data-compliance-progress></span></div>
+          <ol class="compliance-steps">
+            <li data-compliance-step="0"><span>1</span><div><strong>Initialize</strong><small>Prepare the local example record.</small></div></li>
+            <li data-compliance-step="1"><span>2</span><div><strong>Confirm nodes</strong><small>Simulate ordered participant confirmations.</small></div></li>
+            <li data-compliance-step="2"><span>3</span><div><strong>Run checks</strong><small>Apply fixed demonstration rules.</small></div></li>
+            <li data-compliance-step="3"><span>4</span><div><strong>Complete</strong><small>Return a local interface state.</small></div></li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <section class="demo-panel" id="impact" data-module="impact" aria-labelledby="impact-title" hidden>
+      <div class="module-heading"><div><p>Impact Dashboard</p><h1 id="impact-title">Compare fixed planning examples.</h1></div><p>Filters select local illustrative records. They do not query live rail, emissions, community, or government data.</p></div>
+      <div class="filter-bar" aria-label="Impact filters">
+        <label>Region<select data-impact-region><option value="all">All regions</option><option value="nsw">New South Wales</option><option value="vic">Victoria</option><option value="qld">Queensland</option><option value="sa">South Australia</option></select></label>
+        <label>Scenario<select data-impact-scenario><option value="baseline">Baseline concept</option><option value="operations">Efficient operations</option><option value="lightweight">Lightweight materials</option></select></label>
+      </div>
+      <div class="metric-row impact-metrics" aria-label="Illustrative impact summary">
+        <div><span>Access index</span><strong data-impact-access>64</strong></div>
+        <div><span>Carbon index</span><strong data-impact-carbon>58</strong></div>
+        <div><span>Regional index</span><strong data-impact-regional>61</strong></div>
+      </div>
+      <div class="workspace-grid impact-layout">
+        <div class="demo-card map-card">
+          <div class="card-heading"><div><p>Region selector</p><h2>Local schematic map</h2></div><span>Not geographic</span></div>
+          <svg class="region-map" viewBox="0 0 640 420" role="img" aria-labelledby="map-title map-desc">
+            <title id="map-title">Schematic Australian region selector</title><desc id="map-desc">Four selectable schematic regions for New South Wales, Victoria, Queensland, and South Australia. Shapes are not geographic boundaries.</desc>
+            <g data-map-region="qld" role="button" tabindex="0" aria-label="Select Queensland" aria-pressed="false"><path d="M355 58 521 84 554 191 446 220 354 167Z"/><text x="433" y="140">QLD</text></g>
+            <g data-map-region="nsw" role="button" tabindex="0" aria-label="Select New South Wales" aria-pressed="false"><path d="M354 174 448 226 533 213 515 310 388 299Z"/><text x="445" y="263">NSW</text></g>
+            <g data-map-region="vic" role="button" tabindex="0" aria-label="Select Victoria" aria-pressed="false"><path d="M388 306 513 317 464 371 376 348Z"/><text x="444" y="343">VIC</text></g>
+            <g data-map-region="sa" role="button" tabindex="0" aria-label="Select South Australia" aria-pressed="false"><path d="M225 151 347 174 380 348 241 326Z"/><text x="294" y="250">SA</text></g>
+          </svg>
+          <p class="map-caption">Interface schematic only; not a route map or boundary dataset.</p>
+        </div>
+        <div class="demo-card chart-card">
+          <div class="card-heading"><div><p>Comparison</p><h2>Illustrative indicator profile</h2></div><span data-impact-label>All regions · Baseline concept</span></div>
+          <div class="impact-bars">
+            <div><span>Access</span><i><b data-impact-bar="access"></b></i><strong data-impact-bar-label="access">64</strong></div>
+            <div><span>Carbon</span><i><b data-impact-bar="carbon"></b></i><strong data-impact-bar-label="carbon">58</strong></div>
+            <div><span>Regional</span><i><b data-impact-bar="regional"></b></i><strong data-impact-bar-label="regional">61</strong></div>
+          </div>
+          <p class="chart-note">Indices are fixed values created for this front-end demonstration and should not be interpreted as measured outcomes.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+  <footer class="demo-footer"><p>Static front-end prototype · No account, database, upload, transaction, or external API</p><a href="../">Return to Australian High-Speed Rail case study</a></footer>
+  <script src="${local(3, "scripts/engineerplus-demo.js")}" defer></script>
+</body>
+</html>`;
 
 const researchItem = ({ depth, href, record, question }) => `
   <article class="research-item">
@@ -562,6 +735,11 @@ const routes = [
     file: "projects/high-speed-rail/index.html",
     route: "/projects/high-speed-rail/",
     html: page({title: "Australian High-Speed Rail Project", description: "A supporting interdisciplinary project combining a lightweight carriage design concept with an independent five-page management interface prototype.", route: "/projects/high-speed-rail/", depth: 2, active: "projects", body: highSpeedRailBody, schema: {"@context": "https://schema.org", "@type": "CreativeWork", name: rail.title, description: rail.summary, keywords: ["high-speed rail", "recycled carbon fiber", "engineering design", "front-end prototype"]}})
+  },
+  {
+    file: "projects/high-speed-rail/demo/index.html",
+    route: "/projects/high-speed-rail/demo/",
+    html: engineerPlusDemo()
   },
   {
     file: "research/index.html",
