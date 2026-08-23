@@ -33,6 +33,7 @@ const requiredAssets = new Map([
   ['battery compatibility figure', ['assets/images/battery-compatibility-graph.webp']],
   ['battery strategy figure', ['assets/images/battery-strategy-comparison.webp']],
   ['high-speed rail image', ['assets/images/high-speed-carriage.webp']],
+  ['Scenic Guide visitor interface', ['assets/images/scenic-guide-visitor.webp']],
   ['Jensen manuscript title page', ['assets/images/jensen-manuscript-title-page.png']],
   ['Jensen submitted manuscript', ['assets/documents/subcritical-hyperbolicity-jensen-polynomials-riemann-xi.pdf']],
 ]);
@@ -298,6 +299,21 @@ function checkResearchAndProjectFacts(pageFiles, htmlByName) {
   const repositoryLink = (netsage.match(/<a\b[^>]*>/gi) ?? []).some((tag) =>
     (attribute(tag, 'href') ?? '').replace(/\/$/, '') === 'https://github.com/lbrswne/NetSage');
   if (!repositoryLink) addIssue('truthfulness', 'NetSage page is missing the verified repository link');
+
+  const projects = htmlByName.get(pageFiles.get('Projects')) ?? '';
+  const projectsText = visibleText(projects);
+  if (!/assets\/images\/scenic-guide-visitor\.webp/i.test(projects)) {
+    addIssue('assets', 'Projects page is missing the Scenic Guide visitor-interface preview');
+  }
+  if (/scenic-visual/i.test(projects)) {
+    addIssue('design', 'Projects page still contains the obsolete Scenic Guide placeholder visual');
+  }
+  if ((projectsText.match(/\bno award\b/gi) ?? []).length !== 1) {
+    addIssue('truthfulness', 'Scenic Guide no-award boundary must appear exactly once on the Projects page');
+  }
+  if ((projectsText.match(/production deployment/gi) ?? []).length !== 1) {
+    addIssue('truthfulness', 'Scenic Guide production boundary must appear exactly once on the Projects page');
+  }
 
   const jensenHtml = htmlByName.get(pageFiles.get('Jensen Polynomials research')) ?? '';
   const jensenText = visibleText(jensenHtml);

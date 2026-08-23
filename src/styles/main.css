@@ -1213,6 +1213,10 @@ button.button-secondary:hover {
   flex: 1;
 }
 
+.support-grid .project-card h2 {
+  font-size: clamp(1.75rem, 3.2vw, 2.6rem);
+}
+
 .card-figure {
   margin: 0;
 }
@@ -1241,34 +1245,6 @@ button.button-secondary:hover {
   padding-block: 0.9rem;
 }
 
-.scenic-visual {
-  min-height: 18rem;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  align-items: end;
-  gap: 1px;
-  background: var(--line);
-  border-bottom: 1px solid var(--line);
-}
-
-.scenic-visual span {
-  height: 100%;
-  display: grid;
-  place-items: end center;
-  background: var(--system);
-  color: var(--system-ink-soft);
-  padding: 1.25rem 0.45rem;
-  font-family: var(--font-mono);
-  font-size: 0.68rem;
-  writing-mode: vertical-rl;
-}
-
-.scenic-visual span:nth-child(2) {
-  background: var(--system-raised);
-  color: var(--trace);
-}
-
-.limit-note,
 .repro-note {
   margin-top: 1.5rem;
   border: 1px solid var(--line);

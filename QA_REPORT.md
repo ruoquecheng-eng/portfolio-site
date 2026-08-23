@@ -45,6 +45,7 @@ Reviewed the generated desktop and mobile captures for hierarchy, spacing, legib
 
 Issues found and corrected during review:
 
+- Scenic Guide's abstract vertical-label placeholder was replaced with a real visitor-interface preview, and the repeated no-award / non-production callout was removed.
 - NetSage mobile flow overflow
 - long code/evidence strings that could exceed narrow containers
 - research-page section padding overridden by a list utility rule
