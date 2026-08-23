@@ -22,6 +22,7 @@ ROUTES = [
     ("projects", "/projects/"),
     ("netsage", "/projects/netsage/"),
     ("battery", "/projects/battery-rul/"),
+    ("high-speed-rail", "/projects/high-speed-rail/"),
     ("research", "/research/"),
     ("jensen", "/research/jensen-polynomials/"),
     ("hypergraph", "/research/hypergraph-tensor/"),
@@ -66,7 +67,7 @@ def check_page(page, name, route, viewport_name, issues):
     if console_errors:
         issues.append(f"{viewport_name}/{name}: console errors {console_errors}")
 
-    if viewport_name in {"mobile", "desktop"} and name in {"home", "projects", "netsage", "battery", "research", "jensen", "resume"}:
+    if viewport_name in {"mobile", "desktop"} and name in {"home", "projects", "netsage", "battery", "high-speed-rail", "research", "jensen", "resume"}:
         page.screenshot(path=str(OUTPUT / f"{name}-{viewport_name}.png"), full_page=True)
 
 
@@ -124,6 +125,24 @@ def run():
             issues.append(f"battery modeling paper: HTTP {battery_paper_response.status}")
         elif "application/pdf" not in battery_paper_response.headers.get("content-type", ""):
             issues.append("battery modeling paper: response is not application/pdf")
+
+        page.goto(f"{BASE_URL}/projects/", wait_until="networkidle")
+        rail_link = page.get_by_role("link", name="View railway project")
+        if rail_link.count() != 1:
+            issues.append("high-speed rail: supporting-work card is missing its detail-page link")
+
+        page.goto(f"{BASE_URL}/projects/high-speed-rail/", wait_until="networkidle")
+        if page.get_by_text("Illustrative interface data", exact=True).count() != 4:
+            issues.append("high-speed rail: expected four illustrative-data module captions")
+        if page.get_by_text("Contribution boundary", exact=True).count() != 1:
+            issues.append("high-speed rail: contribution boundary is missing or duplicated")
+        engineerplus_images = page.locator('img[src*="engineerplus-"]')
+        if engineerplus_images.count() != 5:
+            issues.append("high-speed rail: expected one overview and four module captures")
+        if page.get_by_text("Five-person course team", exact=True).count() < 1:
+            issues.append("high-speed rail: team context is missing")
+        if page.get_by_text("Independent design and implementation", exact=True).count() < 1:
+            issues.append("high-speed rail: independent front-end role is missing")
 
         page.goto(f"{BASE_URL}/resume/", wait_until="networkidle")
         page.emulate_media(media="print")

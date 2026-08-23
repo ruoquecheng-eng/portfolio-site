@@ -1304,6 +1304,137 @@ button.button-secondary:hover {
   border-radius: var(--radius-sm);
 }
 
+.rail-hero {
+  grid-template-columns: 1fr;
+  align-content: center;
+  gap: clamp(2rem, 5vw, 4rem);
+}
+
+.rail-hero .case-title {
+  max-width: 70rem;
+}
+
+.rail-hero-figure,
+.rail-module,
+.rail-carriage-figure {
+  margin: 0;
+}
+
+.rail-hero-figure {
+  overflow: hidden;
+  border: 1px solid var(--system-line);
+  border-radius: var(--radius-md);
+  background: var(--system-raised);
+}
+
+.rail-hero-figure img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: contain;
+}
+
+.rail-hero-figure figcaption {
+  padding: 0.9rem 1.1rem;
+  border-top: 1px solid var(--system-line);
+  color: var(--system-ink-soft);
+  font-size: 0.82rem;
+  line-height: 1.55;
+}
+
+.rail-module-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(2.2rem, 5vw, 4.5rem) clamp(1.25rem, 3vw, 2.5rem);
+  margin-top: clamp(2.5rem, 6vw, 5rem);
+}
+
+.rail-module {
+  min-width: 0;
+  padding-top: 1rem;
+  border-top: 1px solid var(--line-strong);
+}
+
+.rail-module img,
+.rail-carriage-figure img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  border-radius: var(--radius-sm);
+  object-fit: contain;
+  background: var(--surface-raised);
+}
+
+.rail-module img {
+  border: 1px solid var(--line);
+}
+
+.rail-module figcaption {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.45rem 1rem;
+  padding-top: 1rem;
+}
+
+.rail-module figcaption strong {
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-weight: 650;
+}
+
+.rail-module figcaption span {
+  align-self: center;
+  color: var(--signal);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
+.rail-module figcaption p {
+  grid-column: 1 / -1;
+  max-width: 62ch;
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.rail-team-section {
+  display: grid;
+  grid-template-columns: minmax(18rem, 0.9fr) minmax(20rem, 1fr);
+  align-items: center;
+  gap: clamp(2rem, 7vw, 7rem);
+}
+
+.rail-carriage-figure {
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--surface-raised);
+}
+
+.rail-carriage-figure img {
+  border-radius: 0;
+  object-fit: cover;
+}
+
+.rail-carriage-figure figcaption {
+  padding: 0.85rem 1rem;
+  border-top: 1px solid var(--line);
+  color: var(--ink-soft);
+  font-size: 0.78rem;
+  line-height: 1.5;
+}
+
+.compact-ledger {
+  margin-top: 1.8rem;
+}
+
+.compact-ledger > div {
+  grid-template-columns: minmax(7rem, 0.35fr) minmax(0, 1fr);
+}
+
 .split-section,
 .two-column-lists {
   display: grid;
@@ -2006,6 +2137,8 @@ button.button-secondary:hover {
   }
 
   .support-grid,
+  .rail-module-grid,
+  .rail-team-section,
   .split-section,
   .two-column-lists {
     grid-template-columns: 1fr;
@@ -2070,6 +2203,14 @@ button.button-secondary:hover {
   .skills-context > div {
     grid-template-columns: 1fr;
     gap: 0.25rem;
+  }
+
+  .rail-module figcaption {
+    grid-template-columns: 1fr;
+  }
+
+  .rail-module figcaption p {
+    grid-column: auto;
   }
 
   .final-link,

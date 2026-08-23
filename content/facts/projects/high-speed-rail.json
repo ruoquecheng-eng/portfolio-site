@@ -1,10 +1,36 @@
 {
   "schemaVersion": 1,
   "slug": "high-speed-rail",
-  "title": "Lightweight Recycled Carbon Fiber Carriage Design",
-  "type": "Interdisciplinary engineering design",
-  "summary": "A five-person course team concept exploring recycled carbon-fiber composites for selected non-critical high-speed rail carbody components. The team report records my role as \"Proposed Design\"; the project does not establish train-level energy savings.",
-  "role": "Proposed Design",
+  "title": "Australian High-Speed Rail Design and Management Concept",
+  "type": "Supporting interdisciplinary engineering project",
+  "summary": "A course project combining a five-person lightweight carbody design concept with an independently developed five-page front-end prototype for high-speed rail finance, risk, compliance, and impact workflows.",
+  "role": "Carbody: Proposed Design · EngineerPlus: independent front-end prototype",
+  "components": {
+    "engineeringDesign": {
+      "title": "Lightweight recycled carbon fiber carriage concept",
+      "context": "Five-person course team",
+      "role": "Proposed Design",
+      "summary": "The team explored recycled carbon-fiber composites, honeycomb sandwich structures, and interfaces with an existing metal frame or chassis for selected non-critical carbody components. No measured train-level energy saving is established."
+    },
+    "engineerPlus": {
+      "title": "EngineerPlus management concept",
+      "context": "Independent five-page front-end prototype",
+      "role": "Independent design and implementation",
+      "summary": "A static interface concept connecting capital allocation, risk simulation, compliance workflow, and impact reporting for an Australian high-speed rail scenario.",
+      "technology": [
+        "HTML and client-side JavaScript",
+        "Tailwind CSS via CDN in the original prototype",
+        "Chart.js data visualizations",
+        "Leaflet and OpenStreetMap in the impact dashboard"
+      ],
+      "limitations": [
+        "Interface values are illustrative or randomly generated; they are not live financial, regulatory, emissions, or project data.",
+        "The risk calculation is an interaction demonstration, not a validated engineering or financial risk model.",
+        "The compliance workflow is simulated in the browser and does not connect to a blockchain network.",
+        "The prototype has no backend, authentication, persistence, or production deployment."
+      ]
+    }
+  },
   "facts": [
     {
       "id": "rail.role",
@@ -20,6 +46,22 @@
       "status": "verified",
       "sourceType": "team_report",
       "lastVerified": "2026-08-22",
+      "public": true
+    },
+    {
+      "id": "rail.engineerplus.role",
+      "publicText": "Independently designed and implemented the five-page EngineerPlus front-end concept prototype",
+      "status": "verified",
+      "sourceType": "source_files_and_self_report",
+      "lastVerified": "2026-08-23",
+      "public": true
+    },
+    {
+      "id": "rail.engineerplus.boundary",
+      "publicText": "EngineerPlus uses illustrative client-side data and simulated workflows; it has no backend or live service connection",
+      "status": "verified",
+      "sourceType": "source_review",
+      "lastVerified": "2026-08-23",
       "public": true
     },
     {
