@@ -214,8 +214,8 @@ const projectsBody = `
         <div><p class="project-type">${escapeHtml(rail.type)}</p><h2>${escapeHtml(rail.title)}</h2><p>${escapeHtml(rail.summary)}</p>${status(rail.role)}${factList(rail, "fact-list compact")}</div>
       </article>
       <article class="project-card scenic-card">
-        <div class="scenic-visual" aria-hidden="true"><span>VOICE</span><span>ROUTE</span><span>KNOWLEDGE</span></div>
-        <div><p class="project-type">${escapeHtml(scenic.type)}</p><h2>${escapeHtml(scenic.title)}</h2><p>${escapeHtml(scenic.summary)}</p><p class="limit-note">Project prototype only. No award or production deployment is claimed.</p></div>
+        ${figure({depth: 1, src: "images/scenic-guide-visitor.webp", width: 1440, height: 900, alt: "Scenic Guide visitor interface showing the female digital guide and a five-stop route preview", caption: "Real project interface: female guide mode with route planning, text questions, voice input, and answer playback.", className: "card-figure scenic-figure"})}
+        <div><p class="project-type">${escapeHtml(scenic.type)}</p><h2>${escapeHtml(scenic.title)}</h2><p>${escapeHtml(scenic.summary)}</p></div>
       </article>
     </div>
   </section>`;

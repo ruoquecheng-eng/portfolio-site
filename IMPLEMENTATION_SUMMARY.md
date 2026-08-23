@@ -67,6 +67,7 @@ Source-backed local previews:
 - NetSage application icon
 - three battery-modeling result figures
 - high-speed rail digital prototype image
+- Scenic Guide visitor interface showing the female guide and route-planning controls
 - Jensen manuscript title-page preview, rendered from the approved public PDF
 
 The battery figures and rail image are included for local review only until reuse/publication permission is confirmed.
