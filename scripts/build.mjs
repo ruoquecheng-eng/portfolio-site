@@ -402,8 +402,8 @@ const highSpeedRailBody = `
         <div class="hero-actions"><a class="button" href="${local(2, "projects/high-speed-rail/demo/")}">Open interactive demo <span aria-hidden="true">→</span></a></div>
       </div>
       <figure class="rail-hero-figure">
-        <img src="${local(2, "assets/images/engineerplus-overview.webp")}" width="1440" height="900" alt="EngineerPlus home interface linking to capital pooling, risk simulation, compliance, and impact modules" fetchpriority="high" decoding="async">
-        <figcaption>Public presentation capture of the independently developed five-page concept prototype. Headline metrics inside the interface are illustrative.</figcaption>
+        <img src="${local(2, "assets/images/engineerplus-overview.webp")}" width="1440" height="900" alt="Rebuilt EngineerPlus interactive demo overview linking to capital pooling, risk simulation, compliance, and impact modules" fetchpriority="high" decoding="async">
+        <figcaption>Public capture of the rebuilt interactive concept demo, which consolidates the independently developed five-page prototype into one static application. All displayed values remain illustrative.</figcaption>
       </figure>
     </header>
     <section class="section notice-section rail-boundary" aria-label="Contribution boundary">
