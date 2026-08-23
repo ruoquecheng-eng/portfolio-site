@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "claims": [
+    { "record": "profile", "field": "hero.name", "factId": "profile.name" },
+    { "record": "profile", "field": "hero.summary", "factId": "profile.hero.summary" },
+    { "record": "netsage", "field": "summary", "factId": "netsage.summary" },
+    { "record": "battery", "field": "dataBoundary", "factId": "battery.dataBoundary" },
+    { "record": "battery", "field": "summary", "factId": "battery.summary" },
+    { "record": "rail", "field": "summary", "factId": "rail.summary" },
+    { "record": "rail", "field": "role", "factId": "rail.publicRole" },
+    { "record": "rail", "field": "components.engineeringDesign.context", "factId": "rail.carbody.context" },
+    { "record": "rail", "field": "components.engineeringDesign.role", "factId": "rail.carbody.publicRole" },
+    { "record": "rail", "field": "components.engineeringDesign.summary", "factId": "rail.carbody.summary" },
+    { "record": "rail", "field": "components.engineerPlus.context", "factId": "rail.engineerplus.context" },
+    { "record": "rail", "field": "components.engineerPlus.role", "factId": "rail.engineerplus.publicRole" },
+    { "record": "rail", "field": "components.engineerPlus.summary", "factId": "rail.engineerplus.summary" },
+    { "record": "scenic", "field": "summary", "factId": "guide.summary" },
+    { "record": "jensen", "field": "statusText", "factId": "jensen.status" },
+    { "record": "jensen", "field": "summary", "factId": "jensen.summary" },
+    { "record": "hypergraph", "field": "statusText", "factId": "hypergraph.status" },
+    { "record": "hypergraph", "field": "summary", "factId": "hypergraph.summary" }
+  ]
+}

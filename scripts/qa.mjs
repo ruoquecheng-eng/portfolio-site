@@ -1,11 +1,31 @@
 import { readdir, readFile, realpath, stat } from 'node:fs/promises';
+import { execFile } from 'node:child_process';
 import path from 'node:path';
 import process from 'node:process';
+import { promisify } from 'node:util';
 import { fileURLToPath } from 'node:url';
 
 const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const distRoot = path.resolve(projectRoot, process.env.QA_DIST ?? 'dist');
+const execFileAsync = promisify(execFile);
 const issues = [];
+const sourceFiles = {
+  profile: 'content/facts/profile.json',
+  education: 'content/facts/education.json',
+  netsage: 'content/facts/projects/netsage.json',
+  battery: 'content/facts/projects/battery-rul.json',
+  rail: 'content/facts/projects/high-speed-rail.json',
+  scenic: 'content/facts/projects/scenic-guide.json',
+  jensen: 'content/facts/research/jensen-polynomials.json',
+  hypergraph: 'content/facts/research/hypergraph-tensor.json',
+};
+const [siteConfig, publicClaimsData, sourceRecords] = await Promise.all([
+  readFile(path.join(projectRoot, 'site.config.json'), 'utf8').then(JSON.parse),
+  readFile(path.join(projectRoot, 'content', 'public-claims.json'), 'utf8').then(JSON.parse),
+  Promise.all(Object.entries(sourceFiles).map(async ([key, file]) => [key, JSON.parse(await readFile(path.join(projectRoot, file), 'utf8'))])).then(Object.fromEntries),
+]);
+const siteBaseUrl = `${siteConfig.canonicalOrigin}${siteConfig.basePath}`;
+const defaultOgUrl = `${siteBaseUrl}assets/images/og-portfolio.png`;
 const allowedPublicPdfs = new Set([
   'assets/documents/subcritical-hyperbolicity-jensen-polynomials-riemann-xi.pdf',
   'assets/documents/lithium-ion-battery-rul-cascade-utilization-modeling.pdf',
@@ -48,7 +68,21 @@ const requiredAssets = new Map([
   ['Scenic Guide visitor interface', ['assets/images/scenic-guide-visitor.webp']],
   ['Jensen manuscript title page', ['assets/images/jensen-manuscript-title-page.png']],
   ['Jensen submitted manuscript', ['assets/documents/subcritical-hyperbolicity-jensen-polynomials-riemann-xi.pdf']],
+  ['Portfolio Open Graph image', ['assets/images/og-portfolio.png']],
 ]);
+
+const sitemapRoutes = [
+  '/',
+  '/projects/',
+  '/projects/netsage/',
+  '/projects/battery-rul/',
+  '/projects/high-speed-rail/',
+  '/projects/high-speed-rail/demo/',
+  '/research/',
+  '/research/jensen-polynomials/',
+  '/research/hypergraph-tensor/',
+  '/resume/',
+];
 
 function relativeName(file) {
   return path.relative(distRoot, file).split(path.sep).join('/');
@@ -215,10 +249,26 @@ function checkMetadata(file, html) {
   const canonicalHref = canonical ? attribute(canonical, 'href') : null;
   if (!canonicalHref || !/^https:\/\//i.test(canonicalHref)) {
     addIssue('metadata', `${name}: missing absolute HTTPS canonical link`);
+  } else if (!canonicalHref.startsWith(siteBaseUrl)) {
+    addIssue('metadata', `${name}: canonical URL is outside configured GitHub Pages base path`);
   }
 
-  for (const property of ['og:title', 'og:description', 'og:type', 'og:url', 'og:image']) {
+  for (const property of ['og:title', 'og:description', 'og:type', 'og:url', 'og:image', 'og:image:width', 'og:image:height']) {
     if (!metaByProperty.get(property)) addIssue('metadata', `${name}: missing Open Graph ${property}`);
+  }
+  if (canonicalHref && metaByProperty.get('og:url') !== canonicalHref) {
+    addIssue('metadata', `${name}: og:url does not match canonical URL`);
+  }
+  const ogImage = metaByProperty.get('og:image') ?? '';
+  const isEngineerPlusDemo = name === 'projects/high-speed-rail/demo/index.html';
+  const expectedOgImage = isEngineerPlusDemo ? `${siteBaseUrl}assets/images/engineerplus-overview.webp` : defaultOgUrl;
+  const expectedOgSize = isEngineerPlusDemo ? ['1440', '900'] : ['1200', '630'];
+  if (ogImage !== expectedOgImage) addIssue('metadata', `${name}: unexpected Open Graph image URL`);
+  if (metaByProperty.get('og:image:width') !== expectedOgSize[0] || metaByProperty.get('og:image:height') !== expectedOgSize[1]) {
+    addIssue('metadata', `${name}: incorrect Open Graph image dimensions`);
+  }
+  if (metaByName.get('twitter:card') !== 'summary_large_image' || metaByName.get('twitter:image') !== expectedOgImage) {
+    addIssue('metadata', `${name}: incomplete Twitter large-image metadata`);
   }
 
   if (!/<main\b/i.test(html)) addIssue('accessibility', `${name}: missing <main>`);
@@ -333,11 +383,8 @@ function checkResearchAndProjectFacts(pageFiles, htmlByName) {
   if (/scenic-visual/i.test(projects)) {
     addIssue('design', 'Projects page still contains the obsolete Scenic Guide placeholder visual');
   }
-  if ((projectsText.match(/\bno award\b/gi) ?? []).length !== 1) {
-    addIssue('truthfulness', 'Scenic Guide no-award boundary must appear exactly once on the Projects page');
-  }
-  if ((projectsText.match(/production deployment/gi) ?? []).length !== 1) {
-    addIssue('truthfulness', 'Scenic Guide production boundary must appear exactly once on the Projects page');
+  if (/\bno award\b|production deployment/i.test(projectsText)) {
+    addIssue('copy', 'Scenic Guide supporting-work copy must not foreground award or deployment disclaimers');
   }
 
   const railHtml = htmlByName.get(pageFiles.get('High-speed rail project')) ?? '';
@@ -348,8 +395,8 @@ function checkResearchAndProjectFacts(pageFiles, htmlByName) {
   if (!/independently designed and implemented the five EngineerPlus front-end pages/i.test(railText)) {
     addIssue('truthfulness', 'High-speed rail page must state the independent EngineerPlus contribution precisely');
   }
-  if ((railText.match(/Illustrative interface data/gi) ?? []).length !== 4) {
-    addIssue('truthfulness', 'Each EngineerPlus module must carry the illustrative-interface-data caption');
+  if ((railText.match(/Illustrative interface data/gi) ?? []).length !== 0 || !/interaction, not to report operating results/i.test(railText)) {
+    addIssue('copy', 'EngineerPlus limitations should be stated once at section level instead of repeated in every module caption');
   }
   if (/\$12\.8B|\b119%\b|\b30%\b/i.test(railText)) {
     addIssue('truthfulness', 'Demo headline values must not be repeated as public page claims');
@@ -444,6 +491,124 @@ function checkProfileLinks(pageFiles, htmlByName) {
   }
 }
 
+function valueAt(record, field) {
+  return field.split('.').reduce((value, key) => value?.[key], record);
+}
+
+function checkFactGovernance(pageFiles, htmlByName) {
+  const requiredBindings = new Set([
+    'profile.hero.name', 'profile.hero.summary', 'netsage.summary', 'battery.dataBoundary', 'battery.summary',
+    'rail.summary', 'rail.role', 'rail.components.engineeringDesign.context', 'rail.components.engineeringDesign.role',
+    'rail.components.engineeringDesign.summary', 'rail.components.engineerPlus.context', 'rail.components.engineerPlus.role',
+    'rail.components.engineerPlus.summary', 'scenic.summary', 'jensen.statusText', 'jensen.summary',
+    'hypergraph.statusText', 'hypergraph.summary',
+  ]);
+  const seenBindings = new Set();
+
+  for (const binding of publicClaimsData.claims ?? []) {
+    const key = `${binding.record}.${binding.field}`;
+    if (seenBindings.has(key)) addIssue('governance', `Duplicate public claim binding: ${key}`);
+    seenBindings.add(key);
+    const record = sourceRecords[binding.record];
+    const value = valueAt(record, binding.field);
+    const fact = (record?.facts ?? []).find((candidate) => candidate.id === binding.factId);
+    if (!record || typeof value !== 'string' || !value.trim()) {
+      addIssue('governance', `Public claim field is missing: ${key}`);
+    } else if (!fact || fact.public !== true || fact.status !== 'verified' || fact.publicText !== value) {
+      addIssue('governance', `Public claim is not backed by an exact verified public fact: ${key}`);
+    }
+  }
+  for (const key of requiredBindings) {
+    if (!seenBindings.has(key)) addIssue('governance', `Required public claim binding is missing: ${key}`);
+  }
+
+  const renderedText = [...htmlByName.values()].map(visibleText).join(' ').toLowerCase();
+  for (const record of Object.values(sourceRecords)) {
+    for (const fact of record.facts ?? []) {
+      if (fact.public === true && fact.status !== 'verified') {
+        addIssue('governance', `Public fact is not verified: ${fact.id}`);
+      }
+      if (fact.public === false && fact.publicText?.trim() && renderedText.includes(fact.publicText.toLowerCase())) {
+        addIssue('governance', `Non-public fact appears in generated HTML: ${fact.id}`);
+      }
+    }
+  }
+
+  const batteryText = visibleText(htmlByName.get(pageFiles.get('Battery RUL case study')) ?? '');
+  for (const fact of sourceRecords.battery.facts.filter((candidate) => /^battery\.(?:data\.scale|q[1-4]\.result)$/.test(candidate.id))) {
+    if (fact.public !== true || fact.status !== 'verified' || !batteryText.includes(fact.publicText)) {
+      addIssue('governance', `Battery metric is not rendered from its verified public fact: ${fact.id}`);
+    }
+  }
+
+  const reviewDates = [
+    ...Object.values(sourceRecords).flatMap((record) => (record.facts ?? []).filter((fact) => fact.public === true && fact.status === 'verified').map((fact) => fact.lastVerified)),
+    ...(sourceRecords.profile.links ?? []).filter((link) => link.public === true && link.status === 'verified').map((link) => link.lastVerified),
+  ].filter(Boolean).sort();
+  const latestDate = reviewDates.at(-1);
+  const formattedDate = new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' }).format(new Date(`${latestDate}T00:00:00Z`));
+  const expectedFooter = `Facts last reviewed ${formattedDate}.`;
+  for (const [name, html] of htmlByName) {
+    if (/class=["'][^"']*site-footer/i.test(html) && !visibleText(html).includes(expectedFooter)) {
+      addIssue('governance', `${name}: footer review date does not match latest verified public fact/link date`);
+    }
+  }
+}
+
+async function checkSeoFiles(fileSet) {
+  const expectedRobots = `User-agent: *\nAllow: /\nSitemap: ${siteBaseUrl}sitemap.xml\n`;
+  const robots = await readFile(path.join(distRoot, 'robots.txt'), 'utf8');
+  if (robots !== expectedRobots) addIssue('seo', 'robots.txt must contain three exact newline-separated directives using the configured sitemap URL');
+
+  const sitemap = await readFile(path.join(distRoot, 'sitemap.xml'), 'utf8');
+  const locations = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1]);
+  const expectedLocations = sitemapRoutes.map((route) => `${siteConfig.canonicalOrigin}${siteConfig.basePath.replace(/\/$/, '')}${route}`);
+  if (locations.length !== expectedLocations.length || expectedLocations.some((url) => !locations.includes(url))) {
+    addIssue('seo', 'sitemap.xml does not exactly cover the generated canonical routes');
+  }
+
+  const manifest = JSON.parse(await readFile(path.join(distRoot, 'manifest.webmanifest'), 'utf8'));
+  if (manifest.start_url !== siteConfig.basePath) addIssue('seo', 'manifest start_url does not match configured basePath');
+
+  const ogPath = 'assets/images/og-portfolio.png';
+  if (fileSet.has(ogPath)) {
+    const png = await readFile(path.join(distRoot, ...ogPath.split('/')));
+    const isPng = png.subarray(0, 8).equals(Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]));
+    const width = isPng ? png.readUInt32BE(16) : 0;
+    const height = isPng ? png.readUInt32BE(20) : 0;
+    if (!isPng || width !== 1200 || height !== 630) addIssue('seo', 'Shared Open Graph image must be a 1200x630 PNG');
+  }
+}
+
+async function checkTrackedRepository() {
+  const { stdout } = await execFileAsync('git', ['ls-files', '-z'], {
+    cwd: projectRoot,
+    encoding: 'utf8',
+    env: { ...process.env, GIT_CONFIG_NOSYSTEM: '1' },
+    maxBuffer: 10 * 1024 * 1024,
+  });
+  const tracked = stdout.split('\0').filter(Boolean);
+  const forbiddenTracked = /(?:^|\/)(?:content\/evidence|evidence)(?:\/|$)|(?:^|\/)\.env(?:\.|$)|SOURCES\.json$|\.(?:db|sqlite\d*|log|bak|pem|key|p12|pfx)$|(?:signed|identity)[-_ ]?(?:document|record)/i;
+  const readable = new Set(['.css', '.html', '.js', '.json', '.md', '.mjs', '.py', '.svg', '.txt', '.webmanifest', '.xml', '.yaml', '.yml']);
+  const leakPatterns = [
+    ['user profile path', /C:[\\/]Users[\\/]/i],
+    ['Agent workspace path', /C:[\\/]Agent[\\/]/i],
+    ['private NetSage source path', /C:[\\/]new project-test[\\/]/i],
+    ['private key', /-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----/],
+    ['credential assignment', /\b(?:api[_-]?key|client[_-]?secret|password|passwd|access[_-]?token|auth[_-]?token)\b\s*[:=]\s*["']?[a-z0-9_./+@=-]{8,}/i],
+    ['credential token', /\b(?:sk|ghp|github_pat|xox[baprs])[-_][a-z0-9_-]{12,}\b/i],
+  ];
+
+  for (const name of tracked) {
+    if (forbiddenTracked.test(name)) addIssue('privacy', `Forbidden private file tracked by Git: ${name}`);
+    if (!readable.has(path.extname(name).toLowerCase())) continue;
+    const content = await readFile(path.join(projectRoot, ...name.split('/')), 'utf8');
+    for (const [label, pattern] of leakPatterns) {
+      if (pattern.test(content)) addIssue('privacy', `${name}: tracked source leaks ${label}`);
+    }
+  }
+}
+
 async function main() {
   try {
     const canonicalDist = await realpath(distRoot);
@@ -509,6 +674,9 @@ async function main() {
 
   checkResearchAndProjectFacts(pageFiles, htmlByName);
   checkProfileLinks(pageFiles, htmlByName);
+  checkFactGovernance(pageFiles, htmlByName);
+  await checkSeoFiles(fileSet);
+  await checkTrackedRepository();
 
   const css = [...fileSet]
     .filter((name) => name.toLowerCase().endsWith('.css'))

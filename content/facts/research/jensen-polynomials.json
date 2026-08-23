@@ -39,6 +39,15 @@
   },
   "facts": [
     {
+      "id": "jensen.summary",
+      "publicText": "The submitted manuscript examines Jensen polynomials formed from Taylor coefficients of the Riemann xi-function. It presents a proof of a subcritical real-rootedness criterion for M = n + d at least C_epsilon times d^(3+epsilon), and explicitly leaves the endpoint scale M comparable to d^3 open.",
+      "status": "verified",
+      "sourceType": "manuscript",
+      "lastVerified": "2026-08-23",
+      "public": true,
+      "display": false
+    },
+    {
       "id": "jensen.status",
       "publicText": "Submitted to the International Journal of Number Theory",
       "status": "verified",

@@ -35,4 +35,4 @@ That check also regenerates `output/pdf/wanzheng-ning-resume.pdf` from the print
 
 ## Deployment configuration
 
-`site.config.json` contains the production GitHub Pages origin and `/portfolio-site/` base path. Pushes to `main` run `.github/workflows/deploy-pages.yml`, build `dist/`, and publish it through GitHub Pages.
+`site.config.json` contains the production GitHub Pages origin and `/portfolio-site/` base path. Pushes to `main` run `.github/workflows/deploy-pages.yml`; deployment proceeds only after both `npm run build` and `npm run qa` succeed.
