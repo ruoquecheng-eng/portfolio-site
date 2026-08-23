@@ -43,7 +43,11 @@
   --content: 76rem;
   --reading: 48rem;
   --gutter: clamp(1rem, 3vw, 2.5rem);
-  --section-space: clamp(4.5rem, 9vw, 8.5rem);
+  --space-section-tight: clamp(3rem, 4vw, 4rem);
+  --space-section-normal: clamp(3.75rem, 5.25vw, 5.25rem);
+  --space-section-large: clamp(4.5rem, 7vw, 7rem);
+  --space-content: clamp(1.75rem, 3vw, 3rem);
+  --space-heading: clamp(2rem, 3.25vw, 3.25rem);
   --header-height: 4.5rem;
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --duration-fast: 160ms;
@@ -592,12 +596,32 @@ hr {
 
 .section {
   padding:
-    var(--section-space)
+    var(--space-section-normal)
     max(var(--gutter), calc((100vw - var(--content)) / 2 + var(--gutter)));
 }
 
 .section + .section {
+  padding-top: var(--space-section-tight);
   border-top: 1px solid var(--line);
+}
+
+.hero + .section,
+.page-hero + .section,
+.case-hero + .section:not(.notice-section),
+.paper-hero + .section {
+  padding-top: var(--space-section-large);
+}
+
+.selected-work {
+  padding-bottom: var(--space-section-tight);
+}
+
+.selected-work .project-row:last-child {
+  padding-bottom: 2rem;
+}
+
+.selected-work + .system-logic {
+  padding-top: var(--space-content);
 }
 
 .section:nth-of-type(even) {
@@ -609,7 +633,7 @@ hr {
   grid-template-columns: minmax(13rem, 0.65fr) minmax(18rem, 1fr);
   gap: clamp(1.5rem, 6vw, 6rem);
   align-items: start;
-  margin-bottom: clamp(2.5rem, 6vw, 5rem);
+  margin-bottom: var(--space-heading);
 }
 
 .section-heading > :last-child {
@@ -638,7 +662,7 @@ hr {
   grid-template-columns: minmax(11rem, 0.35fr) minmax(18rem, 0.85fr) minmax(17rem, 1fr);
   gap: clamp(1.25rem, 4vw, 4rem);
   align-items: start;
-  padding-block: clamp(2rem, 4vw, 3.5rem);
+  padding-block: clamp(2rem, 3.25vw, 3rem);
   border-top: 1px solid var(--line);
 }
 
@@ -1033,12 +1057,12 @@ button.button-secondary:hover {
 .case-hero,
 .paper-hero {
   padding:
-    clamp(4rem, 9vw, 7.5rem)
+    var(--space-section-large)
     max(var(--gutter), calc((100vw - var(--content)) / 2 + var(--gutter)));
 }
 
 .page-hero {
-  min-height: clamp(24rem, 55svh, 38rem);
+  min-height: clamp(22rem, 48svh, 34rem);
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(13rem, 0.45fr);
   gap: clamp(2rem, 8vw, 8rem);
@@ -1282,7 +1306,7 @@ button.button-secondary:hover {
 }
 
 .case-hero {
-  min-height: clamp(34rem, 72svh, 52rem);
+  min-height: clamp(30rem, 62svh, 46rem);
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(15rem, 0.65fr);
   align-items: center;
@@ -1390,7 +1414,7 @@ button.button-secondary:hover {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: clamp(2.2rem, 5vw, 4.5rem) clamp(1.25rem, 3vw, 2.5rem);
-  margin-top: clamp(2.5rem, 6vw, 5rem);
+  margin-top: var(--space-content);
 }
 
 .rail-module {
@@ -1643,6 +1667,15 @@ button.button-secondary:hover {
   background: var(--surface-raised) !important;
 }
 
+.section.evidence-section,
+.section.limitations,
+.section.final-link,
+.section.paper-access,
+.section.keyword-section,
+.section.research-policy {
+  padding-block: var(--space-section-tight);
+}
+
 .final-link,
 .paper-access {
   display: flex;
@@ -1658,7 +1691,7 @@ button.button-secondary:hover {
 
 .figure-stack {
   display: grid;
-  gap: clamp(2.5rem, 7vw, 6rem);
+  gap: clamp(2rem, 4vw, 4rem);
 }
 
 .figure-stack .figure {
@@ -1729,15 +1762,16 @@ button.button-secondary:hover {
 
 .section.research-list {
   padding:
-    var(--section-space)
+    var(--space-section-large)
     max(var(--gutter), calc((100vw - var(--content)) / 2 + var(--gutter)));
+  padding-bottom: var(--space-section-normal);
 }
 
 .research-item {
   display: grid;
   grid-template-columns: minmax(11rem, 0.28fr) minmax(18rem, 1fr);
   gap: clamp(1.5rem, 7vw, 7rem);
-  padding-block: clamp(2.5rem, 5vw, 4.5rem);
+  padding-block: clamp(2.25rem, 3.5vw, 3.5rem);
   border-top: 1px solid var(--line);
 }
 
@@ -1768,7 +1802,7 @@ button.button-secondary:hover {
 }
 
 .paper-hero {
-  min-height: clamp(28rem, 65svh, 46rem);
+  min-height: clamp(26rem, 56svh, 40rem);
   display: grid;
   align-items: end;
   background: var(--system);
@@ -1907,7 +1941,7 @@ button.button-secondary:hover {
 }
 
 .resume-page main {
-  padding: clamp(3rem, 7vw, 6rem) var(--gutter);
+  padding: var(--space-section-normal) var(--gutter);
 }
 
 .resume-entry > div:first-child {
@@ -2011,7 +2045,7 @@ button.button-secondary:hover {
 
 .site-footer {
   padding:
-    clamp(3rem, 7vw, 5rem)
+    var(--space-section-tight)
     max(var(--gutter), calc((100vw - var(--content)) / 2 + var(--gutter)));
   border-top: 1px solid var(--system-line);
   background: var(--system);
@@ -2095,6 +2129,11 @@ button.button-secondary:hover {
 @media (max-width: 52rem) {
   :root {
     --header-height: 4rem;
+    --space-section-tight: clamp(2.75rem, 10vw, 3.25rem);
+    --space-section-normal: clamp(3rem, 12vw, 4rem);
+    --space-section-large: clamp(3.5rem, 14vw, 4.5rem);
+    --space-content: clamp(1.5rem, 6vw, 2rem);
+    --space-heading: clamp(1.75rem, 7vw, 2.25rem);
   }
 
   .site-header__inner,
