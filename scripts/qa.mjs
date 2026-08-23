@@ -17,6 +17,7 @@ const requiredPages = new Map([
   ['NetSage case study', ['projects/netsage/index.html', 'projects/netsage.html']],
   ['Battery RUL case study', ['projects/battery-rul/index.html', 'projects/battery-rul.html']],
   ['High-speed rail project', ['projects/high-speed-rail/index.html', 'projects/high-speed-rail.html']],
+  ['EngineerPlus interactive demo', ['projects/high-speed-rail/demo/index.html']],
   ['Research', ['research/index.html', 'research.html']],
   ['Jensen Polynomials research', ['research/jensen-polynomials/index.html', 'research/jensen-polynomials.html']],
   ['Hypergraph Tensor research', ['research/hypergraph-tensor/index.html', 'research/hypergraph-tensor.html']],
@@ -30,6 +31,8 @@ const requiredAssets = new Map([
   ['favicon', ['favicon.svg', 'favicon.png', 'favicon.ico', 'assets/favicon.svg', 'assets/favicon.png', 'assets/favicon.ico']],
   ['site stylesheet', ['styles/main.css', 'assets/css/site.css', 'assets/css/styles.css', 'assets/site.css', 'assets/styles.css', 'styles.css']],
   ['site script', ['scripts/main.js', 'assets/js/site.js', 'assets/js/main.js', 'assets/site.js', 'assets/main.js', 'script.js']],
+  ['EngineerPlus demo stylesheet', ['styles/engineerplus-demo.css']],
+  ['EngineerPlus demo script', ['scripts/engineerplus-demo.js']],
   ['NetSage icon', ['assets/images/netsage-icon.webp']],
   ['battery RUL parity figure', ['assets/images/battery-rul-parity.webp']],
   ['battery compatibility figure', ['assets/images/battery-compatibility-graph.webp']],
@@ -357,6 +360,33 @@ function checkResearchAndProjectFacts(pageFiles, htmlByName) {
   if (/cdn\.tailwindcss\.com|cdn\.jsdelivr\.net|cdnjs\.cloudflare\.com|fonts\.googleapis\.com|unpkg\.com/i.test(railHtml)) {
     addIssue('privacy', 'High-speed rail page must use local captures instead of original prototype CDN dependencies');
   }
+  const railDemoLinks = (railHtml.match(/<a\b[^>]*>/gi) ?? [])
+    .map((tag) => attribute(tag, 'href') ?? '')
+    .filter((href) => /projects\/high-speed-rail\/demo\//i.test(href));
+  if (railDemoLinks.length < 9 || !railDemoLinks.some((href) => href.endsWith('/demo/'))) {
+    addIssue('projects', 'High-speed rail page must provide the primary demo action and two deep links for each module');
+  }
+
+  const demoHtml = htmlByName.get(pageFiles.get('EngineerPlus interactive demo')) ?? '';
+  const demoText = visibleText(demoHtml);
+  if (!/Interactive concept prototype/i.test(demoText) || !/Illustrative data only/i.test(demoText)) {
+    addIssue('truthfulness', 'EngineerPlus demo must display both prototype-boundary labels');
+  }
+  for (const module of ['overview', 'capital', 'risk', 'compliance', 'impact']) {
+    if (!new RegExp(`id=["']${module}["']`, 'i').test(demoHtml) || !new RegExp(`href=["']#${module}["']`, 'i').test(demoHtml)) {
+      addIssue('projects', `EngineerPlus demo is missing the #${module} module target or navigation link`);
+    }
+  }
+  if (!/Back to case study/i.test(demoText) || !/Reset demo/i.test(demoText)) {
+    addIssue('projects', 'EngineerPlus demo is missing its case-study return or reset control');
+  }
+  if (/type=["']file["']/i.test(demoHtml)) addIssue('privacy', 'EngineerPlus demo must not expose a file upload control');
+  if (/\$12\.8B|\b119%\b|\b30%\b|\bLive Data\b|\bAPI Access\b|\bLogin\b/i.test(demoText)) {
+    addIssue('truthfulness', 'EngineerPlus demo contains an unsupported original-prototype headline or control');
+  }
+  if (/cdn\.|fonts\.googleapis|openstreetmap|leaflet|chart\.js|tailwind/i.test(demoHtml)) {
+    addIssue('privacy', 'EngineerPlus demo must not depend on an external resource or service');
+  }
 
   const jensenHtml = htmlByName.get(pageFiles.get('Jensen Polynomials research')) ?? '';
   const jensenText = visibleText(jensenHtml);
@@ -486,6 +516,17 @@ async function main() {
   const combinedCss = (await Promise.all(css.map((file) => readFile(file, 'utf8')))).join('\n');
   if (!/@media\s+print\b/i.test(combinedCss)) addIssue('css', 'Missing @media print styles');
   if (!/prefers-reduced-motion/i.test(combinedCss)) addIssue('css', 'Missing prefers-reduced-motion handling');
+
+  const demoScript = await readFile(path.join(distRoot, 'scripts', 'engineerplus-demo.js'), 'utf8');
+  if (!/sessionStorage/.test(demoScript) || !/engineerplus-demo-v1/.test(demoScript)) {
+    addIssue('projects', 'EngineerPlus demo must use versioned sessionStorage state');
+  }
+  if (/\b(?:fetch|XMLHttpRequest|WebSocket|EventSource)\s*\(/.test(demoScript)) {
+    addIssue('privacy', 'EngineerPlus demo script must not make network requests');
+  }
+  if (/Math\.random|setInterval\s*\(/.test(demoScript)) {
+    addIssue('truthfulness', 'EngineerPlus demo must use fixed, deterministic illustrative data');
+  }
 
   if (issues.length) {
     console.error(`QA failed with ${issues.length} issue${issues.length === 1 ? '' : 's'}:`);
