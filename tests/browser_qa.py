@@ -6,6 +6,7 @@ from playwright.sync_api import sync_playwright
 
 
 BASE_URL = sys.argv[1] if len(sys.argv) > 1 else "http://127.0.0.1:4173"
+PRODUCTION_BASE = "https://ruoquecheng-eng.github.io/portfolio-site/"
 ROOT = Path(__file__).resolve().parents[1]
 OUTPUT = ROOT / "qa-artifacts"
 OUTPUT.mkdir(parents=True, exist_ok=True)
@@ -52,7 +53,7 @@ def check_page(page, name, route, viewport_name, issues):
     images = page.locator("img")
     for index in range(images.count()):
         images.nth(index).scroll_into_view_if_needed()
-    page.wait_for_timeout(120)
+        images.nth(index).evaluate("img => img.decode()")
     page.evaluate("window.scrollTo(0, 0)")
 
     overflow = page.evaluate("document.documentElement.scrollWidth > document.documentElement.clientWidth + 1")
@@ -103,6 +104,35 @@ def run():
         if before_theme == after_theme:
             issues.append("theme: toggle did not change data-theme")
 
+        robots_response = page.request.get(f"{BASE_URL}/robots.txt")
+        expected_robots = (
+            "User-agent: *\n"
+            "Allow: /\n"
+            f"Sitemap: {PRODUCTION_BASE}sitemap.xml\n"
+        )
+        if not robots_response.ok or robots_response.text() != expected_robots:
+            issues.append("SEO: robots.txt is not the expected three-line production file")
+
+        sitemap_response = page.request.get(f"{BASE_URL}/sitemap.xml")
+        if not sitemap_response.ok or sitemap_response.text().count("<loc>") != len(ROUTES):
+            issues.append("SEO: sitemap route count does not match browser QA route count")
+
+        page.goto(f"{BASE_URL}/", wait_until="networkidle")
+        og_url = page.locator('meta[property="og:image"]').get_attribute("content")
+        if og_url != f"{PRODUCTION_BASE}assets/images/og-portfolio.png":
+            issues.append("SEO: home page does not use the shared raster Open Graph image")
+        if page.locator('meta[property="og:image:width"]').get_attribute("content") != "1200" or page.locator('meta[property="og:image:height"]').get_attribute("content") != "630":
+            issues.append("SEO: home Open Graph image dimensions are missing or incorrect")
+        og_page = desktop.new_page()
+        og_response = og_page.goto(f"{BASE_URL}/assets/images/og-portfolio.png", wait_until="load")
+        if og_response is None or not og_response.ok or "image/png" not in og_response.headers.get("content-type", ""):
+            issues.append("SEO: shared Open Graph PNG did not load with image/png content type")
+        else:
+            dimensions = og_page.locator("img").evaluate("img => [img.naturalWidth, img.naturalHeight]")
+            if dimensions != [1200, 630]:
+                issues.append(f"SEO: shared Open Graph image dimensions are {dimensions}, expected [1200, 630]")
+        og_page.close()
+
         manuscript_path = "/assets/documents/subcritical-hyperbolicity-jensen-polynomials-riemann-xi.pdf"
         page.goto(f"{BASE_URL}/research/jensen-polynomials/", wait_until="networkidle")
         manuscript_links = page.locator(f'a[href$="{manuscript_path}"]')
@@ -131,10 +161,14 @@ def run():
         rail_link = page.get_by_role("link", name="View railway project")
         if rail_link.count() != 1:
             issues.append("high-speed rail: supporting-work card is missing its detail-page link")
+        if page.get_by_text("No award", exact=False).count() != 0:
+            issues.append("Scenic Guide: no-award disclaimer remains in public project copy")
 
         page.goto(f"{BASE_URL}/projects/high-speed-rail/", wait_until="networkidle")
-        if page.get_by_text("Illustrative interface data", exact=True).count() != 4:
-            issues.append("high-speed rail: expected four illustrative-data module captions")
+        if page.get_by_text("Illustrative interface data", exact=True).count() != 0:
+            issues.append("high-speed rail: repeated illustrative-data module captions remain")
+        if page.get_by_text("Its purpose is to demonstrate information architecture and interaction, not to report operating results.", exact=False).count() != 1:
+            issues.append("high-speed rail: consolidated EngineerPlus boundary is missing or duplicated")
         if page.get_by_text("Contribution boundary", exact=True).count() != 1:
             issues.append("high-speed rail: contribution boundary is missing or duplicated")
         engineerplus_images = page.locator('img[src*="engineerplus-"]')
@@ -245,6 +279,18 @@ def run():
         if not page.locator("#site-nav").is_visible():
             issues.append("mobile nav: navigation did not become visible")
         mobile.close()
+
+        for scheme in ["light", "dark"]:
+            scheme_context = browser.new_context(viewport=VIEWPORTS["desktop"], color_scheme=scheme)
+            scheme_page = scheme_context.new_page()
+            scheme_errors = []
+            scheme_page.on("console", lambda message, errors=scheme_errors: errors.append(message.text) if message.type == "error" else None)
+            scheme_page.goto(f"{BASE_URL}/", wait_until="networkidle")
+            background = scheme_page.locator("body").evaluate("el => getComputedStyle(el).backgroundColor")
+            observations.append({f"{scheme}ThemeBodyBackground": background})
+            if scheme_errors:
+                issues.append(f"{scheme} theme: console errors {scheme_errors}")
+            scheme_context.close()
 
         reduced = browser.new_context(viewport=VIEWPORTS["tablet"], reduced_motion="reduce")
         page = reduced.new_page()

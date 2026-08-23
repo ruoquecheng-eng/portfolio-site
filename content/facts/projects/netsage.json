@@ -29,6 +29,15 @@
   ],
   "facts": [
     {
+      "id": "netsage.summary",
+      "publicText": "A local-first, rule-based Android application that maps network symptoms and logs to ranked candidate causes, matched evidence, and troubleshooting actions.",
+      "status": "verified",
+      "sourceType": "source_code",
+      "lastVerified": "2026-08-23",
+      "public": true,
+      "display": false
+    },
+    {
       "id": "netsage.version.commit",
       "publicText": "Verified against main commit ed692cba",
       "status": "verified",

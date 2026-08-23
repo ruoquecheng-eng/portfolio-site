@@ -1,110 +1,104 @@
-# Portfolio V1 Implementation Summary
+# Portfolio Implementation Summary
 
-Reviewed: 22 August 2026
+Reviewed: 23 August 2026
 
 ## Outcome
 
-The portfolio is implemented as a static, data-driven site and published through GitHub Pages. It has eight public routes, a generated 404 page, a printable resume, responsive navigation, system/light/dark themes, reduced-motion handling, and a fact-publication boundary.
+The existing static portfolio design and information architecture remain intact. This maintenance pass strengthened publication governance, deployment safety, SEO metadata, and current QA coverage without modifying NetSage, battery-modeling, railway, Scenic Guide, or manuscript source repositories.
 
-No underlying project source repository, manuscript source, dataset, log, or database was modified by this implementation. The user's first submitted Jensen manuscript was copied unchanged into the public portfolio after explicit approval.
+The build now generates ten public routes plus `404.html`, a printable one-page A4 resume, a three-line `robots.txt`, a canonical sitemap, and a shared 1200 x 630 PNG Open Graph image.
 
 ## Public routes
 
-- `/` - identity, selected work, research summary, and working method
-- `/projects/` - complete project index
-- `/projects/netsage/` - NetSage engineering case study
-- `/projects/battery-rul/` - battery RUL and cascade-utilization modeling case study
-- `/research/` - research index and publication-status policy
-- `/research/jensen-polynomials/` - Jensen polynomial manuscript summary
-- `/research/hypergraph-tensor/` - nonuniform hypergraph tensor manuscript summary
-- `/resume/` - HTML resume with a tested A4 print version
+- `/`
+- `/projects/`
+- `/projects/netsage/`
+- `/projects/battery-rul/`
+- `/projects/high-speed-rail/`
+- `/projects/high-speed-rail/demo/`
+- `/research/`
+- `/research/jensen-polynomials/`
+- `/research/hypergraph-tensor/`
+- `/resume/`
 
-The high-speed rail project and Scenic Guide Digital Human remain supporting cards rather than full case-study routes.
+The generated `404.html` is tested separately and is not included in the sitemap.
 
 ## Structure
 
 ```text
 portfolio-site/
 |-- content/
-|   |-- facts/                  Public structured facts
-|   `-- evidence/               Private source map and editorial review; Git-ignored
+|   |-- facts/                  Structured fact records
+|   |-- public-claims.json      Verified bindings for public summaries, roles, and statuses
+|   `-- evidence/               Private evidence map; Git-ignored and never copied to dist
 |-- scripts/
-|   |-- build.mjs               Static-site generator
-|   |-- qa.mjs                  Zero-dependency structural QA
+|   |-- build.mjs               Static build and public-claim gate
+|   |-- qa.mjs                  Structural, SEO, privacy, and governance QA
 |   `-- serve.mjs               Local static server
 |-- src/
-|   |-- assets/images/          Selected source-backed previews
-|   |-- assets/visuals/         Original conceptual diagrams
-|   |-- scripts/main.js         Navigation, theme, progress, and print behavior
-|   `-- styles/main.css         Responsive, accessible, and print styles
-|-- tests/browser_qa.py         Browser and interaction QA
+|   |-- assets/documents/       Two explicitly approved public PDFs
+|   |-- assets/images/          Project previews and raster Open Graph image
+|   |-- assets/visuals/         Site diagrams retained for in-page use
+|   |-- scripts/                Site and EngineerPlus interaction code
+|   `-- styles/                 Main, responsive, demo, and print styles
+|-- tests/browser_qa.py         Browser, interaction, SEO, theme, and print QA
 |-- dist/                       Generated public site
 |-- output/pdf/                 Generated resume PDF
-|-- PRODUCT.md                  Product context
-|-- DESIGN.md                   Visual-system rationale
-|-- IMPLEMENTATION_SUMMARY.md   This handoff
-`-- QA_REPORT.md                Verification record
+|-- QA_REPORT.md                Current verification record
+`-- .github/workflows/          QA-gated GitHub Pages deployment
 ```
 
-## Fact and privacy model
+## Fact and publication governance
 
-The build renders only facts marked `status: verified` and `public: true`. Private source paths, evidence hashes, editorial uncertainties, and publication blockers live in `content/evidence/`; this directory is ignored by Git and never copied into `dist/`.
+- `publicFacts()` continues to expose only `public: true` and `status: verified` facts.
+- `content/public-claims.json` binds every important public `summary`, `role`, `statusText`, and battery data boundary to an exact verified public fact.
+- The build fails if a binding is missing, mismatched, non-public, or not verified.
+- The build also rejects any non-public fact with non-empty text if that text appears in generated HTML.
+- Important battery metrics remain rendered from verified public fact records.
+- The footer review date is computed from the newest `lastVerified` value among verified public facts and public profile links; it is no longer hard-coded.
+- Fact verification dates are kept in source governance data rather than repeated beside every public fact on the page.
 
-The following remain deliberately unpublished:
+Research wording remains unchanged in substance: Jensen is `Submitted to the International Journal of Number Theory`; Hypergraph Tensor is `Manuscript in preparation`. The approved Jensen PDF remains public, and no Hypergraph Tensor PDF is included.
 
-- GPA, rank, IELTS, email, LinkedIn, and unconfirmed graduation dates
-- unverified NetSage ownership, store release, user counts, or performance metrics
-- competition name, team size, result, or award details without evidence
-- the hypergraph tensor manuscript PDF and its intended venue
-- private screenshots, datasets, logs, databases, source archives, and environment files
+## SEO and deployment
 
-Research statuses use the lowest verified wording: the Jensen manuscript is described as submitted to the International Journal of Number Theory; the hypergraph tensor manuscript is described as in preparation. Neither is called accepted or published. The first submitted Jensen version is available as a 22-page PDF with a title-page preview.
+- Ordinary pages use `assets/images/og-portfolio.png`, a 1200 x 630 PNG with absolute Open Graph and Twitter image URLs.
+- The EngineerPlus demo keeps its project-specific 1440 x 900 WebP preview.
+- Open Graph width and height metadata are emitted and QA-checked.
+- Canonical URLs, `og:url`, sitemap entries, manifest start URL, internal references, and GitHub Pages `/portfolio-site/` base-path behavior are checked.
+- `robots.txt` is generated as three newline-separated directives and verified against the configured canonical origin and base path.
+- GitHub Pages runs `npm run build` followed by `npm run qa`; artifact upload and deployment cannot run if QA fails.
 
-## Visual provenance
+## Public-copy adjustment
 
-Source-backed local previews:
+Scenic Guide remains a contributed competition prototype. The internal no-award record remains `public: false`, while the public project card and Resume no longer foreground `no award` or `production deployment` disclaimers. EngineerPlus boundaries are consolidated at section level while the interactive demo continues to display `Interactive concept prototype` and `Illustrative data only`.
 
-- NetSage application icon
-- three battery-modeling result figures
-- high-speed rail digital prototype image
-- Scenic Guide visitor interface showing the female guide and route-planning controls
-- Jensen manuscript title-page preview, rendered from the approved public PDF
+## Visual and document assets
 
-The battery figures and rail image are included for local review only until reuse/publication permission is confirmed.
+Published source-backed previews include NetSage, battery-modeling figures and paper cover, high-speed rail and EngineerPlus captures, Scenic Guide, and the Jensen manuscript title page. The original in-page SVG system artwork remains available, but it is no longer the default social-sharing image.
 
-Original conceptual visuals created for the portfolio:
+The approved public documents remain:
 
-- signal/evidence field on the home page
-- NetSage diagnostic flow
-- battery workflow and data-boundary diagram
-- mathematical research mark and Open Graph system artwork
-- favicon
+- `subcritical-hyperbolicity-jensen-polynomials-riemann-xi.pdf`
+- `lithium-ion-battery-rul-cascade-utilization-modeling.pdf`
 
-Conceptual diagrams are labeled as illustrative or conceptual and are not presented as measured results.
-
-## Skills applied
-
-- `frontend-skill` shaped the static implementation, responsive hierarchy, and accessible interaction baseline.
-- `impeccable` established the product context, restrained cobalt/navy visual system, typography hierarchy, and design documentation.
-- `mathmodel-skill` guided the Q1-to-Q4 modeling narrative and the separation of simulated evidence from real-world claims.
-- `scientific-visualization` guided figure labeling, captions, and the distinction between result figures and conceptual diagrams.
-- `webapp-testing` supplied the browser-based verification workflow.
-- `pdf` supplied the render-and-inspect loop for the final A4 resume.
-
-## Local use
+## Local verification
 
 ```powershell
-cd "C:\Users\xsrsy\Desktop\学习\海外硕士申请\portfolio-site"
+cd portfolio-site
 npm run build
 npm run qa
 npm run serve
 ```
 
-Then open `http://127.0.0.1:4173/`.
+Then run:
 
-## Next steps before future public updates
+```powershell
+.\.venv\Scripts\python.exe .\tests\browser_qa.py
+```
 
-1. Confirm public-use permission for the battery figures and high-speed rail image; replace them promptly if permission is not available.
-2. Add confirmed contact details, dates, grades, awards, and manuscript links only after evidence review.
-3. Add NetSage screenshots, test metrics, users, and personal contribution wording only when verified.
-4. Run the complete build, static QA, browser QA, privacy scan, and PDF check after every fact or asset update.
+## Known follow-up items
+
+- Reconfirm long-term public-use permission and authorship context for source-backed course-project images if their release status changes.
+- Add contact details, academic metrics, awards, or new manuscript links only after verification and an explicit public-release decision.
+- Keep manuscript status and competition outcomes synchronized with new evidence; no status was upgraded in this pass.

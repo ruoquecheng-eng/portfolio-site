@@ -33,6 +33,78 @@
   },
   "facts": [
     {
+      "id": "rail.summary",
+      "publicText": "A course project combining a five-person lightweight carbody design concept with an independently developed five-page front-end prototype for high-speed rail finance, risk, compliance, and impact workflows.",
+      "status": "verified",
+      "sourceType": "team_report_and_source_files",
+      "lastVerified": "2026-08-23",
+      "public": true,
+      "display": false
+    },
+    {
+      "id": "rail.publicRole",
+      "publicText": "Carbody: Proposed Design · EngineerPlus: independent front-end prototype",
+      "status": "verified",
+      "sourceType": "team_report_and_source_files",
+      "lastVerified": "2026-08-23",
+      "public": true,
+      "display": false
+    },
+    {
+      "id": "rail.carbody.context",
+      "publicText": "Five-person course team",
+      "status": "verified",
+      "sourceType": "team_report",
+      "lastVerified": "2026-08-23",
+      "public": true,
+      "display": false
+    },
+    {
+      "id": "rail.carbody.publicRole",
+      "publicText": "Proposed Design",
+      "status": "verified",
+      "sourceType": "team_report",
+      "lastVerified": "2026-08-23",
+      "public": true,
+      "display": false
+    },
+    {
+      "id": "rail.carbody.summary",
+      "publicText": "The team explored recycled carbon-fiber composites, honeycomb sandwich structures, and interfaces with an existing metal frame or chassis for selected non-critical carbody components. No measured train-level energy saving is established.",
+      "status": "verified",
+      "sourceType": "team_report",
+      "lastVerified": "2026-08-23",
+      "public": true,
+      "display": false
+    },
+    {
+      "id": "rail.engineerplus.context",
+      "publicText": "Independent five-page front-end prototype",
+      "status": "verified",
+      "sourceType": "source_files_and_self_report",
+      "lastVerified": "2026-08-23",
+      "public": true,
+      "display": false
+    },
+    {
+      "id": "rail.engineerplus.publicRole",
+      "publicText": "Independent design and implementation",
+      "status": "verified",
+      "sourceType": "source_files_and_self_report",
+      "lastVerified": "2026-08-23",
+      "public": true,
+      "display": false
+    },
+    {
+      "id": "rail.engineerplus.summary",
+      "publicText": "A static interface concept connecting capital allocation, risk simulation, compliance workflow, and impact reporting for an Australian high-speed rail scenario.",
+      "status": "verified",
+      "sourceType": "source_review",
+      "lastVerified": "2026-08-23",
+      "public": true,
+      "display": false
+    },
+    {
       "id": "rail.role",
       "publicText": "Team report records my role as \"Proposed Design\"",
       "status": "verified",

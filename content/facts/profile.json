@@ -41,6 +41,15 @@
       "public": true
     },
     {
+      "id": "profile.hero.summary",
+      "publicText": "My work connects network diagnosis, Android engineering, reliability modeling, and mathematical research. Each case study separates implementation evidence from targets, assumptions, and open limitations.",
+      "status": "verified",
+      "sourceType": "user_record",
+      "lastVerified": "2026-08-23",
+      "public": true,
+      "display": false
+    },
+    {
       "id": "profile.gpa",
       "publicText": "",
       "status": "needs_confirmation",

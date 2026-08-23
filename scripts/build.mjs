@@ -8,8 +8,9 @@ const factsRoot = path.join(root, "content", "facts");
 
 const readJson = async (...segments) => JSON.parse(await readFile(path.join(root, ...segments), "utf8"));
 
-const [config, profile, education, netsage, battery, rail, scenic, jensen, hypergraph] = await Promise.all([
+const [config, publicClaimsData, profile, education, netsage, battery, rail, scenic, jensen, hypergraph] = await Promise.all([
   readJson("site.config.json"),
+  readJson("content", "public-claims.json"),
   readJson("content", "facts", "profile.json"),
   readJson("content", "facts", "education.json"),
   readJson("content", "facts", "projects", "netsage.json"),
@@ -27,15 +28,35 @@ const escapeHtml = (value = "") => String(value)
   .replaceAll('"', "&quot;")
   .replaceAll("'", "&#39;");
 
+const recordsByKey = { profile, education, netsage, battery, rail, scenic, jensen, hypergraph };
 const publicFacts = (record) => (record.facts || []).filter((fact) => fact.public === true && fact.status === "verified" && fact.publicText);
+const displayFacts = (record) => publicFacts(record).filter((fact) => fact.display !== false);
 const publicLinks = (profile.links || []).filter((link) => link.public === true && link.status === "verified" && link.label && link.url);
+const claimBindings = new Map(publicClaimsData.claims.map((binding) => [`${binding.record}.${binding.field}`, binding]));
+const valueAt = (record, field) => field.split(".").reduce((value, key) => value?.[key], record);
+const publicClaim = (recordKey, field) => {
+  const record = recordsByKey[recordKey];
+  const binding = claimBindings.get(`${recordKey}.${field}`);
+  const value = valueAt(record, field);
+  const fact = (record?.facts || []).find((candidate) => candidate.id === binding?.factId);
+  if (!binding || typeof value !== "string" || !value.trim() || !fact || fact.public !== true || fact.status !== "verified" || fact.publicText !== value) {
+    throw new Error(`Unverified public claim binding: ${recordKey}.${field}`);
+  }
+  return value;
+};
+const reviewDates = [
+  ...Object.values(recordsByKey).flatMap((record) => publicFacts(record).map((fact) => fact.lastVerified)),
+  ...publicLinks.map((link) => link.lastVerified)
+].filter(Boolean);
+const latestReviewDate = reviewDates.sort().at(-1);
+const formattedReviewDate = new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" }).format(new Date(`${latestReviewDate}T00:00:00Z`));
 const prefix = (depth) => "../".repeat(depth);
 const local = (depth, target = "") => `${prefix(depth)}${target}`;
 const canonical = (route) => `${config.canonicalOrigin}${config.basePath.replace(/\/$/, "")}${route}`;
 
 const factList = (record, className = "fact-list") => `
   <ul class="${className}">
-    ${publicFacts(record).map((fact) => `<li><span>${escapeHtml(fact.publicText)}</span><small>Verified ${escapeHtml(fact.lastVerified)}</small></li>`).join("")}
+    ${displayFacts(record).map((fact) => `<li><span>${escapeHtml(fact.publicText)}</span></li>`).join("")}
   </ul>`;
 
 const textList = (items, className = "plain-list") => `
@@ -45,6 +66,25 @@ const status = (text) => `<span class="status">${escapeHtml(text)}</span>`;
 
 const railEngineering = rail.components.engineeringDesign;
 const engineerPlus = rail.components.engineerPlus;
+const profileName = publicClaim("profile", "hero.name");
+const profileSummary = publicClaim("profile", "hero.summary");
+const netsageSummary = publicClaim("netsage", "summary");
+const batteryDataBoundary = publicClaim("battery", "dataBoundary");
+const batterySummary = publicClaim("battery", "summary");
+const railSummary = publicClaim("rail", "summary");
+const railRole = publicClaim("rail", "role");
+const railEngineeringContext = publicClaim("rail", "components.engineeringDesign.context");
+const railEngineeringRole = publicClaim("rail", "components.engineeringDesign.role");
+const railEngineeringSummary = publicClaim("rail", "components.engineeringDesign.summary");
+const engineerPlusContext = publicClaim("rail", "components.engineerPlus.context");
+const engineerPlusRole = publicClaim("rail", "components.engineerPlus.role");
+const engineerPlusSummary = publicClaim("rail", "components.engineerPlus.summary");
+const scenicSummary = publicClaim("scenic", "summary");
+const jensenStatus = publicClaim("jensen", "statusText");
+const jensenSummary = publicClaim("jensen", "summary");
+const hypergraphStatus = publicClaim("hypergraph", "statusText");
+const hypergraphSummary = publicClaim("hypergraph", "summary");
+const defaultOgUrl = `${config.canonicalOrigin}${config.basePath}assets/images/og-portfolio.png`;
 
 const figure = ({ depth, src, width, height, alt, caption, eager = false, className = "figure" }) => `
   <figure class="${className}">
@@ -89,9 +129,13 @@ const page = ({ title, description, route, depth, active, body, schema, bodyClas
   <meta property="og:title" content="${escapeHtml(fullTitle)}">
   <meta property="og:description" content="${escapeHtml(description)}">
   <meta property="og:url" content="${escapeHtml(url)}">
-  <meta property="og:image" content="${escapeHtml(`${config.canonicalOrigin}${config.basePath}assets/visuals/og-system.svg`)}">
-  <meta property="og:image:alt" content="A restrained network and signal diagram for Wanzheng Ning's technical portfolio">
+  <meta property="og:image" content="${escapeHtml(defaultOgUrl)}">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Wanzheng Ning technical and academic portfolio: communication engineering, network diagnostics, modeling, and research">
   <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="${escapeHtml(defaultOgUrl)}">
   <link rel="icon" href="${local(depth, "assets/favicon.svg")}" type="image/svg+xml">
   <link rel="stylesheet" href="${local(depth, "styles/main.css")}">
   <script>try{const t=localStorage.getItem("portfolio-theme");if(t)document.documentElement.dataset.theme=t}catch{}</script>
@@ -103,14 +147,14 @@ const page = ({ title, description, route, depth, active, body, schema, bodyClas
   <header class="site-header"><div class="header-inner">${nav(depth, active)}</div></header>
   <main id="main">${body}</main>
   <footer class="site-footer">
-    <div><strong>Wanzheng Ning</strong><p>Communication engineering, network diagnostics, modeling, and research.</p></div>
+    <div><strong>${escapeHtml(profileName)}</strong><p>Communication engineering, network diagnostics, modeling, and research.</p></div>
     <div>
       <a href="${local(depth, "projects/")}">Projects</a>
       <a href="${local(depth, "research/")}">Research</a>
       <a href="${local(depth, "resume/")}">Resume</a>
       ${publicLinks.map((link) => `<a href="${escapeHtml(link.url)}" rel="me noopener">GitHub · ${escapeHtml(link.label)}</a>`).join("")}
     </div>
-    <p class="footer-note">Facts last reviewed 22 August 2026. Maintained as a verified static portfolio.</p>
+    <p class="footer-note">Facts last reviewed ${escapeHtml(formattedReviewDate)}. Maintained as a verified static portfolio.</p>
   </footer>
   <script src="${local(depth, "scripts/main.js")}" defer></script>
 </body>
@@ -136,7 +180,7 @@ const homeBody = `
       <div class="hero-copy">
         <p class="hero-kicker">Communication Engineering</p>
         <h1>${escapeHtml(profile.hero.title)}</h1>
-        <p class="hero-summary">${escapeHtml(profile.hero.summary)}</p>
+        <p class="hero-summary">${escapeHtml(profileSummary)}</p>
         <div class="hero-actions">
           <a class="button" href="projects/">View projects</a>
           <a class="button-secondary" href="research/">View research</a>
@@ -163,7 +207,7 @@ const homeBody = `
       index: "01",
       type: netsage.type,
       title: netsage.title,
-      summary: netsage.summary,
+      summary: netsageSummary,
       meta: "Kotlin · Jetpack Compose · rule engine · offline-first",
       visual: `<div class="project-visual project-visual-netsage"><img src="assets/images/netsage-icon.webp" width="216" height="216" alt="NetSage application icon" loading="lazy"></div>`
     })}
@@ -171,9 +215,9 @@ const homeBody = `
       depth: 0,
       href: "projects/battery-rul/",
       index: "02",
-      type: `${battery.type} · ${battery.dataBoundary}`,
+      type: `${battery.type} · ${batteryDataBoundary}`,
       title: battery.title,
-      summary: battery.summary,
+      summary: batterySummary,
       meta: "Change-point regression · Weibull AFT · compatibility graph · MILP",
       visual: `<div class="project-visual project-visual-battery"><img src="assets/visuals/battery-workflow.svg" width="1240" height="650" alt="Conceptual four-stage battery modeling workflow" loading="lazy"></div>`
     })}
@@ -186,8 +230,8 @@ const homeBody = `
         <a class="text-link" href="research/">View research <span aria-hidden="true">→</span></a>
       </div>
       <div class="research-mini-list">
-        <a href="research/jensen-polynomials/"><span>${escapeHtml(jensen.statusText)}</span><strong>Jensen polynomials and the Riemann xi-function</strong></a>
-        <a href="research/hypergraph-tensor/"><span>${escapeHtml(hypergraph.statusText)}</span><strong>Edge-local spectra of nonuniform hypergraph tensors</strong></a>
+        <a href="research/jensen-polynomials/"><span>${escapeHtml(jensenStatus)}</span><strong>Jensen polynomials and the Riemann xi-function</strong></a>
+        <a href="research/hypergraph-tensor/"><span>${escapeHtml(hypergraphStatus)}</span><strong>Edge-local spectra of nonuniform hypergraph tensors</strong></a>
       </div>
     </article>
   </section>
@@ -206,19 +250,19 @@ const projectsBody = `
     <div><p class="hero-kicker">Engineering and modeling</p><h1>Projects</h1><p>Two primary case studies, followed by concise evidence-safe summaries of supporting work.</p></div>
   </section>
   <section class="section project-index-page">
-    ${projectRow({depth: 1, href: "projects/netsage/", index: "01", type: netsage.type, title: netsage.title, summary: netsage.summary, meta: "Primary engineering case study", visual: `<div class="project-visual"><img src="${local(1, "assets/images/netsage-icon.webp")}" width="216" height="216" alt="NetSage application icon" loading="lazy"></div>`})}
-    ${projectRow({depth: 1, href: "projects/battery-rul/", index: "02", type: `${battery.type} · ${battery.dataBoundary}`, title: battery.title, summary: battery.summary, meta: "Primary modeling case study", visual: `<div class="project-visual"><img src="${local(1, "assets/visuals/battery-workflow.svg")}" width="1240" height="650" alt="Conceptual Q1 to Q4 battery modeling workflow" loading="lazy"></div>`})}
+    ${projectRow({depth: 1, href: "projects/netsage/", index: "01", type: netsage.type, title: netsage.title, summary: netsageSummary, meta: "Primary engineering case study", visual: `<div class="project-visual"><img src="${local(1, "assets/images/netsage-icon.webp")}" width="216" height="216" alt="NetSage application icon" loading="lazy"></div>`})}
+    ${projectRow({depth: 1, href: "projects/battery-rul/", index: "02", type: `${battery.type} · ${batteryDataBoundary}`, title: battery.title, summary: batterySummary, meta: "Primary modeling case study", visual: `<div class="project-visual"><img src="${local(1, "assets/visuals/battery-workflow.svg")}" width="1240" height="650" alt="Conceptual Q1 to Q4 battery modeling workflow" loading="lazy"></div>`})}
   </section>
   <section class="section supporting-projects">
     <div class="section-heading"><p>Supporting work</p><h2>Engineering design and competition software</h2></div>
     <div class="support-grid">
       <article class="project-card">
-        ${figure({depth: 1, src: "images/high-speed-carriage.webp", width: 1400, height: 900, alt: "Digital 3D prototype of a high-speed rail carriage", caption: "Real project material: a digital carriage prototype. No measured train-level energy result is claimed.", className: "card-figure"})}
-        <div><p class="project-type">${escapeHtml(rail.type)}</p><h2>${escapeHtml(rail.title)}</h2><p>${escapeHtml(rail.summary)}</p>${status(rail.role)}${factList(rail, "fact-list compact")}<a class="text-link" href="${local(1, "projects/high-speed-rail/")}">View railway project <span aria-hidden="true">→</span></a></div>
+        ${figure({depth: 1, src: "images/high-speed-carriage.webp", width: 1400, height: 900, alt: "Digital 3D prototype of a high-speed rail carriage", caption: "Real project material: a digital carriage prototype.", className: "card-figure"})}
+        <div><p class="project-type">${escapeHtml(rail.type)}</p><h2>${escapeHtml(rail.title)}</h2><p>${escapeHtml(railSummary)}</p>${status(railRole)}${factList(rail, "fact-list compact")}<a class="text-link" href="${local(1, "projects/high-speed-rail/")}">View railway project <span aria-hidden="true">→</span></a></div>
       </article>
       <article class="project-card scenic-card">
         ${figure({depth: 1, src: "images/scenic-guide-visitor.webp", width: 1440, height: 900, alt: "Scenic Guide visitor interface showing the female digital guide and a five-stop route preview", caption: "Real project interface: female guide mode with route planning, text questions, voice input, and answer playback.", className: "card-figure scenic-figure"})}
-        <div><p class="project-type">${escapeHtml(scenic.type)}</p><h2>${escapeHtml(scenic.title)}</h2><p>${escapeHtml(scenic.summary)}</p></div>
+        <div><p class="project-type">${escapeHtml(scenic.type)}</p><h2>${escapeHtml(scenic.title)}</h2><p>${escapeHtml(scenicSummary)}</p></div>
       </article>
     </div>
   </section>`;
@@ -229,7 +273,7 @@ const netsageBody = `
       <div class="case-title">
         <p class="hero-kicker">Primary engineering case study</p>
         <h1>${escapeHtml(netsage.title)}</h1>
-        <p>${escapeHtml(netsage.summary)}</p>
+        <p>${escapeHtml(netsageSummary)}</p>
         <div class="case-meta">${status("Rule-based, not machine learning")}${status("Android · local-first")}${status("Verified commit ed692cba")}</div>
         <a class="button" href="${escapeHtml(netsage.repository)}" rel="noopener">Open GitHub repository</a>
       </div>
@@ -314,8 +358,8 @@ const batteryBody = `
       <div class="case-title">
         <p class="hero-kicker">Primary modeling case study</p>
         <h1>${escapeHtml(battery.title)}</h1>
-        <p>${escapeHtml(battery.summary)}</p>
-        <div class="case-meta">${status(battery.type)}${status(battery.dataBoundary)}${status("Internal holdout results")}</div>
+        <p>${escapeHtml(batterySummary)}</p>
+        <div class="case-meta">${status(battery.type)}${status(batteryDataBoundary)}${status("Internal holdout results")}</div>
       </div>
       <img class="case-wide-visual" src="${local(2, "assets/visuals/battery-workflow.svg")}" width="1240" height="650" alt="Conceptual workflow connecting Q1 degradation analysis, Q2 prediction, Q3 grouping, and Q4 robust stress testing">
     </header>
@@ -397,13 +441,13 @@ const highSpeedRailBody = `
       <div class="case-title">
         <p class="hero-kicker">Supporting interdisciplinary project</p>
         <h1>${escapeHtml(rail.title)}</h1>
-        <p>${escapeHtml(rail.summary)}</p>
-        <div class="case-meta">${status("Supporting work")}${status(`${railEngineering.context} · ${railEngineering.role}`)}${status(engineerPlus.role)}</div>
+        <p>${escapeHtml(railSummary)}</p>
+        <div class="case-meta">${status("Supporting work")}${status(`${railEngineeringContext} · ${railEngineeringRole}`)}${status(engineerPlusRole)}</div>
         <div class="hero-actions"><a class="button" href="${local(2, "projects/high-speed-rail/demo/")}">Open interactive demo <span aria-hidden="true">→</span></a></div>
       </div>
       <figure class="rail-hero-figure">
         <img src="${local(2, "assets/images/engineerplus-overview.webp")}" width="1440" height="900" alt="Rebuilt EngineerPlus interactive demo overview linking to capital pooling, risk simulation, compliance, and impact modules" fetchpriority="high" decoding="async">
-        <figcaption>Public capture of the rebuilt interactive concept demo, which consolidates the independently developed five-page prototype into one static application. All displayed values remain illustrative.</figcaption>
+        <figcaption>Public capture of the rebuilt interactive demo, consolidating the independently developed five-page prototype into one static application.</figcaption>
       </figure>
     </header>
     <section class="section notice-section rail-boundary" aria-label="Contribution boundary">
@@ -419,30 +463,26 @@ const highSpeedRailBody = `
             <a class="rail-module-preview" href="${local(2, `projects/high-speed-rail/demo/#${module.hash}`)}" aria-label="Open ${escapeHtml(module.title)} in the interactive demo">
               <img src="${local(2, `assets/images/${module.image}`)}" width="1440" height="900" alt="${escapeHtml(module.alt)}" loading="lazy" decoding="async">
             </a>
-            <figcaption><strong>${escapeHtml(module.title)}</strong><span>Illustrative interface data</span><p>${escapeHtml(module.description)}</p><a class="text-link" href="${local(2, `projects/high-speed-rail/demo/#${module.hash}`)}">Open module <span aria-hidden="true">→</span></a></figcaption>
+            <figcaption><strong>${escapeHtml(module.title)}</strong><p>${escapeHtml(module.description)}</p><a class="text-link" href="${local(2, `projects/high-speed-rail/demo/#${module.hash}`)}">Open module <span aria-hidden="true">→</span></a></figcaption>
           </figure>`).join("")}
       </div>
     </section>
     <section class="section rail-team-section" id="carriage-design">
-      ${figure({depth: 2, src: "images/high-speed-carriage.webp", width: 1400, height: 900, alt: "Digital 3D prototype of the high-speed rail carriage concept", caption: "Real team project material: a digital carriage prototype. No measured train-level energy result is claimed.", className: "rail-carriage-figure"})}
+      ${figure({depth: 2, src: "images/high-speed-carriage.webp", width: 1400, height: 900, alt: "Digital 3D prototype of the high-speed rail carriage concept", caption: "Real team project material: a digital carriage prototype.", className: "rail-carriage-figure"})}
       <div>
         <p class="project-type">Team engineering component</p>
         <h2>${escapeHtml(railEngineering.title)}</h2>
-        <p>${escapeHtml(railEngineering.summary)}</p>
+        <p>${escapeHtml(railEngineeringSummary)}</p>
         <dl class="evidence-ledger compact-ledger">
-          <div><dt>Context</dt><dd>${escapeHtml(railEngineering.context)}</dd></div>
-          <div><dt>Recorded role</dt><dd>${escapeHtml(railEngineering.role)}</dd></div>
+          <div><dt>Context</dt><dd>${escapeHtml(railEngineeringContext)}</dd></div>
+          <div><dt>Recorded role</dt><dd>${escapeHtml(railEngineeringRole)}</dd></div>
           <div><dt>Design focus</dt><dd>Recycled carbon fiber, honeycomb sandwich structures, and interfaces with the existing steel frame or chassis.</dd></div>
         </dl>
       </div>
     </section>
     <section class="section split-section" id="implementation-boundary">
-      <div><h2>Front-end implementation</h2>${textList(engineerPlus.technology)}</div>
+      <div><h2>Front-end implementation</h2><p>${escapeHtml(engineerPlusSummary)}</p>${textList(engineerPlus.technology)}</div>
       <div><h2>Prototype limitations</h2>${textList(engineerPlus.limitations)}</div>
-    </section>
-    <section class="section limitations rail-limitations">
-      <div class="section-heading"><p>Evidence boundary</p><h2>The interface demonstrates structure, not operational performance</h2></div>
-      <p class="section-lead">The public page does not claim a real capital pool, measured emissions reduction, validated risk coverage, regulatory approval, blockchain verification, or production deployment.</p>
     </section>
     <section class="section final-link"><p>Return to the project index to compare this supporting project with the primary engineering and modeling case studies.</p><a class="button-secondary" href="${local(2, "projects/")}">Back to projects</a></section>
   </article>`;
@@ -461,7 +501,12 @@ const engineerPlusDemo = () => `<!doctype html>
   <meta property="og:description" content="A static, interactive concept prototype using illustrative data only.">
   <meta property="og:url" content="${escapeHtml(canonical("/projects/high-speed-rail/demo/"))}">
   <meta property="og:image" content="${escapeHtml(`${config.canonicalOrigin}${config.basePath}assets/images/engineerplus-overview.webp`)}">
+  <meta property="og:image:type" content="image/webp">
+  <meta property="og:image:width" content="1440">
+  <meta property="og:image:height" content="900">
   <meta property="og:image:alt" content="EngineerPlus high-speed rail concept-prototype overview">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="${escapeHtml(`${config.canonicalOrigin}${config.basePath}assets/images/engineerplus-overview.webp`)}">
   <link rel="icon" href="${local(3, "assets/favicon.svg")}" type="image/svg+xml">
   <link rel="stylesheet" href="${local(3, "styles/engineerplus-demo.css")}">
 </head>
@@ -613,10 +658,13 @@ const engineerPlusDemo = () => `<!doctype html>
 </body>
 </html>`;
 
+const researchStatusFor = (record) => record === jensen ? jensenStatus : hypergraphStatus;
+const researchSummaryFor = (record) => record === jensen ? jensenSummary : hypergraphSummary;
+
 const researchItem = ({ depth, href, record, question }) => `
   <article class="research-item">
-    <div>${status(record.statusText)}<p class="project-type">Single-author manuscript</p></div>
-    <div><h2><a href="${local(depth, href)}">${escapeHtml(record.title)}</a></h2><p>${escapeHtml(question)}</p><p>${escapeHtml(record.summary)}</p><a class="text-link" href="${local(depth, href)}">Read research summary <span aria-hidden="true">→</span></a></div>
+    <div>${status(researchStatusFor(record))}<p class="project-type">Single-author manuscript</p></div>
+    <div><h2><a href="${local(depth, href)}">${escapeHtml(record.title)}</a></h2><p>${escapeHtml(question)}</p><p>${escapeHtml(researchSummaryFor(record))}</p><a class="text-link" href="${local(depth, href)}">Read research summary <span aria-hidden="true">→</span></a></div>
   </article>`;
 
 const researchBody = `
@@ -670,11 +718,11 @@ const researchDetailBody = (record, kind) => {
   return `
     <article class="research-paper">
       <header class="paper-hero">
-        <div>${status(record.statusText)}<p class="project-type">Single-author research manuscript</p><h1>${escapeHtml(record.title)}</h1><p>Wanzheng Ning</p></div>
+        <div>${status(researchStatusFor(record))}<p class="project-type">Single-author research manuscript</p><h1>${escapeHtml(record.title)}</h1><p>${escapeHtml(profileName)}</p></div>
       </header>
       ${manuscriptFeature(record)}
       <section class="section paper-question"><div class="section-heading"><p>Research question</p><h2>${escapeHtml(question)}</h2></div>${formula}</section>
-      <section class="section split-section"><div><h2>Non-specialist summary</h2><p>${escapeHtml(record.summary)}</p></div><div><h2>Current contribution</h2><p>${escapeHtml(contribution)}</p></div></section>
+      <section class="section split-section"><div><h2>Non-specialist summary</h2><p>${escapeHtml(researchSummaryFor(record))}</p></div><div><h2>Current contribution</h2><p>${escapeHtml(contribution)}</p></div></section>
       <section class="section"><div class="two-column-lists"><div><h2>Mathematical objects</h2>${textList(record.objects)}</div><div><h2>Core techniques</h2>${textList(record.techniques)}</div></div></section>
       <section class="section keyword-section"><h2>Keywords</h2><ul class="keyword-list">${record.keywords.map((keyword) => `<li>${escapeHtml(keyword)}</li>`).join("")}</ul></section>
       <section class="section limitations paper-access"><div><h2>Access and status boundary</h2><p>${isJensen ? "The first submitted version is available above. Its public availability does not change the verified submission status or imply acceptance or publication." : "The portfolio does not provide a manuscript download. The status above is the lowest level supported by the current file evidence and should not be read as acceptance or publication."}</p></div><a class="button-secondary" href="${local(2, "research/")}">Back to research</a></section>
@@ -684,13 +732,13 @@ const researchDetailBody = (record, kind) => {
 const resumeBody = `
   <article class="resume">
     <header class="resume-header">
-      <div><p class="hero-kicker">HTML resume</p><h1>${escapeHtml(profile.hero.name)}</h1><p>Communication Engineering · Network Diagnostics · Mathematical Modeling · Mathematical Research</p></div>
+      <div><p class="hero-kicker">HTML resume</p><h1>${escapeHtml(profileName)}</h1><p>Communication Engineering · Network Diagnostics · Mathematical Modeling · Mathematical Research</p></div>
       <button class="button print-button" type="button" onclick="window.print()">Print or save as PDF</button>
     </header>
     <section class="resume-section"><h2>Education</h2><div class="resume-entry"><div><strong>${escapeHtml(publicFacts(education).find((fact) => fact.id === "education.institution")?.publicText || "")}</strong><span>Qinhuangdao, China</span></div><p>${escapeHtml(publicFacts(education).find((fact) => fact.id === "education.program")?.publicText || "")}</p></div></section>
-    <section class="resume-section"><h2>Research</h2><div class="resume-entry"><div><strong>${escapeHtml(jensen.title)}</strong><span>${escapeHtml(jensen.statusText)}</span></div><p>Single-author work on effective hyperbolicity, Hermite reconstruction, finite differences, and shifted-saddle analysis.</p></div><div class="resume-entry"><div><strong>${escapeHtml(hypergraph.title)}</strong><span>${escapeHtml(hypergraph.statusText)}</span></div><p>Single-author work on edge-local information, nonnegative tensor bounds, quotient reduction, and loose-star asymptotics.</p></div></section>
+    <section class="resume-section"><h2>Research</h2><div class="resume-entry"><div><strong>${escapeHtml(jensen.title)}</strong><span>${escapeHtml(jensenStatus)}</span></div><p>Single-author work on effective hyperbolicity, Hermite reconstruction, finite differences, and shifted-saddle analysis.</p></div><div class="resume-entry"><div><strong>${escapeHtml(hypergraph.title)}</strong><span>${escapeHtml(hypergraphStatus)}</span></div><p>Single-author work on edge-local information, nonnegative tensor bounds, quotient reduction, and loose-star asymptotics.</p></div></section>
     <section class="resume-section"><h2>Projects</h2><div class="resume-entry"><div><strong>NetSage</strong><span>Kotlin · Jetpack Compose · FastAPI</span></div><p>Local-first, rule-based Android network diagnosis with ranked causes, matched evidence, repair suggestions, history, favorites, and troubleshooting references.</p></div><div class="resume-entry"><div><strong>Battery RUL and cascade utilization modeling</strong><span>Python · survival modeling · graph optimization</span></div><p>Q1 to Q4 workflow on fully simulated data generated with semi-empirical assumptions, covering degradation stages, SOH/RUL, compatibility graphs, MILP grouping, and robust stress testing.</p></div><div class="resume-entry"><div><strong>Australian high-speed rail design and management concept</strong><span>Five-person carbody team · Proposed Design</span></div><p>Contributed to a lightweight composite carriage concept and independently developed a five-page front-end prototype for capital pooling, risk simulation, compliance workflow, and impact reporting using illustrative data.</p></div></section>
-    <section class="resume-section"><h2>Competitions</h2><div class="resume-entry"><div><strong>Mathematical modeling project</strong><span>Competition modeling project</span></div><p>Four-part battery reliability and utilization workflow on fully simulated data generated with semi-empirical assumptions.</p></div><div class="resume-entry"><div><strong>Scenic Guide Digital Human</strong><span>Competition software project</span></div><p>Tourism guide prototype to which I contributed, with conversational and voice interaction, route guidance, narration, and knowledge management. No award is claimed.</p></div></section>
+    <section class="resume-section"><h2>Competitions</h2><div class="resume-entry"><div><strong>Mathematical modeling project</strong><span>Competition modeling project</span></div><p>Four-part battery reliability and utilization workflow on fully simulated data generated with semi-empirical assumptions.</p></div><div class="resume-entry"><div><strong>Scenic Guide Digital Human</strong><span>Competition software project</span></div><p>Tourism guide prototype to which I contributed, with conversational and voice interaction, route guidance, narration, and knowledge management.</p></div></section>
     <section class="resume-section"><h2>Technical skills</h2><dl class="skills-context"><div><dt>Network and mobile</dt><dd>Kotlin, Jetpack Compose, Android, network diagnostics, DNS/TLS/HTTP troubleshooting concepts</dd></div><div><dt>Modeling and research</dt><dd>Python, change-point regression, survival modeling, graph methods, mathematical optimization, asymptotic analysis, LaTeX</dd></div><div><dt>Software</dt><dd>FastAPI, JSON, Git</dd></div></dl></section>
     <section class="resume-section"><h2>Languages</h2><p>Chinese</p></section>
     <section class="resume-section resume-contact" id="github-accounts">
@@ -713,7 +761,7 @@ const routes = [
       active: "home",
       body: homeBody,
       bodyClass: "home-page",
-      schema: {"@context": "https://schema.org", "@type": "Person", name: profile.hero.name, affiliation: {"@type": "CollegeOrUniversity", name: "Northeastern University at Qinhuangdao"}, url: canonical("/"), sameAs: publicLinks.map((link) => link.url), knowsAbout: ["Communication engineering", "Network diagnostics", "Mathematical modeling", "Hypergraph tensors"]}
+      schema: {"@context": "https://schema.org", "@type": "Person", name: profileName, affiliation: {"@type": "CollegeOrUniversity", name: "Northeastern University at Qinhuangdao"}, url: canonical("/"), sameAs: publicLinks.map((link) => link.url), knowsAbout: ["Communication engineering", "Network diagnostics", "Mathematical modeling", "Hypergraph tensors"]}
     })
   },
   {
@@ -724,17 +772,17 @@ const routes = [
   {
     file: "projects/netsage/index.html",
     route: "/projects/netsage/",
-    html: page({title: "NetSage Network Diagnostics", description: "Case study of NetSage, a local-first rule-based Android network diagnostics application.", route: "/projects/netsage/", depth: 2, active: "projects", body: netsageBody, schema: {"@context": "https://schema.org", "@type": "SoftwareSourceCode", name: "NetSage", codeRepository: netsage.repository, programmingLanguage: ["Kotlin", "Python"], description: netsage.summary}})
+    html: page({title: "NetSage Network Diagnostics", description: "Case study of NetSage, a local-first rule-based Android network diagnostics application.", route: "/projects/netsage/", depth: 2, active: "projects", body: netsageBody, schema: {"@context": "https://schema.org", "@type": "SoftwareSourceCode", name: "NetSage", codeRepository: netsage.repository, programmingLanguage: ["Kotlin", "Python"], description: netsageSummary}})
   },
   {
     file: "projects/battery-rul/index.html",
     route: "/projects/battery-rul/",
-    html: page({title: "Battery RUL Modeling", description: "A fully simulated competition modeling case study for battery RUL prediction, compatibility graphs, and robust utilization screening.", route: "/projects/battery-rul/", depth: 2, active: "projects", body: batteryBody, schema: {"@context": "https://schema.org", "@type": "CreativeWork", name: battery.title, description: battery.summary, keywords: ["battery RUL", "survival modeling", "compatibility graph", "robust optimization"]}})
+    html: page({title: "Battery RUL Modeling", description: "A fully simulated competition modeling case study for battery RUL prediction, compatibility graphs, and robust utilization screening.", route: "/projects/battery-rul/", depth: 2, active: "projects", body: batteryBody, schema: {"@context": "https://schema.org", "@type": "CreativeWork", name: battery.title, description: batterySummary, keywords: ["battery RUL", "survival modeling", "compatibility graph", "robust optimization"]}})
   },
   {
     file: "projects/high-speed-rail/index.html",
     route: "/projects/high-speed-rail/",
-    html: page({title: "Australian High-Speed Rail Project", description: "A supporting interdisciplinary project combining a lightweight carriage design concept with an independent five-page management interface prototype.", route: "/projects/high-speed-rail/", depth: 2, active: "projects", body: highSpeedRailBody, schema: {"@context": "https://schema.org", "@type": "CreativeWork", name: rail.title, description: rail.summary, keywords: ["high-speed rail", "recycled carbon fiber", "engineering design", "front-end prototype"]}})
+    html: page({title: "Australian High-Speed Rail Project", description: "A supporting interdisciplinary project combining a lightweight carriage design concept with an independent five-page management interface prototype.", route: "/projects/high-speed-rail/", depth: 2, active: "projects", body: highSpeedRailBody, schema: {"@context": "https://schema.org", "@type": "CreativeWork", name: rail.title, description: railSummary, keywords: ["high-speed rail", "recycled carbon fiber", "engineering design", "front-end prototype"]}})
   },
   {
     file: "projects/high-speed-rail/demo/index.html",
@@ -749,12 +797,12 @@ const routes = [
   {
     file: "research/jensen-polynomials/index.html",
     route: "/research/jensen-polynomials/",
-    html: page({title: "Jensen Polynomials and the Riemann Xi-Function", description: "Research summary for a submitted single-author manuscript on subcritical hyperbolicity of xi-associated Jensen polynomials.", route: "/research/jensen-polynomials/", depth: 2, active: "research", body: researchDetailBody(jensen, "jensen"), schema: {"@context": "https://schema.org", "@type": "ScholarlyArticle", headline: jensen.title, author: {"@type": "Person", name: jensen.author}, keywords: jensen.keywords.join(", "), description: jensen.summary}})
+    html: page({title: "Jensen Polynomials and the Riemann Xi-Function", description: "Research summary for a submitted single-author manuscript on subcritical hyperbolicity of xi-associated Jensen polynomials.", route: "/research/jensen-polynomials/", depth: 2, active: "research", body: researchDetailBody(jensen, "jensen"), schema: {"@context": "https://schema.org", "@type": "ScholarlyArticle", headline: jensen.title, author: {"@type": "Person", name: profileName}, keywords: jensen.keywords.join(", "), description: jensenSummary}})
   },
   {
     file: "research/hypergraph-tensor/index.html",
     route: "/research/hypergraph-tensor/",
-    html: page({title: "Edge-Local Spectra of Nonuniform Hypergraph Tensors", description: "Research summary for a manuscript in preparation on edge-local spectral information and size-dependent scaling.", route: "/research/hypergraph-tensor/", depth: 2, active: "research", body: researchDetailBody(hypergraph, "hypergraph"), schema: {"@context": "https://schema.org", "@type": "ScholarlyArticle", headline: hypergraph.title, author: {"@type": "Person", name: hypergraph.author}, keywords: hypergraph.keywords.join(", "), description: hypergraph.summary}})
+    html: page({title: "Edge-Local Spectra of Nonuniform Hypergraph Tensors", description: "Research summary for a manuscript in preparation on edge-local spectral information and size-dependent scaling.", route: "/research/hypergraph-tensor/", depth: 2, active: "research", body: researchDetailBody(hypergraph, "hypergraph"), schema: {"@context": "https://schema.org", "@type": "ScholarlyArticle", headline: hypergraph.title, author: {"@type": "Person", name: profileName}, keywords: hypergraph.keywords.join(", "), description: hypergraphSummary}})
   },
   {
     file: "resume/index.html",
@@ -773,8 +821,10 @@ const notFound = page({
 });
 
 const assertSourceFacts = () => {
-  const records = [profile, education, netsage, battery, rail, scenic, jensen, hypergraph];
-  for (const record of records) {
+  if (claimBindings.size !== publicClaimsData.claims.length) {
+    throw new Error("Duplicate record/field entry in content/public-claims.json");
+  }
+  for (const record of Object.values(recordsByKey)) {
     for (const fact of record.facts || []) {
       if (!fact.id || !fact.status || !fact.sourceType || !fact.lastVerified || typeof fact.public !== "boolean") {
         throw new Error(`Invalid fact record in ${record.slug || "profile"}: ${JSON.stringify(fact)}`);
@@ -784,9 +834,28 @@ const assertSourceFacts = () => {
       }
     }
   }
+  for (const binding of publicClaimsData.claims) publicClaim(binding.record, binding.field);
+  for (const link of profile.links || []) {
+    if (!link.label || !link.url || !link.status || !link.lastVerified || typeof link.public !== "boolean") {
+      throw new Error(`Invalid public link record: ${JSON.stringify(link)}`);
+    }
+    if (link.public && link.status !== "verified") throw new Error(`Only verified links may be public: ${link.label}`);
+  }
+};
+
+const assertNoPrivateFactsRendered = () => {
+  const rendered = [...routes.map((route) => route.html), notFound].join("\n").toLowerCase();
+  for (const record of Object.values(recordsByKey)) {
+    for (const fact of record.facts || []) {
+      if (fact.public === false && fact.publicText?.trim() && rendered.includes(escapeHtml(fact.publicText).toLowerCase())) {
+        throw new Error(`Non-public fact rendered: ${fact.id}`);
+      }
+    }
+  }
 };
 
 assertSourceFacts();
+assertNoPrivateFactsRendered();
 await rm(dist, { recursive: true, force: true });
 await mkdir(dist, { recursive: true });
 

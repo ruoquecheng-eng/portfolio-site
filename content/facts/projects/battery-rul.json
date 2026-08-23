@@ -25,6 +25,24 @@
   ],
   "facts": [
     {
+      "id": "battery.dataBoundary",
+      "publicText": "Fully simulated data with semi-empirical generation assumptions",
+      "status": "verified",
+      "sourceType": "dataset_metadata",
+      "lastVerified": "2026-08-23",
+      "public": true,
+      "display": false
+    },
+    {
+      "id": "battery.summary",
+      "publicText": "A four-part competition modeling workflow on fully simulated data with semi-empirical generation assumptions, connecting degradation-stage detection, SOH and RUL estimation, compatibility graphs, multi-objective grouping, and robust stress testing.",
+      "status": "verified",
+      "sourceType": "model_outputs_and_report",
+      "lastVerified": "2026-08-23",
+      "public": true,
+      "display": false
+    },
+    {
       "id": "battery.data.scale",
       "publicText": "418,430 generated cycle records across 360 simulated battery trajectories; no row is measured experimental data",
       "status": "verified",

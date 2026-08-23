@@ -27,6 +27,15 @@
   ],
   "facts": [
     {
+      "id": "hypergraph.summary",
+      "publicText": "The current manuscript draft examines local combinatorial information in a size-homogeneous weighted nonuniform hypergraph adjacency tensor. It develops a neighbor-profile spectral bound and studies edge-local separation, equality, quotient reduction, and loose-star scaling within that tensor model.",
+      "status": "verified",
+      "sourceType": "current_manuscript",
+      "lastVerified": "2026-08-23",
+      "public": true,
+      "display": false
+    },
+    {
       "id": "hypergraph.status",
       "publicText": "Manuscript in preparation",
       "status": "verified",

@@ -2,6 +2,8 @@ content/evidence/
 dist/
 node_modules/
 .venv/
+__pycache__/
+*.pyc
 qa-artifacts/
 tmp/
 .DS_Store
