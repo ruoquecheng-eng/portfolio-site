@@ -43,6 +43,9 @@ const textList = (items, className = "plain-list") => `
 
 const status = (text) => `<span class="status">${escapeHtml(text)}</span>`;
 
+const railEngineering = rail.components.engineeringDesign;
+const engineerPlus = rail.components.engineerPlus;
+
 const figure = ({ depth, src, width, height, alt, caption, eager = false, className = "figure" }) => `
   <figure class="${className}">
     <img src="${local(depth, `assets/${src}`)}" width="${width}" height="${height}" alt="${escapeHtml(alt)}" ${eager ? 'fetchpriority="high"' : 'loading="lazy"'} decoding="async">
@@ -200,7 +203,7 @@ const homeBody = `
 
 const projectsBody = `
   <section class="page-hero page-hero-dark">
-    <div><p class="hero-kicker">Engineering and modeling</p><h1>Projects</h1><p>Two full case studies, followed by concise evidence-safe summaries of supporting work.</p></div>
+    <div><p class="hero-kicker">Engineering and modeling</p><h1>Projects</h1><p>Two primary case studies, followed by concise evidence-safe summaries of supporting work.</p></div>
   </section>
   <section class="section project-index-page">
     ${projectRow({depth: 1, href: "projects/netsage/", index: "01", type: netsage.type, title: netsage.title, summary: netsage.summary, meta: "Primary engineering case study", visual: `<div class="project-visual"><img src="${local(1, "assets/images/netsage-icon.webp")}" width="216" height="216" alt="NetSage application icon" loading="lazy"></div>`})}
@@ -211,7 +214,7 @@ const projectsBody = `
     <div class="support-grid">
       <article class="project-card">
         ${figure({depth: 1, src: "images/high-speed-carriage.webp", width: 1400, height: 900, alt: "Digital 3D prototype of a high-speed rail carriage", caption: "Real project material: a digital carriage prototype. No measured train-level energy result is claimed.", className: "card-figure"})}
-        <div><p class="project-type">${escapeHtml(rail.type)}</p><h2>${escapeHtml(rail.title)}</h2><p>${escapeHtml(rail.summary)}</p>${status(rail.role)}${factList(rail, "fact-list compact")}</div>
+        <div><p class="project-type">${escapeHtml(rail.type)}</p><h2>${escapeHtml(rail.title)}</h2><p>${escapeHtml(rail.summary)}</p>${status(rail.role)}${factList(rail, "fact-list compact")}<a class="text-link" href="${local(1, "projects/high-speed-rail/")}">View railway project <span aria-hidden="true">→</span></a></div>
       </article>
       <article class="project-card scenic-card">
         ${figure({depth: 1, src: "images/scenic-guide-visitor.webp", width: 1440, height: 900, alt: "Scenic Guide visitor interface showing the female digital guide and a five-stop route preview", caption: "Real project interface: female guide mode with route planning, text questions, voice input, and answer playback.", className: "card-figure scenic-figure"})}
@@ -357,6 +360,86 @@ const batteryBody = `
     </section>
   </article>`;
 
+const railModules = [
+  {
+    title: "Capital Pooling",
+    image: "engineerplus-capital-pooling.webp",
+    alt: "EngineerPlus capital pooling interface with an investor form, illustrative metrics, and an allocation chart",
+    description: "A simulated capital-allocation and investment-information interface. The displayed amounts and changes are demo values."
+  },
+  {
+    title: "Risk Simulator",
+    image: "engineerplus-risk-simulator.webp",
+    alt: "EngineerPlus risk simulator with guarantee and climate sliders, a coverage display, and a process diagram",
+    description: "A slider-driven interaction based on a simple client-side formula. It demonstrates interface behavior, not a validated risk model."
+  },
+  {
+    title: "Compliance Hub",
+    image: "engineerplus-compliance-hub.webp",
+    alt: "EngineerPlus compliance workflow mockup showing staged checks and simulated node confirmations",
+    description: "A timed browser workflow that visualizes staged verification. It does not connect to a blockchain or regulatory service."
+  },
+  {
+    title: "Impact Dashboard",
+    image: "engineerplus-impact-dashboard.webp",
+    alt: "EngineerPlus impact dashboard with illustrative social and carbon charts and a regional map",
+    description: "Charts and a map present illustrative social, carbon, and regional indicators rather than live project-impact data."
+  }
+];
+
+const highSpeedRailBody = `
+  <article class="case-study rail-case">
+    <header class="case-hero rail-hero">
+      <div class="case-title">
+        <p class="hero-kicker">Supporting interdisciplinary project</p>
+        <h1>${escapeHtml(rail.title)}</h1>
+        <p>${escapeHtml(rail.summary)}</p>
+        <div class="case-meta">${status("Supporting work")}${status(`${railEngineering.context} · ${railEngineering.role}`)}${status(engineerPlus.role)}</div>
+      </div>
+      <figure class="rail-hero-figure">
+        <img src="${local(2, "assets/images/engineerplus-overview.webp")}" width="1440" height="900" alt="EngineerPlus home interface linking to capital pooling, risk simulation, compliance, and impact modules" fetchpriority="high" decoding="async">
+        <figcaption>Public presentation capture of the independently developed five-page concept prototype. Headline metrics inside the interface are illustrative.</figcaption>
+      </figure>
+    </header>
+    <section class="section notice-section rail-boundary" aria-label="Contribution boundary">
+      <strong>Contribution boundary</strong>
+      <p>The lightweight carriage concept was completed within a five-person course team, where the report records my role as “Proposed Design.” I independently designed and implemented the five EngineerPlus front-end pages. These are separate contributions within one high-speed rail project narrative.</p>
+    </section>
+    <section class="section" id="engineerplus">
+      <div class="section-heading"><p>EngineerPlus</p><h2>A management-interface concept for four project workflows</h2></div>
+      <p class="section-lead">The prototype connects four concerns that appeared in the wider engineering brief: capital organization, risk communication, approval workflow, and social or environmental reporting. Its purpose is to demonstrate information architecture and interaction, not to report operating results.</p>
+      <div class="rail-module-grid">
+        ${railModules.map((module) => `
+          <figure class="rail-module">
+            <img src="${local(2, `assets/images/${module.image}`)}" width="1440" height="900" alt="${escapeHtml(module.alt)}" loading="lazy" decoding="async">
+            <figcaption><strong>${escapeHtml(module.title)}</strong><span>Illustrative interface data</span><p>${escapeHtml(module.description)}</p></figcaption>
+          </figure>`).join("")}
+      </div>
+    </section>
+    <section class="section rail-team-section" id="carriage-design">
+      ${figure({depth: 2, src: "images/high-speed-carriage.webp", width: 1400, height: 900, alt: "Digital 3D prototype of the high-speed rail carriage concept", caption: "Real team project material: a digital carriage prototype. No measured train-level energy result is claimed.", className: "rail-carriage-figure"})}
+      <div>
+        <p class="project-type">Team engineering component</p>
+        <h2>${escapeHtml(railEngineering.title)}</h2>
+        <p>${escapeHtml(railEngineering.summary)}</p>
+        <dl class="evidence-ledger compact-ledger">
+          <div><dt>Context</dt><dd>${escapeHtml(railEngineering.context)}</dd></div>
+          <div><dt>Recorded role</dt><dd>${escapeHtml(railEngineering.role)}</dd></div>
+          <div><dt>Design focus</dt><dd>Recycled carbon fiber, honeycomb sandwich structures, and interfaces with the existing steel frame or chassis.</dd></div>
+        </dl>
+      </div>
+    </section>
+    <section class="section split-section" id="implementation-boundary">
+      <div><h2>Front-end implementation</h2>${textList(engineerPlus.technology)}</div>
+      <div><h2>Prototype limitations</h2>${textList(engineerPlus.limitations)}</div>
+    </section>
+    <section class="section limitations rail-limitations">
+      <div class="section-heading"><p>Evidence boundary</p><h2>The interface demonstrates structure, not operational performance</h2></div>
+      <p class="section-lead">The public page does not claim a real capital pool, measured emissions reduction, validated risk coverage, regulatory approval, blockchain verification, or production deployment.</p>
+    </section>
+    <section class="section final-link"><p>Return to the project index to compare this supporting project with the primary engineering and modeling case studies.</p><a class="button-secondary" href="${local(2, "projects/")}">Back to projects</a></section>
+  </article>`;
+
 const researchItem = ({ depth, href, record, question }) => `
   <article class="research-item">
     <div>${status(record.statusText)}<p class="project-type">Single-author manuscript</p></div>
@@ -433,7 +516,7 @@ const resumeBody = `
     </header>
     <section class="resume-section"><h2>Education</h2><div class="resume-entry"><div><strong>${escapeHtml(publicFacts(education).find((fact) => fact.id === "education.institution")?.publicText || "")}</strong><span>Qinhuangdao, China</span></div><p>${escapeHtml(publicFacts(education).find((fact) => fact.id === "education.program")?.publicText || "")}</p></div></section>
     <section class="resume-section"><h2>Research</h2><div class="resume-entry"><div><strong>${escapeHtml(jensen.title)}</strong><span>${escapeHtml(jensen.statusText)}</span></div><p>Single-author work on effective hyperbolicity, Hermite reconstruction, finite differences, and shifted-saddle analysis.</p></div><div class="resume-entry"><div><strong>${escapeHtml(hypergraph.title)}</strong><span>${escapeHtml(hypergraph.statusText)}</span></div><p>Single-author work on edge-local information, nonnegative tensor bounds, quotient reduction, and loose-star asymptotics.</p></div></section>
-    <section class="resume-section"><h2>Projects</h2><div class="resume-entry"><div><strong>NetSage</strong><span>Kotlin · Jetpack Compose · FastAPI</span></div><p>Local-first, rule-based Android network diagnosis with ranked causes, matched evidence, repair suggestions, history, favorites, and troubleshooting references.</p></div><div class="resume-entry"><div><strong>Battery RUL and cascade utilization modeling</strong><span>Python · survival modeling · graph optimization</span></div><p>Q1 to Q4 workflow on fully simulated data generated with semi-empirical assumptions, covering degradation stages, SOH/RUL, compatibility graphs, MILP grouping, and robust stress testing.</p></div><div class="resume-entry"><div><strong>Recycled carbon fiber high-speed rail carriage</strong><span>Five-person course team · Proposed Design</span></div><p>Team concept for selected non-critical carbody components, layered composite structures, and a digital prototype. No train-level energy saving is established.</p></div></section>
+    <section class="resume-section"><h2>Projects</h2><div class="resume-entry"><div><strong>NetSage</strong><span>Kotlin · Jetpack Compose · FastAPI</span></div><p>Local-first, rule-based Android network diagnosis with ranked causes, matched evidence, repair suggestions, history, favorites, and troubleshooting references.</p></div><div class="resume-entry"><div><strong>Battery RUL and cascade utilization modeling</strong><span>Python · survival modeling · graph optimization</span></div><p>Q1 to Q4 workflow on fully simulated data generated with semi-empirical assumptions, covering degradation stages, SOH/RUL, compatibility graphs, MILP grouping, and robust stress testing.</p></div><div class="resume-entry"><div><strong>Australian high-speed rail design and management concept</strong><span>Five-person carbody team · Proposed Design</span></div><p>Contributed to a lightweight composite carriage concept and independently developed a five-page front-end prototype for capital pooling, risk simulation, compliance workflow, and impact reporting using illustrative data.</p></div></section>
     <section class="resume-section"><h2>Competitions</h2><div class="resume-entry"><div><strong>Mathematical modeling project</strong><span>Competition modeling project</span></div><p>Four-part battery reliability and utilization workflow on fully simulated data generated with semi-empirical assumptions.</p></div><div class="resume-entry"><div><strong>Scenic Guide Digital Human</strong><span>Competition software project</span></div><p>Tourism guide prototype to which I contributed, with conversational and voice interaction, route guidance, narration, and knowledge management. No award is claimed.</p></div></section>
     <section class="resume-section"><h2>Technical skills</h2><dl class="skills-context"><div><dt>Network and mobile</dt><dd>Kotlin, Jetpack Compose, Android, network diagnostics, DNS/TLS/HTTP troubleshooting concepts</dd></div><div><dt>Modeling and research</dt><dd>Python, change-point regression, survival modeling, graph methods, mathematical optimization, asymptotic analysis, LaTeX</dd></div><div><dt>Software</dt><dd>FastAPI, JSON, Git</dd></div></dl></section>
     <section class="resume-section"><h2>Languages</h2><p>Chinese</p></section>
@@ -474,6 +557,11 @@ const routes = [
     file: "projects/battery-rul/index.html",
     route: "/projects/battery-rul/",
     html: page({title: "Battery RUL Modeling", description: "A fully simulated competition modeling case study for battery RUL prediction, compatibility graphs, and robust utilization screening.", route: "/projects/battery-rul/", depth: 2, active: "projects", body: batteryBody, schema: {"@context": "https://schema.org", "@type": "CreativeWork", name: battery.title, description: battery.summary, keywords: ["battery RUL", "survival modeling", "compatibility graph", "robust optimization"]}})
+  },
+  {
+    file: "projects/high-speed-rail/index.html",
+    route: "/projects/high-speed-rail/",
+    html: page({title: "Australian High-Speed Rail Project", description: "A supporting interdisciplinary project combining a lightweight carriage design concept with an independent five-page management interface prototype.", route: "/projects/high-speed-rail/", depth: 2, active: "projects", body: highSpeedRailBody, schema: {"@context": "https://schema.org", "@type": "CreativeWork", name: rail.title, description: rail.summary, keywords: ["high-speed rail", "recycled carbon fiber", "engineering design", "front-end prototype"]}})
   },
   {
     file: "research/index.html",

@@ -16,6 +16,7 @@ const requiredPages = new Map([
   ['Projects', ['projects/index.html', 'projects.html']],
   ['NetSage case study', ['projects/netsage/index.html', 'projects/netsage.html']],
   ['Battery RUL case study', ['projects/battery-rul/index.html', 'projects/battery-rul.html']],
+  ['High-speed rail project', ['projects/high-speed-rail/index.html', 'projects/high-speed-rail.html']],
   ['Research', ['research/index.html', 'research.html']],
   ['Jensen Polynomials research', ['research/jensen-polynomials/index.html', 'research/jensen-polynomials.html']],
   ['Hypergraph Tensor research', ['research/hypergraph-tensor/index.html', 'research/hypergraph-tensor.html']],
@@ -36,6 +37,11 @@ const requiredAssets = new Map([
   ['battery modeling paper cover', ['assets/images/battery-modeling-paper-cover.webp']],
   ['battery modeling paper', ['assets/documents/lithium-ion-battery-rul-cascade-utilization-modeling.pdf']],
   ['high-speed rail image', ['assets/images/high-speed-carriage.webp']],
+  ['EngineerPlus overview', ['assets/images/engineerplus-overview.webp']],
+  ['EngineerPlus capital pooling module', ['assets/images/engineerplus-capital-pooling.webp']],
+  ['EngineerPlus risk simulator module', ['assets/images/engineerplus-risk-simulator.webp']],
+  ['EngineerPlus compliance module', ['assets/images/engineerplus-compliance-hub.webp']],
+  ['EngineerPlus impact dashboard module', ['assets/images/engineerplus-impact-dashboard.webp']],
   ['Scenic Guide visitor interface', ['assets/images/scenic-guide-visitor.webp']],
   ['Jensen manuscript title page', ['assets/images/jensen-manuscript-title-page.png']],
   ['Jensen submitted manuscript', ['assets/documents/subcritical-hyperbolicity-jensen-polynomials-riemann-xi.pdf']],
@@ -331,6 +337,27 @@ function checkResearchAndProjectFacts(pageFiles, htmlByName) {
     addIssue('truthfulness', 'Scenic Guide production boundary must appear exactly once on the Projects page');
   }
 
+  const railHtml = htmlByName.get(pageFiles.get('High-speed rail project')) ?? '';
+  const railText = visibleText(railHtml);
+  if (!/five-person course team/i.test(railText) || !/Proposed Design/i.test(railText)) {
+    addIssue('truthfulness', 'High-speed rail page must preserve the team context and recorded Proposed Design role');
+  }
+  if (!/independently designed and implemented the five EngineerPlus front-end pages/i.test(railText)) {
+    addIssue('truthfulness', 'High-speed rail page must state the independent EngineerPlus contribution precisely');
+  }
+  if ((railText.match(/Illustrative interface data/gi) ?? []).length !== 4) {
+    addIssue('truthfulness', 'Each EngineerPlus module must carry the illustrative-interface-data caption');
+  }
+  if (/\$12\.8B|\b119%\b|\b30%\b/i.test(railText)) {
+    addIssue('truthfulness', 'Demo headline values must not be repeated as public page claims');
+  }
+  if (!/does not connect to a blockchain/i.test(railText) || !/no backend, authentication, persistence, or production deployment/i.test(railText)) {
+    addIssue('truthfulness', 'EngineerPlus service and deployment limitations must remain visible');
+  }
+  if (/cdn\.tailwindcss\.com|cdn\.jsdelivr\.net|cdnjs\.cloudflare\.com|fonts\.googleapis\.com|unpkg\.com/i.test(railHtml)) {
+    addIssue('privacy', 'High-speed rail page must use local captures instead of original prototype CDN dependencies');
+  }
+
   const jensenHtml = htmlByName.get(pageFiles.get('Jensen Polynomials research')) ?? '';
   const jensenText = visibleText(jensenHtml);
   if (!/Submitted to the International Journal of Number Theory/i.test(jensenText)) {
@@ -382,6 +409,9 @@ function checkProfileLinks(pageFiles, htmlByName) {
   if (!/Portfolio source repository and GitHub Pages hosting/i.test(resumeText)) {
     addIssue('profile', 'Resume does not identify the purpose of the ruoquecheng-eng account');
   }
+  if (!/independently developed a five-page front-end prototype/i.test(resumeText)) {
+    addIssue('profile', 'Resume is missing the bounded EngineerPlus contribution');
+  }
 }
 
 async function main() {
@@ -415,6 +445,9 @@ async function main() {
   const forbiddenFile = /(?:^|\/)(?:content\/evidence|evidence)(?:\/|$)|(?:^|\/)\.env(?:\.|$)|SOURCES\.json$|\.(?:db|sqlite\d*|log|bak|pem|key|p12|pfx)$/i;
   for (const name of fileNames) {
     if (forbiddenFile.test(name)) addIssue('privacy', `Forbidden or private file in dist: ${name}`);
+    if (/(?:Capital Pooling|Compliance Hub|Impact Dashboard|Risk Simulator|engineerplus\/home)\.html$/i.test(name)) {
+      addIssue('privacy', `Original EngineerPlus prototype HTML must not be public: ${name}`);
+    }
     if (/\.pdf$/i.test(name) && !allowedPublicPdfs.has(name)) {
       addIssue('privacy', `Unapproved PDF in dist: ${name}`);
     }
