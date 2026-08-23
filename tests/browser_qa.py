@@ -112,6 +112,19 @@ def run():
         elif "application/pdf" not in manuscript_response.headers.get("content-type", ""):
             issues.append("jensen manuscript: response is not application/pdf")
 
+        battery_paper_path = "/assets/documents/lithium-ion-battery-rul-cascade-utilization-modeling.pdf"
+        page.goto(f"{BASE_URL}/projects/battery-rul/", wait_until="networkidle")
+        battery_paper_links = page.locator(f'a[href$="{battery_paper_path}"]')
+        if battery_paper_links.count() < 3:
+            issues.append("battery modeling paper: expected preview, view, and download links")
+        if page.get_by_text("Full paper · Chinese · 169 pages", exact=True).count() != 1:
+            issues.append("battery modeling paper: metadata is missing or duplicated")
+        battery_paper_response = page.request.get(f"{BASE_URL}{battery_paper_path}")
+        if not battery_paper_response.ok:
+            issues.append(f"battery modeling paper: HTTP {battery_paper_response.status}")
+        elif "application/pdf" not in battery_paper_response.headers.get("content-type", ""):
+            issues.append("battery modeling paper: response is not application/pdf")
+
         page.goto(f"{BASE_URL}/resume/", wait_until="networkidle")
         page.emulate_media(media="print")
         header_display = page.locator(".site-header").evaluate("el => getComputedStyle(el).display")

@@ -284,6 +284,27 @@ const batteryFigures = `
     ${figure({depth: 2, src: "images/battery-strategy-comparison.webp", width: 2134, height: 1615, alt: "Four-panel original model output comparing nominal, adaptive, and robust strategies across six stress scenarios", caption: "Real model output. Strategy comparison covers expected value, constraint risk, utilization, and lower-tail lifetime under six simulated stress scenarios."})}
   </div>`;
 
+const batteryPaperHref = local(2, "assets/documents/lithium-ion-battery-rul-cascade-utilization-modeling.pdf");
+const batteryPaperFeature = `
+    <section class="section manuscript-feature battery-paper-feature" aria-labelledby="battery-paper-heading">
+      <figure class="manuscript-preview">
+        <a href="${batteryPaperHref}" target="_blank" rel="noopener" aria-label="Open the complete battery modeling paper PDF">
+          <img src="${local(2, "assets/images/battery-modeling-paper-cover.webp")}" width="1241" height="1754" alt="First page of the lithium-ion battery remaining useful life and cascade utilization modeling paper" loading="lazy" decoding="async">
+        </a>
+        <figcaption>First page of the complete Chinese-language modeling paper.</figcaption>
+      </figure>
+      <div class="manuscript-copy">
+        <p class="manuscript-label">Competition modeling paper</p>
+        <h2 id="battery-paper-heading" lang="zh-CN">锂电池剩余寿命预测与梯次利用筛选优化</h2>
+        <p class="project-type">Full paper · Chinese · 169 pages</p>
+        <p>The report documents RUL prediction, risk assessment, cascade utilization screening, and optimization under the simulated-data boundary stated above.</p>
+        <div class="manuscript-actions">
+          <a class="button" href="${batteryPaperHref}" target="_blank" rel="noopener">View full paper <span aria-hidden="true">↗</span></a>
+          <a class="text-link" href="${batteryPaperHref}" download="lithium-ion-battery-rul-cascade-utilization-modeling.pdf">Download PDF <span aria-hidden="true">↓</span></a>
+        </div>
+      </div>
+    </section>`;
+
 const batteryBody = `
   <article class="case-study battery-case">
     <header class="case-hero battery-hero">
@@ -298,6 +319,7 @@ const batteryBody = `
     <section class="section notice-section" aria-label="Data boundary">
       <strong>Data boundary</strong><p>Every numerical result on this page comes from fully simulated data generated with semi-empirical assumptions. No row is measured experimental data. The project does not claim an experimental battery platform, industrial validation, or real-world deployment.</p>
     </section>
+    ${batteryPaperFeature}
     <section class="section" id="problem">
       <div class="section-heading"><p>Problem</p><h2>Connect prediction to a constrained second-life decision</h2></div>
       <p class="section-lead">The workflow treats prediction and grouping as one chain. Degradation stages inform SOH and RUL estimates; their uncertainty then affects compatibility, grouping, value, and stress-scenario risk.</p>
@@ -327,7 +349,7 @@ const batteryBody = `
     <section class="section" id="validation">
       <div class="section-heading"><p>Validation and reproducibility</p><h2>Information boundaries are part of the model</h2></div>
       <div class="evidence-grid">${battery.validation.map((item, index) => `<div><span>${String(index + 1).padStart(2, "0")}</span><p>${escapeHtml(item)}</p></div>`).join("")}</div>
-      <p class="repro-note">The source package records deterministic seeds, frozen outputs, figure generation, LaTeX assembly, and clean-package verification. The full dataset and paper are not published from this portfolio.</p>
+      <p class="repro-note">The source package records deterministic seeds, frozen outputs, figure generation, LaTeX assembly, and clean-package verification. The full simulated dataset is not published from this portfolio; the complete modeling paper is available above.</p>
     </section>
     <section class="section limitations" id="limitations">
       <div class="section-heading"><p>Limitations</p><h2>Simulation is not field validation</h2></div>

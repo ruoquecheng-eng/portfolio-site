@@ -8,6 +8,7 @@ const distRoot = path.resolve(projectRoot, process.env.QA_DIST ?? 'dist');
 const issues = [];
 const allowedPublicPdfs = new Set([
   'assets/documents/subcritical-hyperbolicity-jensen-polynomials-riemann-xi.pdf',
+  'assets/documents/lithium-ion-battery-rul-cascade-utilization-modeling.pdf',
 ]);
 
 const requiredPages = new Map([
@@ -32,6 +33,8 @@ const requiredAssets = new Map([
   ['battery RUL parity figure', ['assets/images/battery-rul-parity.webp']],
   ['battery compatibility figure', ['assets/images/battery-compatibility-graph.webp']],
   ['battery strategy figure', ['assets/images/battery-strategy-comparison.webp']],
+  ['battery modeling paper cover', ['assets/images/battery-modeling-paper-cover.webp']],
+  ['battery modeling paper', ['assets/documents/lithium-ion-battery-rul-cascade-utilization-modeling.pdf']],
   ['high-speed rail image', ['assets/images/high-speed-carriage.webp']],
   ['Scenic Guide visitor interface', ['assets/images/scenic-guide-visitor.webp']],
   ['Jensen manuscript title page', ['assets/images/jensen-manuscript-title-page.png']],
@@ -290,6 +293,19 @@ function checkResearchAndProjectFacts(pageFiles, htmlByName) {
   const batteryText = visibleText(battery ?? '');
   if (!/simulated/i.test(batteryText) || !/semi[- ]empirical/i.test(batteryText)) {
     addIssue('truthfulness', 'Battery RUL page must visibly label the dataset as simulated / semi-empirical');
+  }
+  const batteryPdfLinks = ((battery ?? '').match(/<a\b[^>]*>/gi) ?? [])
+    .map((tag) => attribute(tag, 'href') ?? '')
+    .filter((href) => /\.pdf(?:[?#]|$)/i.test(href));
+  const batteryPdfPath = 'assets/documents/lithium-ion-battery-rul-cascade-utilization-modeling.pdf';
+  if (batteryPdfLinks.filter((href) => href.endsWith(batteryPdfPath)).length < 3) {
+    addIssue('projects', 'Battery RUL page must link the approved paper from its preview, view action, and download action');
+  }
+  if (!/Full paper\s*·\s*Chinese\s*·\s*169 pages/i.test(batteryText)) {
+    addIssue('projects', 'Battery RUL page is missing the full-paper language and page count');
+  }
+  if (/result pending|\baward(?:ed)?\b|\bprize\b/i.test(batteryText)) {
+    addIssue('truthfulness', 'Battery RUL page must not expose a competition result or award claim');
   }
 
   const netsage = htmlByName.get(pageFiles.get('NetSage case study')) ?? '';
