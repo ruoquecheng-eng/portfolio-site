@@ -365,8 +365,8 @@ function checkResearchAndProjectFacts(pageFiles, htmlByName) {
   if (!/Full paper\s*·\s*Chinese\s*·\s*169 pages/i.test(batteryText)) {
     addIssue('projects', 'Battery RUL page is missing the full-paper language and page count');
   }
-  if (/result pending|\baward(?:ed)?\b|\bprize\b/i.test(batteryText)) {
-    addIssue('truthfulness', 'Battery RUL page must not expose a competition result or award claim');
+  if (!/University-level Second Prize in the Mathematical Modeling Competition/i.test(batteryText)) {
+    addIssue('truthfulness', 'Battery RUL page must state the verified university-level second prize');
   }
 
   const netsage = htmlByName.get(pageFiles.get('NetSage case study')) ?? '';
@@ -506,7 +506,7 @@ function valueAt(record, field) {
 
 function checkFactGovernance(pageFiles, htmlByName) {
   const requiredBindings = new Set([
-    'profile.hero.name', 'profile.hero.summary', 'netsage.summary', 'battery.dataBoundary', 'battery.summary',
+    'profile.hero.name', 'profile.hero.summary', 'netsage.summary', 'battery.dataBoundary', 'battery.summary', 'battery.competitionResult',
     'rail.summary', 'rail.role', 'rail.components.engineeringDesign.context', 'rail.components.engineeringDesign.role',
     'rail.components.engineeringDesign.summary', 'rail.components.engineerPlus.context', 'rail.components.engineerPlus.role',
     'rail.components.engineerPlus.summary', 'scenic.summary', 'jensen.statusText', 'jensen.summary',
@@ -719,3 +719,4 @@ main().catch((error) => {
   console.error(`QA crashed: ${error.stack ?? error.message}`);
   process.exitCode = 1;
 });
+

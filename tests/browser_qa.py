@@ -157,6 +157,9 @@ def run():
         elif "application/pdf" not in hypergraph_response.headers.get("content-type", ""):
             issues.append("hypergraph manuscript: response is not application/pdf")
 
+        if page.get_by_text("University-level Second Prize in the Mathematical Modeling Competition", exact=True).count() != 1:
+            issues.append("battery modeling competition: university-level second prize is missing")
+
         battery_paper_path = "/assets/documents/lithium-ion-battery-rul-cascade-utilization-modeling.pdf"
         page.goto(f"{BASE_URL}/projects/battery-rul/", wait_until="networkidle")
         battery_paper_links = page.locator(f'a[href$="{battery_paper_path}"]')
@@ -331,3 +334,4 @@ def run():
 
 if __name__ == "__main__":
     run()
+

@@ -84,11 +84,13 @@
     },
     {
       "id": "battery.competition.result",
-      "publicText": "",
-      "status": "needs_confirmation",
+      "publicText": "University-level Second Prize in the Mathematical Modeling Competition",
+      "status": "verified",
       "sourceType": "user_confirmation",
-      "lastVerified": "2026-08-22",
-      "public": false
+      "lastVerified": "2026-08-28",
+      "public": true
     }
-  ]
+  ],
+  "competitionResult": "University-level Second Prize in the Mathematical Modeling Competition"
 }
+
