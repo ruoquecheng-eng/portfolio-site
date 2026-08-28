@@ -1,26 +1,27 @@
 {
   "schemaVersion": 1,
   "slug": "hypergraph-tensor",
-  "title": "Edge-Local Spectral Information and Size-Dependent Scaling in Edge-Size-Weighted Nonuniform Hypergraph Tensors",
-  "author": "Wanzheng Ning",
+  "title": "Beyond Vertex Profiles: Edge-Local Spectral Information and Size-Dependent Scaling in Nonuniform Hypergraph Tensors",
   "statusText": "Manuscript in preparation",
-  "summary": "The current manuscript draft examines local combinatorial information in a size-homogeneous weighted nonuniform hypergraph adjacency tensor. It develops a neighbor-profile spectral bound and studies edge-local separation, equality, quotient reduction, and loose-star scaling within that tensor model.",
+  "summary": "Vertex edge-size profiles determine every slice row sum in the support-exact edge-total-mass tensor, but they do not determine spectral radius even when the complete labelled 2-edge layer is fixed. The manuscript proves a five-vertex minimal separation valid for every positive choice of 2- and 3-edge masses, develops an explicit edge-local Collatz–Wielandt bound with equality and defect theory, and derives size-dependent loose-star growth laws.",
   "objects": [
     "Nonuniform hypergraphs",
     "Nonnegative tensors",
     "Spectral radius",
-    "Edge-size profiles"
+    "Vertex edge-size profiles",
+    "Edge-local incidence arrangements"
   ],
   "techniques": [
-    "Collatz-Wielandt scaling",
-    "Edge-local profile analysis",
-    "Explicit separation constructions",
+    "Collatz–Wielandt row-sum scaling",
+    "Robust profile-equivalent separation constructions",
+    "Exact equality characterization and defect estimates",
     "Tensor-equitable quotient reduction",
-    "Loose-star asymptotics"
+    "Loose-star asymptotics and balance laws"
   ],
   "keywords": [
     "nonnegative tensors",
     "spectral radius",
+    "Collatz–Wielandt bounds",
     "nonuniform hypergraphs",
     "edge-local profiles",
     "loose-star asymptotics"
@@ -28,10 +29,10 @@
   "facts": [
     {
       "id": "hypergraph.summary",
-      "publicText": "The current manuscript draft examines local combinatorial information in a size-homogeneous weighted nonuniform hypergraph adjacency tensor. It develops a neighbor-profile spectral bound and studies edge-local separation, equality, quotient reduction, and loose-star scaling within that tensor model.",
+      "publicText": "Vertex edge-size profiles determine every slice row sum in the support-exact edge-total-mass tensor, but they do not determine spectral radius even when the complete labelled 2-edge layer is fixed. The manuscript proves a five-vertex minimal separation valid for every positive choice of 2- and 3-edge masses, develops an explicit edge-local Collatz–Wielandt bound with equality and defect theory, and derives size-dependent loose-star growth laws.",
       "status": "verified",
       "sourceType": "current_manuscript",
-      "lastVerified": "2026-08-23",
+      "lastVerified": "2026-08-28",
       "public": true,
       "display": false
     },
@@ -40,15 +41,15 @@
       "publicText": "Manuscript in preparation",
       "status": "verified",
       "sourceType": "current_manuscript",
-      "lastVerified": "2026-08-22",
+      "lastVerified": "2026-08-28",
       "public": true
     },
     {
       "id": "hypergraph.authorship",
-      "publicText": "Single-author manuscript",
+      "publicText": "Wanzheng Ning — first and corresponding author · Qianzhi Ao — second author",
       "status": "verified",
-      "sourceType": "manuscript",
-      "lastVerified": "2026-08-22",
+      "sourceType": "current_manuscript",
+      "lastVerified": "2026-08-28",
       "public": true
     },
     {
@@ -61,11 +62,33 @@
     },
     {
       "id": "hypergraph.pdf",
-      "publicText": "",
-      "status": "not_public_yet",
+      "publicText": "Current 27-page manuscript PDF available for public reading",
+      "status": "verified",
       "sourceType": "publication_permission",
-      "lastVerified": "2026-08-22",
-      "public": false
+      "lastVerified": "2026-08-28",
+      "public": true
+    },
+    {
+      "id": "hypergraph.title",
+      "publicText": "Beyond Vertex Profiles: Edge-Local Spectral Information and Size-Dependent Scaling in Nonuniform Hypergraph Tensors",
+      "status": "verified",
+      "sourceType": "current_manuscript",
+      "lastVerified": "2026-08-28",
+      "public": true
     }
-  ]
+  ],
+  "authors": [
+    "Wanzheng Ning",
+    "Qianzhi Ao"
+  ],
+  "authorshipText": "Wanzheng Ning — first and corresponding author · Qianzhi Ao — second author",
+  "manuscript": {
+    "label": "Current manuscript",
+    "file": "documents/beyond-vertex-profiles-nonuniform-hypergraph-tensors.pdf",
+    "pages": 27,
+    "date": "August 2026",
+    "status": "verified",
+    "lastVerified": "2026-08-28",
+    "public": true
+  }
 }
