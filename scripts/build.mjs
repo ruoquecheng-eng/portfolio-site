@@ -660,42 +660,58 @@ const engineerPlusDemo = () => `<!doctype html>
 
 const researchStatusFor = (record) => record === jensen ? jensenStatus : hypergraphStatus;
 const researchSummaryFor = (record) => record === jensen ? jensenSummary : hypergraphSummary;
+const researchAuthorshipFor = (record) => record === jensen
+  ? "Single-author manuscript"
+  : "Two-author manuscript · Wanzheng Ning is first and corresponding author";
+const researchBylineFor = (record) => record === jensen
+  ? profileName
+  : hypergraph.authorshipText;
 
 const researchItem = ({ depth, href, record, question }) => `
   <article class="research-item">
-    <div>${status(researchStatusFor(record))}<p class="project-type">Single-author manuscript</p></div>
+    <div>${status(researchStatusFor(record))}<p class="project-type">${escapeHtml(researchAuthorshipFor(record))}</p></div>
     <div><h2><a href="${local(depth, href)}">${escapeHtml(record.title)}</a></h2><p>${escapeHtml(question)}</p><p>${escapeHtml(researchSummaryFor(record))}</p><a class="text-link" href="${local(depth, href)}">Read research summary <span aria-hidden="true">→</span></a></div>
   </article>`;
 
 const researchBody = `
   <section class="page-hero research-hero">
-    <div><p class="hero-kicker">Mathematical research</p><h1>Research</h1><p>Two single-author manuscripts on real-rooted polynomials and spectral information in nonuniform hypergraph tensors.</p></div>
+    <div><p class="hero-kicker">Mathematical research</p><h1>Research</h1><p>One single-author manuscript and one first-author collaboration on real-rooted polynomials and spectral information in nonuniform hypergraph tensors.</p></div>
     <div class="spectral-mark" aria-hidden="true"><span>ξ</span><span>ρ</span><span>H</span></div>
   </section>
   <section class="section research-list">
     ${researchItem({depth: 1, href: "research/jensen-polynomials/", record: jensen, question: "How far can effective hyperbolicity of xi-associated Jensen polynomials be pushed toward the cubic endpoint scale?"})}
     ${researchItem({depth: 1, href: "research/hypergraph-tensor/", record: hypergraph, question: "What spectral information is carried by the arrangement of vertex profiles inside nonuniform hyperedges?"})}
   </section>
-  <section class="section research-policy"><div class="section-heading"><p>Publication policy</p><h2>Status is stated at the lowest verified level.</h2></div><p>Submitted does not mean accepted or published. Manuscript in preparation does not imply submission. Only files explicitly approved for public release are linked; the first submitted Jensen manuscript is available, while the hypergraph draft remains private.</p></section>`;
+  <section class="section research-policy"><div class="section-heading"><p>Publication policy</p><h2>Status and authorship are stated at the lowest verified level.</h2></div><p>Submitted does not mean accepted or published. Manuscript in preparation does not imply submission. Only files explicitly approved for public release are linked; the first submitted Jensen manuscript and the current hypergraph manuscript are available, with the hypergraph author order stated explicitly.</p></section>`;
 
 const manuscriptFeature = (record) => {
   const manuscript = record.manuscript;
   if (!manuscript || manuscript.public !== true || manuscript.status !== "verified") return "";
+  const isJensen = record === jensen;
   const manuscriptHref = local(2, `assets/${manuscript.file}`);
-  const previewHref = local(2, `assets/${manuscript.preview}`);
   const downloadName = path.posix.basename(manuscript.file);
+  const ariaLabel = isJensen ? "Open the submitted Jensen manuscript PDF" : "Open the current hypergraph tensor manuscript PDF";
+  const previewAlt = isJensen ? "Title page of the submitted Jensen polynomial manuscript" : "Title page of the current hypergraph tensor manuscript";
+  const caption = isJensen ? "Title page from the first submitted version." : "Title page of the current two-author manuscript.";
+  const preview = manuscript.preview ? `
+        <figure class="manuscript-preview">
+          <a href="${manuscriptHref}" aria-label="${escapeHtml(ariaLabel)}">
+            <img src="${local(2, `assets/${manuscript.preview}`)}" width="${manuscript.previewWidth}" height="${manuscript.previewHeight}" alt="${escapeHtml(previewAlt)}" loading="lazy" decoding="async">
+          </a>
+          <figcaption>${escapeHtml(caption)}</figcaption>
+        </figure>` : "";
+  const label = isJensen ? `Submitted manuscript · ${manuscript.date}` : `Current manuscript · ${manuscript.date}`;
+  const heading = isJensen ? "Read the first submitted version." : "Read the current manuscript.";
+  const note = isJensen
+    ? `This ${manuscript.pages}-page file documents the work as submitted. Making it available here does not indicate peer-review acceptance or publication.`
+    : `This ${manuscript.pages}-page file lists Wanzheng Ning as first and corresponding author and Qianzhi Ao as second author. Public availability does not indicate journal submission, acceptance, or publication.`;
   return `
       <section class="section manuscript-feature" aria-labelledby="manuscript-heading">
-        <figure class="manuscript-preview">
-          <a href="${manuscriptHref}" aria-label="Open the submitted manuscript PDF">
-            <img src="${previewHref}" width="${manuscript.previewWidth}" height="${manuscript.previewHeight}" alt="Title page of the submitted Jensen polynomial manuscript" loading="lazy" decoding="async">
-          </a>
-          <figcaption>Title page from the first submitted version.</figcaption>
-        </figure>
+        ${preview}
         <div class="manuscript-copy">
-          <p class="manuscript-label">Submitted manuscript · ${escapeHtml(manuscript.date)}</p>
-          <h2 id="manuscript-heading">Read the first submitted version.</h2>
-          <p>This ${escapeHtml(manuscript.pages)}-page file documents the work as submitted. Making it available here does not indicate peer-review acceptance or publication.</p>
+          <p class="manuscript-label">${escapeHtml(label)}</p>
+          <h2 id="manuscript-heading">${escapeHtml(heading)}</h2>
+          <p>${escapeHtml(note)}</p>
           <div class="manuscript-actions">
             <a class="button" href="${manuscriptHref}" target="_blank" rel="noopener">View manuscript <span aria-hidden="true">↗</span></a>
             <a class="text-link" href="${manuscriptHref}" download="${escapeHtml(downloadName)}">Download PDF <span aria-hidden="true">↓</span></a>
@@ -714,18 +730,18 @@ const researchDetailBody = (record, kind) => {
     : `<div class="formula" role="img" aria-label="Neighbor profile spectral bound"><span>ρ(A<sup>η</sup>(H)) ≤ B<sub>np</sub><sup>η</sup>(H) ≤ max<sub>i</sub> R<sub>i</sub><sup>η</sup></span><strong>vertex profiles → edge-local arrangement → spectral information</strong></div>`;
   const contribution = isJensen
     ? "The submitted manuscript presents a proof of a subcritical criterion for every positive epsilon, combines exact Hermite reconstruction with finite-difference and shifted-saddle estimates, and explicitly leaves the endpoint M comparable to d cubed untreated."
-    : "The current draft develops profile-explicit row sums, a neighbor-profile bound, examples separating equal vertex profiles by edge-local arrangement, a defect and equality analysis, an equitable quotient condition, and loose-star scaling laws.";
+    : "The current manuscript proves robust spectral non-determination beyond complete labelled vertex profiles, including a five-vertex minimality result and separation for every positive choice of 2- and 3-edge masses. It then develops the edge-local bound, exact equality and defect theory, comparisons with classical uniform bounds, quotient reductions, and size-dependent loose-star scaling laws.";
   return `
     <article class="research-paper">
       <header class="paper-hero">
-        <div>${status(researchStatusFor(record))}<p class="project-type">Single-author research manuscript</p><h1>${escapeHtml(record.title)}</h1><p>${escapeHtml(profileName)}</p></div>
+        <div>${status(researchStatusFor(record))}<p class="project-type">${escapeHtml(researchAuthorshipFor(record))}</p><h1>${escapeHtml(record.title)}</h1><p>${escapeHtml(researchBylineFor(record))}</p></div>
       </header>
       ${manuscriptFeature(record)}
       <section class="section paper-question"><div class="section-heading"><p>Research question</p><h2>${escapeHtml(question)}</h2></div>${formula}</section>
       <section class="section split-section"><div><h2>Non-specialist summary</h2><p>${escapeHtml(researchSummaryFor(record))}</p></div><div><h2>Current contribution</h2><p>${escapeHtml(contribution)}</p></div></section>
       <section class="section"><div class="two-column-lists"><div><h2>Mathematical objects</h2>${textList(record.objects)}</div><div><h2>Core techniques</h2>${textList(record.techniques)}</div></div></section>
       <section class="section keyword-section"><h2>Keywords</h2><ul class="keyword-list">${record.keywords.map((keyword) => `<li>${escapeHtml(keyword)}</li>`).join("")}</ul></section>
-      <section class="section limitations paper-access"><div><h2>Access and status boundary</h2><p>${isJensen ? "The first submitted version is available above. Its public availability does not change the verified submission status or imply acceptance or publication." : "The portfolio does not provide a manuscript download. The status above is the lowest level supported by the current file evidence and should not be read as acceptance or publication."}</p></div><a class="button-secondary" href="${local(2, "research/")}">Back to research</a></section>
+      <section class="section limitations paper-access"><div><h2>Access and status boundary</h2><p>${isJensen ? "The first submitted version is available above. Its public availability does not change the verified submission status or imply acceptance or publication." : "The current manuscript is available above with Wanzheng Ning listed as first and corresponding author and Qianzhi Ao as second author. Public availability does not imply journal submission, acceptance, or publication."}</p></div><a class="button-secondary" href="${local(2, "research/")}">Back to research</a></section>
     </article>`;
 };
 
@@ -736,7 +752,7 @@ const resumeBody = `
       <button class="button print-button" type="button" onclick="window.print()">Print or save as PDF</button>
     </header>
     <section class="resume-section"><h2>Education</h2><div class="resume-entry"><div><strong>${escapeHtml(publicFacts(education).find((fact) => fact.id === "education.institution")?.publicText || "")}</strong><span>Qinhuangdao, China</span></div><p>${escapeHtml(publicFacts(education).find((fact) => fact.id === "education.program")?.publicText || "")}</p></div></section>
-    <section class="resume-section"><h2>Research</h2><div class="resume-entry"><div><strong>${escapeHtml(jensen.title)}</strong><span>${escapeHtml(jensenStatus)}</span></div><p>Single-author work on effective hyperbolicity, Hermite reconstruction, finite differences, and shifted-saddle analysis.</p></div><div class="resume-entry"><div><strong>${escapeHtml(hypergraph.title)}</strong><span>${escapeHtml(hypergraphStatus)}</span></div><p>Single-author work on edge-local information, nonnegative tensor bounds, quotient reduction, and loose-star asymptotics.</p></div></section>
+    <section class="resume-section"><h2>Research</h2><div class="resume-entry"><div><strong>${escapeHtml(jensen.title)}</strong><span>${escapeHtml(jensenStatus)}</span></div><p>Single-author work on effective hyperbolicity, Hermite reconstruction, finite differences, and shifted-saddle analysis.</p></div><div class="resume-entry"><div><strong>${escapeHtml(hypergraph.title)}</strong><span>${escapeHtml(hypergraphStatus)}</span></div><p>First- and corresponding-author work with Qianzhi Ao as second author, covering robust profile non-determination, edge-local tensor bounds, quotient reduction, and loose-star asymptotics.</p></div></section>
     <section class="resume-section"><h2>Projects</h2><div class="resume-entry"><div><strong>NetSage</strong><span>Kotlin · Jetpack Compose · FastAPI</span></div><p>Local-first, rule-based Android network diagnosis with ranked causes, matched evidence, repair suggestions, history, favorites, and troubleshooting references.</p></div><div class="resume-entry"><div><strong>Battery RUL and cascade utilization modeling</strong><span>Python · survival modeling · graph optimization</span></div><p>Q1 to Q4 workflow on fully simulated data generated with semi-empirical assumptions, covering degradation stages, SOH/RUL, compatibility graphs, MILP grouping, and robust stress testing.</p></div><div class="resume-entry"><div><strong>Australian high-speed rail design and management concept</strong><span>Five-person carbody team · Proposed Design</span></div><p>Contributed to a lightweight composite carriage concept and independently developed a five-page front-end prototype for capital pooling, risk simulation, compliance workflow, and impact reporting using illustrative data.</p></div></section>
     <section class="resume-section"><h2>Competitions</h2><div class="resume-entry"><div><strong>Mathematical modeling project</strong><span>Competition modeling project</span></div><p>Four-part battery reliability and utilization workflow on fully simulated data generated with semi-empirical assumptions.</p></div><div class="resume-entry"><div><strong>Scenic Guide Digital Human</strong><span>Competition software project</span></div><p>Tourism guide prototype to which I contributed, with conversational and voice interaction, route guidance, narration, and knowledge management.</p></div></section>
     <section class="resume-section"><h2>Technical skills</h2><dl class="skills-context"><div><dt>Network and mobile</dt><dd>Kotlin, Jetpack Compose, Android, network diagnostics, DNS/TLS/HTTP troubleshooting concepts</dd></div><div><dt>Modeling and research</dt><dd>Python, change-point regression, survival modeling, graph methods, mathematical optimization, asymptotic analysis, LaTeX</dd></div><div><dt>Software</dt><dd>FastAPI, JSON, Git</dd></div></dl></section>
@@ -802,7 +818,7 @@ const routes = [
   {
     file: "research/hypergraph-tensor/index.html",
     route: "/research/hypergraph-tensor/",
-    html: page({title: "Edge-Local Spectra of Nonuniform Hypergraph Tensors", description: "Research summary for a manuscript in preparation on edge-local spectral information and size-dependent scaling.", route: "/research/hypergraph-tensor/", depth: 2, active: "research", body: researchDetailBody(hypergraph, "hypergraph"), schema: {"@context": "https://schema.org", "@type": "ScholarlyArticle", headline: hypergraph.title, author: {"@type": "Person", name: profileName}, keywords: hypergraph.keywords.join(", "), description: hypergraphSummary}})
+    html: page({title: "Edge-Local Spectra of Nonuniform Hypergraph Tensors", description: "Research summary for a manuscript in preparation on edge-local spectral information and size-dependent scaling.", route: "/research/hypergraph-tensor/", depth: 2, active: "research", body: researchDetailBody(hypergraph, "hypergraph"), schema: {"@context": "https://schema.org", "@type": "ScholarlyArticle", headline: hypergraph.title, author: hypergraph.authors.map((name) => ({"@type": "Person", name})), keywords: hypergraph.keywords.join(", "), description: hypergraphSummary}})
   },
   {
     file: "resume/index.html",

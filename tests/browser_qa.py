@@ -144,6 +144,19 @@ def run():
         elif "application/pdf" not in manuscript_response.headers.get("content-type", ""):
             issues.append("jensen manuscript: response is not application/pdf")
 
+        hypergraph_manuscript_path = "/assets/documents/beyond-vertex-profiles-nonuniform-hypergraph-tensors.pdf"
+        page.goto(f"{BASE_URL}/research/hypergraph-tensor/", wait_until="networkidle")
+        hypergraph_links = page.locator(f'a[href$="{hypergraph_manuscript_path}"]')
+        if hypergraph_links.count() < 2:
+            issues.append("hypergraph manuscript: expected view and download links")
+        if page.get_by_text("Wanzheng Ning — first and corresponding author · Qianzhi Ao — second author", exact=True).count() != 1:
+            issues.append("hypergraph manuscript: author order or roles are missing")
+        hypergraph_response = page.request.get(f"{BASE_URL}{hypergraph_manuscript_path}")
+        if not hypergraph_response.ok:
+            issues.append(f"hypergraph manuscript: HTTP {hypergraph_response.status}")
+        elif "application/pdf" not in hypergraph_response.headers.get("content-type", ""):
+            issues.append("hypergraph manuscript: response is not application/pdf")
+
         battery_paper_path = "/assets/documents/lithium-ion-battery-rul-cascade-utilization-modeling.pdf"
         page.goto(f"{BASE_URL}/projects/battery-rul/", wait_until="networkidle")
         battery_paper_links = page.locator(f'a[href$="{battery_paper_path}"]')

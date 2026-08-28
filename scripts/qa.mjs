@@ -29,6 +29,7 @@ const defaultOgUrl = `${siteBaseUrl}assets/images/og-portfolio.png`;
 const allowedPublicPdfs = new Set([
   'assets/documents/subcritical-hyperbolicity-jensen-polynomials-riemann-xi.pdf',
   'assets/documents/lithium-ion-battery-rul-cascade-utilization-modeling.pdf',
+  'assets/documents/beyond-vertex-profiles-nonuniform-hypergraph-tensors.pdf',
 ]);
 
 const requiredPages = new Map([
@@ -68,6 +69,7 @@ const requiredAssets = new Map([
   ['Scenic Guide visitor interface', ['assets/images/scenic-guide-visitor.webp']],
   ['Jensen manuscript title page', ['assets/images/jensen-manuscript-title-page.png']],
   ['Jensen submitted manuscript', ['assets/documents/subcritical-hyperbolicity-jensen-polynomials-riemann-xi.pdf']],
+  ['Hypergraph current manuscript', ['assets/documents/beyond-vertex-profiles-nonuniform-hypergraph-tensors.pdf']],
   ['Portfolio Open Graph image', ['assets/images/og-portfolio.png']],
 ]);
 
@@ -458,8 +460,15 @@ function checkResearchAndProjectFacts(pageFiles, htmlByName) {
   if (/\b(?:submitted|under review|accepted|published)\b/i.test(hypergraphText)) {
     addIssue('truthfulness', 'Hypergraph Tensor page exposes an unsupported publication status');
   }
-  if (/\.pdf(?:[?#]|$)/i.test(hypergraphHtml)) {
-    addIssue('privacy', 'Hypergraph Tensor page must not expose a manuscript PDF');
+  if (!/first and corresponding author/i.test(hypergraphText) || !/Qianzhi Ao\s+(?:as\s+)?second author/i.test(hypergraphText)) {
+    addIssue('truthfulness', 'Hypergraph Tensor page must state Wanzheng Ning as first and corresponding author and Qianzhi Ao as second author');
+  }
+  const hypergraphPdfLinks = (hypergraphHtml.match(/<a\b[^>]*>/gi) ?? [])
+    .map((tag) => attribute(tag, 'href') ?? '')
+    .filter((href) => /\.pdf(?:[?#]|$)/i.test(href));
+  const hypergraphPdfPath = 'assets/documents/beyond-vertex-profiles-nonuniform-hypergraph-tensors.pdf';
+  if (hypergraphPdfLinks.filter((href) => href.endsWith(hypergraphPdfPath)).length < 2) {
+    addIssue('research', 'Hypergraph Tensor page must link the approved manuscript from its view and download actions');
   }
 }
 
@@ -501,7 +510,7 @@ function checkFactGovernance(pageFiles, htmlByName) {
     'rail.summary', 'rail.role', 'rail.components.engineeringDesign.context', 'rail.components.engineeringDesign.role',
     'rail.components.engineeringDesign.summary', 'rail.components.engineerPlus.context', 'rail.components.engineerPlus.role',
     'rail.components.engineerPlus.summary', 'scenic.summary', 'jensen.statusText', 'jensen.summary',
-    'hypergraph.statusText', 'hypergraph.summary',
+    'hypergraph.statusText', 'hypergraph.summary', 'hypergraph.title', 'hypergraph.authorshipText',
   ]);
   const seenBindings = new Set();
 
