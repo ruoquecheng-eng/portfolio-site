@@ -149,8 +149,10 @@ def run():
         hypergraph_links = page.locator(f'a[href$="{hypergraph_manuscript_path}"]')
         if hypergraph_links.count() < 2:
             issues.append("hypergraph manuscript: expected view and download links")
-        if page.get_by_text("Wanzheng Ning — first and corresponding author · Qianzhi Ao — second author", exact=True).count() != 1:
+        if page.get_by_text("Wanzheng Ning — first and corresponding author · Qianzhi Ao — second author · Haoxuan Hu, Hongbo Zhu, Junjie Wang, and Guoyi Li — shared third authorship", exact=True).count() != 1:
             issues.append("hypergraph manuscript: author order or roles are missing")
+        if page.get_by_text("Submitted to Linear and Multilinear Algebra", exact=True).count() != 1:
+            issues.append("hypergraph manuscript: submitted LMA status is missing")
         hypergraph_response = page.request.get(f"{BASE_URL}{hypergraph_manuscript_path}")
         if not hypergraph_response.ok:
             issues.append(f"hypergraph manuscript: HTTP {hypergraph_response.status}")

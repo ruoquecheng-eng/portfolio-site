@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "slug": "hypergraph-tensor",
   "title": "Beyond Vertex Profiles: Edge-Local Spectral Information and Size-Dependent Scaling in Nonuniform Hypergraph Tensors",
-  "statusText": "Manuscript in preparation",
+  "statusText": "Submitted to Linear and Multilinear Algebra",
   "summary": "Vertex edge-size profiles determine every slice row sum in the support-exact edge-total-mass tensor, but they do not determine spectral radius even when the complete labelled 2-edge layer is fixed. The manuscript proves a five-vertex minimal separation valid for every positive choice of 2- and 3-edge masses, develops an explicit edge-local Collatz–Wielandt bound with equality and defect theory, and derives size-dependent loose-star growth laws.",
   "objects": [
     "Nonuniform hypergraphs",
@@ -38,34 +38,34 @@
     },
     {
       "id": "hypergraph.status",
-      "publicText": "Manuscript in preparation",
+      "publicText": "Submitted to Linear and Multilinear Algebra",
       "status": "verified",
-      "sourceType": "current_manuscript",
-      "lastVerified": "2026-08-28",
+      "sourceType": "user_confirmation",
+      "lastVerified": "2026-08-29",
       "public": true
     },
     {
       "id": "hypergraph.authorship",
-      "publicText": "Wanzheng Ning — first and corresponding author · Qianzhi Ao — second author",
+      "publicText": "Wanzheng Ning — first and corresponding author · Qianzhi Ao — second author · Haoxuan Hu, Hongbo Zhu, Junjie Wang, and Guoyi Li — shared third authorship",
       "status": "verified",
       "sourceType": "current_manuscript",
-      "lastVerified": "2026-08-28",
+      "lastVerified": "2026-08-29",
       "public": true
     },
     {
       "id": "hypergraph.venue",
-      "publicText": "",
-      "status": "needs_confirmation",
+      "publicText": "Linear and Multilinear Algebra",
+      "status": "verified",
       "sourceType": "user_confirmation",
-      "lastVerified": "2026-08-22",
-      "public": false
+      "lastVerified": "2026-08-29",
+      "public": true
     },
     {
       "id": "hypergraph.pdf",
-      "publicText": "Current 27-page manuscript PDF available for public reading",
+      "publicText": "Submitted 27-page manuscript PDF available for public reading",
       "status": "verified",
       "sourceType": "publication_permission",
-      "lastVerified": "2026-08-28",
+      "lastVerified": "2026-08-29",
       "public": true
     },
     {
@@ -79,16 +79,20 @@
   ],
   "authors": [
     "Wanzheng Ning",
-    "Qianzhi Ao"
+    "Qianzhi Ao",
+    "Haoxuan Hu",
+    "Hongbo Zhu",
+    "Junjie Wang",
+    "Guoyi Li"
   ],
-  "authorshipText": "Wanzheng Ning — first and corresponding author · Qianzhi Ao — second author",
+  "authorshipText": "Wanzheng Ning — first and corresponding author · Qianzhi Ao — second author · Haoxuan Hu, Hongbo Zhu, Junjie Wang, and Guoyi Li — shared third authorship",
   "manuscript": {
-    "label": "Current manuscript",
+    "label": "Submitted manuscript",
     "file": "documents/beyond-vertex-profiles-nonuniform-hypergraph-tensors.pdf",
     "pages": 27,
     "date": "August 2026",
     "status": "verified",
-    "lastVerified": "2026-08-28",
+    "lastVerified": "2026-08-29",
     "public": true
   }
 }
