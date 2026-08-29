@@ -71,6 +71,7 @@ const profileSummary = publicClaim("profile", "hero.summary");
 const netsageSummary = publicClaim("netsage", "summary");
 const batteryDataBoundary = publicClaim("battery", "dataBoundary");
 const batterySummary = publicClaim("battery", "summary");
+const batteryCompetitionResult = publicClaim("battery", "competitionResult");
 const railSummary = publicClaim("rail", "summary");
 const railRole = publicClaim("rail", "role");
 const railEngineeringContext = publicClaim("rail", "components.engineeringDesign.context");
@@ -218,7 +219,7 @@ const homeBody = `
       type: `${battery.type} · ${batteryDataBoundary}`,
       title: battery.title,
       summary: batterySummary,
-      meta: "Change-point regression · Weibull AFT · compatibility graph · MILP",
+      meta: "${batteryCompetitionResult} · Change-point regression · Weibull AFT · compatibility graph · MILP",
       visual: `<div class="project-visual project-visual-battery"><img src="assets/visuals/battery-workflow.svg" width="1240" height="650" alt="Conceptual four-stage battery modeling workflow" loading="lazy"></div>`
     })}
     <article class="project-row research-preview">
@@ -359,7 +360,7 @@ const batteryBody = `
         <p class="hero-kicker">Primary modeling case study</p>
         <h1>${escapeHtml(battery.title)}</h1>
         <p>${escapeHtml(batterySummary)}</p>
-        <div class="case-meta">${status(battery.type)}${status(batteryDataBoundary)}${status("Internal holdout results")}</div>
+        <div class="case-meta">${status(battery.type)}${status(batteryCompetitionResult)}${status(batteryDataBoundary)}${status("Internal holdout results")}</div>
       </div>
       <img class="case-wide-visual" src="${local(2, "assets/visuals/battery-workflow.svg")}" width="1240" height="650" alt="Conceptual workflow connecting Q1 degradation analysis, Q2 prediction, Q3 grouping, and Q4 robust stress testing">
     </header>
@@ -754,7 +755,7 @@ const resumeBody = `
     <section class="resume-section"><h2>Education</h2><div class="resume-entry"><div><strong>${escapeHtml(publicFacts(education).find((fact) => fact.id === "education.institution")?.publicText || "")}</strong><span>Qinhuangdao, China</span></div><p>${escapeHtml(publicFacts(education).find((fact) => fact.id === "education.program")?.publicText || "")}</p></div></section>
     <section class="resume-section"><h2>Research</h2><div class="resume-entry"><div><strong>${escapeHtml(jensen.title)}</strong><span>${escapeHtml(jensenStatus)}</span></div><p>Single-author work on effective hyperbolicity, Hermite reconstruction, finite differences, and shifted-saddle analysis.</p></div><div class="resume-entry"><div><strong>${escapeHtml(hypergraph.title)}</strong><span>${escapeHtml(hypergraphStatus)}</span></div><p>First- and corresponding-author work with Qianzhi Ao as second author, covering robust profile non-determination, edge-local tensor bounds, quotient reduction, and loose-star asymptotics.</p></div></section>
     <section class="resume-section"><h2>Projects</h2><div class="resume-entry"><div><strong>NetSage</strong><span>Kotlin · Jetpack Compose · FastAPI</span></div><p>Local-first, rule-based Android network diagnosis with ranked causes, matched evidence, repair suggestions, history, favorites, and troubleshooting references.</p></div><div class="resume-entry"><div><strong>Battery RUL and cascade utilization modeling</strong><span>Python · survival modeling · graph optimization</span></div><p>Q1 to Q4 workflow on fully simulated data generated with semi-empirical assumptions, covering degradation stages, SOH/RUL, compatibility graphs, MILP grouping, and robust stress testing.</p></div><div class="resume-entry"><div><strong>Australian high-speed rail design and management concept</strong><span>Five-person carbody team · Proposed Design</span></div><p>Contributed to a lightweight composite carriage concept and independently developed a five-page front-end prototype for capital pooling, risk simulation, compliance workflow, and impact reporting using illustrative data.</p></div></section>
-    <section class="resume-section"><h2>Competitions</h2><div class="resume-entry"><div><strong>Mathematical modeling project</strong><span>Competition modeling project</span></div><p>Four-part battery reliability and utilization workflow on fully simulated data generated with semi-empirical assumptions.</p></div><div class="resume-entry"><div><strong>Scenic Guide Digital Human</strong><span>Competition software project</span></div><p>Tourism guide prototype to which I contributed, with conversational and voice interaction, route guidance, narration, and knowledge management.</p></div></section>
+    <section class="resume-section"><h2>Competitions</h2><div class="resume-entry"><div><strong>Mathematical modeling project</strong><span>${escapeHtml(batteryCompetitionResult)}</span></div><p>Four-part battery reliability and utilization workflow on fully simulated data generated with semi-empirical assumptions; received the stated university-level second prize.</p></div><div class="resume-entry"><div><strong>Scenic Guide Digital Human</strong><span>Competition software project</span></div><p>Tourism guide prototype to which I contributed, with conversational and voice interaction, route guidance, narration, and knowledge management.</p></div></section>
     <section class="resume-section"><h2>Technical skills</h2><dl class="skills-context"><div><dt>Network and mobile</dt><dd>Kotlin, Jetpack Compose, Android, network diagnostics, DNS/TLS/HTTP troubleshooting concepts</dd></div><div><dt>Modeling and research</dt><dd>Python, change-point regression, survival modeling, graph methods, mathematical optimization, asymptotic analysis, LaTeX</dd></div><div><dt>Software</dt><dd>FastAPI, JSON, Git</dd></div></dl></section>
     <section class="resume-section"><h2>Languages</h2><p>Chinese</p></section>
     <section class="resume-section resume-contact" id="github-accounts">
@@ -893,3 +894,4 @@ await writeFile(path.join(dist, "sitemap.xml"), `<?xml version="1.0" encoding="U
 await writeFile(path.join(dist, "manifest.webmanifest"), JSON.stringify({name: config.title, short_name: "WN Portfolio", start_url: config.basePath, display: "standalone", background_color: "#ffffff", theme_color: "#14243a", icons: []}, null, 2), "utf8");
 
 console.log(`Built ${routes.length} pages plus 404 into ${path.relative(root, dist)}.`);
+
