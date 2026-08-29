@@ -454,14 +454,14 @@ function checkResearchAndProjectFacts(pageFiles, htmlByName) {
 
   const hypergraphHtml = htmlByName.get(pageFiles.get('Hypergraph Tensor research')) ?? '';
   const hypergraphText = visibleText(hypergraphHtml);
-  if (!/Manuscript in preparation/i.test(hypergraphText)) {
-    addIssue('truthfulness', 'Hypergraph Tensor page must use the verified status: Manuscript in preparation');
+  if (!/Submitted to Linear and Multilinear Algebra/i.test(hypergraphText)) {
+    addIssue('truthfulness', 'Hypergraph Tensor page must use the verified status: Submitted to Linear and Multilinear Algebra');
   }
-  if (/\b(?:submitted|under review|accepted|published)\b/i.test(hypergraphText)) {
+  if (/\b(?:under review|accepted|published)\b/i.test(hypergraphText)) {
     addIssue('truthfulness', 'Hypergraph Tensor page exposes an unsupported publication status');
   }
-  if (!/first and corresponding author/i.test(hypergraphText) || !/Qianzhi Ao\s+(?:as\s+)?second author/i.test(hypergraphText)) {
-    addIssue('truthfulness', 'Hypergraph Tensor page must state Wanzheng Ning as first and corresponding author and Qianzhi Ao as second author');
+  if (!/first and corresponding author/i.test(hypergraphText) || !/Qianzhi Ao\s+(?:as\s+)?second author/i.test(hypergraphText) || !/shared third authorship/i.test(hypergraphText)) {
+    addIssue('truthfulness', 'Hypergraph Tensor page must state the verified author order and roles');
   }
   const hypergraphPdfLinks = (hypergraphHtml.match(/<a\b[^>]*>/gi) ?? [])
     .map((tag) => attribute(tag, 'href') ?? '')

@@ -663,7 +663,7 @@ const researchStatusFor = (record) => record === jensen ? jensenStatus : hypergr
 const researchSummaryFor = (record) => record === jensen ? jensenSummary : hypergraphSummary;
 const researchAuthorshipFor = (record) => record === jensen
   ? "Single-author manuscript"
-  : "Two-author manuscript · Wanzheng Ning is first and corresponding author";
+  : "Six-author manuscript · Wanzheng Ning is first and corresponding author";
 const researchBylineFor = (record) => record === jensen
   ? profileName
   : hypergraph.authorshipText;
@@ -683,17 +683,18 @@ const researchBody = `
     ${researchItem({depth: 1, href: "research/jensen-polynomials/", record: jensen, question: "How far can effective hyperbolicity of xi-associated Jensen polynomials be pushed toward the cubic endpoint scale?"})}
     ${researchItem({depth: 1, href: "research/hypergraph-tensor/", record: hypergraph, question: "What spectral information is carried by the arrangement of vertex profiles inside nonuniform hyperedges?"})}
   </section>
-  <section class="section research-policy"><div class="section-heading"><p>Publication policy</p><h2>Status and authorship are stated at the lowest verified level.</h2></div><p>Submitted does not mean accepted or published. Manuscript in preparation does not imply submission. Only files explicitly approved for public release are linked; the first submitted Jensen manuscript and the current hypergraph manuscript are available, with the hypergraph author order stated explicitly.</p></section>`;
+  <section class="section research-policy"><div class="section-heading"><p>Publication policy</p><h2>Status and authorship are stated at the lowest verified level.</h2></div><p>Submitted does not mean accepted or published. Manuscript in preparation does not imply submission. Only files explicitly approved for public release are linked; the submitted Jensen and hypergraph manuscripts are available, with the hypergraph author order stated explicitly.</p></section>`;
 
 const manuscriptFeature = (record) => {
   const manuscript = record.manuscript;
   if (!manuscript || manuscript.public !== true || manuscript.status !== "verified") return "";
   const isJensen = record === jensen;
+  const isSubmitted = isJensen || /^Submitted\b/.test(researchStatusFor(record));
   const manuscriptHref = local(2, `assets/${manuscript.file}`);
   const downloadName = path.posix.basename(manuscript.file);
-  const ariaLabel = isJensen ? "Open the submitted Jensen manuscript PDF" : "Open the current hypergraph tensor manuscript PDF";
-  const previewAlt = isJensen ? "Title page of the submitted Jensen polynomial manuscript" : "Title page of the current hypergraph tensor manuscript";
-  const caption = isJensen ? "Title page from the first submitted version." : "Title page of the current two-author manuscript.";
+  const ariaLabel = isJensen ? "Open the submitted Jensen manuscript PDF" : "Open the submitted hypergraph tensor manuscript PDF";
+  const previewAlt = isJensen ? "Title page of the submitted Jensen polynomial manuscript" : "Title page of the submitted hypergraph tensor manuscript";
+  const caption = isJensen ? "Title page from the first submitted version." : "Title page of the submitted manuscript.";
   const preview = manuscript.preview ? `
         <figure class="manuscript-preview">
           <a href="${manuscriptHref}" aria-label="${escapeHtml(ariaLabel)}">
@@ -701,11 +702,11 @@ const manuscriptFeature = (record) => {
           </a>
           <figcaption>${escapeHtml(caption)}</figcaption>
         </figure>` : "";
-  const label = isJensen ? `Submitted manuscript · ${manuscript.date}` : `Current manuscript · ${manuscript.date}`;
-  const heading = isJensen ? "Read the first submitted version." : "Read the current manuscript.";
-  const note = isJensen
+  const label = `${isSubmitted ? "Submitted" : "Current"} manuscript · ${manuscript.date}`;
+  const heading = isSubmitted ? (isJensen ? "Read the first submitted version." : "Read the submitted manuscript.") : "Read the current manuscript.";
+  const note = isSubmitted
     ? `This ${manuscript.pages}-page file documents the work as submitted. Making it available here does not indicate peer-review acceptance or publication.`
-    : `This ${manuscript.pages}-page file lists Wanzheng Ning as first and corresponding author and Qianzhi Ao as second author. Public availability does not indicate journal submission, acceptance, or publication.`;
+    : `This ${manuscript.pages}-page file is available for public reading. Public availability does not indicate journal submission, acceptance, or publication.`;
   return `
       <section class="section manuscript-feature" aria-labelledby="manuscript-heading">
         ${preview}
@@ -753,7 +754,7 @@ const resumeBody = `
       <button class="button print-button" type="button" onclick="window.print()">Print or save as PDF</button>
     </header>
     <section class="resume-section"><h2>Education</h2><div class="resume-entry"><div><strong>${escapeHtml(publicFacts(education).find((fact) => fact.id === "education.institution")?.publicText || "")}</strong><span>Qinhuangdao, China</span></div><p>${escapeHtml(publicFacts(education).find((fact) => fact.id === "education.program")?.publicText || "")}</p></div></section>
-    <section class="resume-section"><h2>Research</h2><div class="resume-entry"><div><strong>${escapeHtml(jensen.title)}</strong><span>${escapeHtml(jensenStatus)}</span></div><p>Single-author work on effective hyperbolicity, Hermite reconstruction, finite differences, and shifted-saddle analysis.</p></div><div class="resume-entry"><div><strong>${escapeHtml(hypergraph.title)}</strong><span>${escapeHtml(hypergraphStatus)}</span></div><p>First- and corresponding-author work with Qianzhi Ao as second author, covering robust profile non-determination, edge-local tensor bounds, quotient reduction, and loose-star asymptotics.</p></div></section>
+    <section class="resume-section"><h2>Research</h2><div class="resume-entry"><div><strong>${escapeHtml(jensen.title)}</strong><span>${escapeHtml(jensenStatus)}</span></div><p>Single-author work on effective hyperbolicity, Hermite reconstruction, finite differences, and shifted-saddle analysis.</p></div><div class="resume-entry"><div><strong>${escapeHtml(hypergraph.title)}</strong><span>${escapeHtml(hypergraphStatus)}</span></div><p>First- and corresponding-author work with Qianzhi Ao as second author and four shared third authors, covering robust profile non-determination, edge-local tensor bounds, quotient reduction, and loose-star asymptotics.</p></div></section>
     <section class="resume-section"><h2>Projects</h2><div class="resume-entry"><div><strong>NetSage</strong><span>Kotlin · Jetpack Compose · FastAPI</span></div><p>Local-first, rule-based Android network diagnosis with ranked causes, matched evidence, repair suggestions, history, favorites, and troubleshooting references.</p></div><div class="resume-entry"><div><strong>Battery RUL and cascade utilization modeling</strong><span>Python · survival modeling · graph optimization</span></div><p>Q1 to Q4 workflow on fully simulated data generated with semi-empirical assumptions, covering degradation stages, SOH/RUL, compatibility graphs, MILP grouping, and robust stress testing.</p></div><div class="resume-entry"><div><strong>Australian high-speed rail design and management concept</strong><span>Five-person carbody team · Proposed Design</span></div><p>Contributed to a lightweight composite carriage concept and independently developed a five-page front-end prototype for capital pooling, risk simulation, compliance workflow, and impact reporting using illustrative data.</p></div></section>
     <section class="resume-section"><h2>Competitions</h2><div class="resume-entry"><div><strong>Mathematical modeling project</strong><span>${escapeHtml(batteryCompetitionResult)}</span></div><p>Four-part battery reliability and utilization workflow on fully simulated data generated with semi-empirical assumptions; received the stated university-level second prize.</p></div><div class="resume-entry"><div><strong>Scenic Guide Digital Human</strong><span>Competition software project</span></div><p>Tourism guide prototype to which I contributed, with conversational and voice interaction, route guidance, narration, and knowledge management.</p></div></section>
     <section class="resume-section"><h2>Technical skills</h2><dl class="skills-context"><div><dt>Network and mobile</dt><dd>Kotlin, Jetpack Compose, Android, network diagnostics, DNS/TLS/HTTP troubleshooting concepts</dd></div><div><dt>Modeling and research</dt><dd>Python, change-point regression, survival modeling, graph methods, mathematical optimization, asymptotic analysis, LaTeX</dd></div><div><dt>Software</dt><dd>FastAPI, JSON, Git</dd></div></dl></section>
