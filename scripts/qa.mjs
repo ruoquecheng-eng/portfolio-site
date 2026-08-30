@@ -68,8 +68,9 @@ const requiredAssets = new Map([
   ['EngineerPlus impact dashboard module', ['assets/images/engineerplus-impact-dashboard.webp']],
   ['Scenic Guide visitor interface', ['assets/images/scenic-guide-visitor.webp']],
   ['Jensen manuscript title page', ['assets/images/jensen-manuscript-title-page.png']],
+  ['Hypergraph manuscript title page', ['assets/images/hypergraph-manuscript-title-page.png']],
   ['Jensen submitted manuscript', ['assets/documents/subcritical-hyperbolicity-jensen-polynomials-riemann-xi.pdf']],
-  ['Hypergraph current manuscript', ['assets/documents/beyond-vertex-profiles-nonuniform-hypergraph-tensors.pdf']],
+  ['Hypergraph submitted manuscript', ['assets/documents/beyond-vertex-profiles-nonuniform-hypergraph-tensors.pdf']],
   ['Portfolio Open Graph image', ['assets/images/og-portfolio.png']],
 ]);
 
@@ -350,6 +351,22 @@ function checkSensitiveContent(name, content) {
 }
 
 function checkResearchAndProjectFacts(pageFiles, htmlByName) {
+  const homeHtml = htmlByName.get(pageFiles.get('Home')) ?? '';
+  const homeResearchSummaryMatch = homeHtml.match(/<p\s+class=["']research-status-summary["'][^>]*>([\s\S]*?)<\/p>/i);
+  const homeResearchSummary = visibleText(homeResearchSummaryMatch?.[1] ?? '');
+  const submittedVenue = (statusText) => statusText.match(/^Submitted to\s+(.+)$/i)?.[1] ?? null;
+  const jensenVenue = submittedVenue(sourceRecords.jensen.statusText);
+  const hypergraphVenue = submittedVenue(sourceRecords.hypergraph.statusText);
+  const expectedHomeResearchSummary = jensenVenue && hypergraphVenue
+    ? `Two manuscripts are currently submitted: one to ${jensenVenue} and one to ${hypergraphVenue}.`
+    : `Current verified statuses: Jensen-polynomial research — ${sourceRecords.jensen.statusText}; hypergraph-tensor research — ${sourceRecords.hypergraph.statusText}.`;
+  if (homeResearchSummary !== expectedHomeResearchSummary) {
+    addIssue('truthfulness', 'Home research status summary is not synchronized with verified research statuses');
+  }
+  if (/^Submitted\b/i.test(sourceRecords.hypergraph.statusText) && /hypergraph[\s\S]{0,180}in preparation|in preparation[\s\S]{0,180}hypergraph/i.test(visibleText(homeHtml))) {
+    addIssue('truthfulness', 'Home still describes the submitted Hypergraph manuscript as in preparation');
+  }
+
   const battery = htmlByName.get(pageFiles.get('Battery RUL case study'));
   const batteryText = visibleText(battery ?? '');
   if (!/simulated/i.test(batteryText) || !/semi[- ]empirical/i.test(batteryText)) {
@@ -460,7 +477,7 @@ function checkResearchAndProjectFacts(pageFiles, htmlByName) {
   if (/\b(?:under review|accepted|published)\b/i.test(hypergraphText)) {
     addIssue('truthfulness', 'Hypergraph Tensor page exposes an unsupported publication status');
   }
-  if (!/first and corresponding author/i.test(hypergraphText) || !/Qianzhi Ao\s+(?:as\s+)?second author/i.test(hypergraphText) || !/shared third authorship/i.test(hypergraphText)) {
+  if (!hypergraphText.includes(sourceRecords.hypergraph.authorshipText)) {
     addIssue('truthfulness', 'Hypergraph Tensor page must state the verified author order and roles');
   }
   const hypergraphPdfLinks = (hypergraphHtml.match(/<a\b[^>]*>/gi) ?? [])
@@ -719,4 +736,3 @@ main().catch((error) => {
   console.error(`QA crashed: ${error.stack ?? error.message}`);
   process.exitCode = 1;
 });
-

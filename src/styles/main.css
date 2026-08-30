@@ -1167,6 +1167,22 @@ button.button-secondary:hover {
   height: auto;
 }
 
+@media (min-width: 56.25rem) {
+  .battery-figure-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: clamp(1.5rem, 3vw, 2.5rem);
+  }
+
+  .battery-figure-grid .figure {
+    margin: 0;
+  }
+
+  .battery-figure-grid .figure:first-child {
+    grid-column: 1 / -1;
+  }
+}
+
 .research-mini-list {
   border-top: 1px solid var(--line);
 }
@@ -2390,7 +2406,7 @@ button.button-secondary:hover {
 
   @page {
     size: A4;
-    margin: 14mm 15mm 16mm;
+    margin: 10mm 13mm 11mm;
   }
 
   body {
@@ -2470,13 +2486,13 @@ button.button-secondary:hover {
 
   .resume {
     width: 100%;
-    font-size: 8.25pt;
-    line-height: 1.25;
+    font-size: 8.8pt;
+    line-height: 1.17;
   }
 
   .resume-header {
     display: block;
-    padding-bottom: 3mm;
+    padding-bottom: 2mm;
   }
 
   .resume-header .hero-kicker {
@@ -2489,7 +2505,7 @@ button.button-secondary:hover {
 
   .resume section {
     display: block;
-    padding-block: 1.8mm;
+    padding-block: 1.25mm;
   }
 
   .resume section > :not(h2) {
@@ -2497,20 +2513,20 @@ button.button-secondary:hover {
   }
 
   .resume section > h2 {
-    margin: 0 0 1.5mm;
+    margin: 0 0 1mm;
     break-after: avoid;
   }
 
   .resume-entry + .resume-entry {
-    margin-top: 1.2mm;
+    margin-top: 0.8mm;
   }
 
   .resume-entry p {
-    margin: 0.5mm 0 0;
+    margin: 0.35mm 0 0;
   }
 
   .resume .skills-context > div {
-    padding-block: 1mm;
+    padding-block: 0.6mm;
   }
 
   .resume a[href^="http"]::after {

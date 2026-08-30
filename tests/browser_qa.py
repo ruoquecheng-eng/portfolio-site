@@ -1,4 +1,6 @@
 import json
+import re
+import subprocess
 import sys
 from pathlib import Path
 
@@ -69,7 +71,7 @@ def check_page(page, name, route, viewport_name, issues):
     if console_errors:
         issues.append(f"{viewport_name}/{name}: console errors {console_errors}")
 
-    if viewport_name in {"mobile", "desktop"} and name in {"home", "projects", "netsage", "battery", "high-speed-rail", "engineerplus-demo", "research", "jensen", "resume"}:
+    if viewport_name in {"mobile", "desktop"} and name in {"home", "projects", "netsage", "battery", "high-speed-rail", "engineerplus-demo", "research", "jensen", "hypergraph", "resume"}:
         page.screenshot(path=str(OUTPUT / f"{name}-{viewport_name}.png"), full_page=True)
 
 
@@ -92,6 +94,10 @@ def run():
         desktop = browser.new_context(viewport=VIEWPORTS["desktop"])
         page = desktop.new_page()
         page.goto(f"{BASE_URL}/", wait_until="networkidle")
+        if page.get_by_text("Two manuscripts are currently submitted: one to the International Journal of Number Theory and one to Linear and Multilinear Algebra.", exact=True).count() != 1:
+            issues.append("home research: dynamic submitted-status summary is missing")
+        if page.get_by_text("A second manuscript on edge-local information in nonuniform hypergraph tensors is in preparation.", exact=True).count() != 0:
+            issues.append("home research: stale Hypergraph in-preparation summary remains")
         page.keyboard.press("Tab")
         focused_text = page.locator(":focus").inner_text().strip()
         if focused_text != "Skip to content":
@@ -153,6 +159,11 @@ def run():
             issues.append("hypergraph manuscript: author order or roles are missing")
         if page.get_by_text("Submitted to Linear and Multilinear Algebra", exact=True).count() != 1:
             issues.append("hypergraph manuscript: submitted LMA status is missing")
+        hypergraph_preview = page.locator('img[src$="assets/images/hypergraph-manuscript-title-page.png"]')
+        if hypergraph_preview.count() != 1:
+            issues.append("hypergraph manuscript: title-page preview is missing")
+        elif hypergraph_preview.evaluate("img => [img.naturalWidth, img.naturalHeight]") != [1241, 1754]:
+            issues.append("hypergraph manuscript: title-page preview dimensions are incorrect")
         hypergraph_response = page.request.get(f"{BASE_URL}{hypergraph_manuscript_path}")
         if not hypergraph_response.ok:
             issues.append(f"hypergraph manuscript: HTTP {hypergraph_response.status}")
@@ -176,6 +187,12 @@ def run():
             issues.append("battery modeling paper: response is not application/pdf")
 
         page.goto(f"{BASE_URL}/projects/", wait_until="networkidle")
+        netsage_icon_size = page.locator('.project-visual-netsage img').first.evaluate(
+            "img => ({width: Math.round(img.getBoundingClientRect().width), height: Math.round(img.getBoundingClientRect().height)})"
+        )
+        observations.append({"projectsNetSageIconDesktop": netsage_icon_size})
+        if netsage_icon_size["width"] > 224 or netsage_icon_size["height"] > 224:
+            issues.append(f"projects: NetSage icon is oversized at {netsage_icon_size}")
         rail_link = page.get_by_role("link", name="View railway project")
         if rail_link.count() != 1:
             issues.append("high-speed rail: supporting-work card is missing its detail-page link")
@@ -284,7 +301,12 @@ def run():
             print_background=True,
             prefer_css_page_size=True,
         )
-        observations.append({"printPdf": str(resume_pdf.relative_to(ROOT))})
+        pdfinfo = subprocess.run(["pdfinfo", str(resume_pdf)], check=True, capture_output=True, text=True).stdout
+        pages_match = re.search(r"^Pages:\s+(\d+)$", pdfinfo, re.MULTILINE)
+        resume_pages = int(pages_match.group(1)) if pages_match else 0
+        observations.append({"printPdf": str(resume_pdf.relative_to(ROOT)), "resumePrintPages": resume_pages})
+        if resume_pages != 1:
+            issues.append(f"resume print: expected 1 A4 page, got {resume_pages}")
         desktop.close()
 
         mobile = browser.new_context(viewport=VIEWPORTS["mobile"])
@@ -296,6 +318,13 @@ def run():
             issues.append("mobile nav: aria-expanded did not update")
         if not page.locator("#site-nav").is_visible():
             issues.append("mobile nav: navigation did not become visible")
+        page.goto(f"{BASE_URL}/projects/", wait_until="networkidle")
+        mobile_icon_size = page.locator('.project-visual-netsage img').first.evaluate(
+            "img => ({width: Math.round(img.getBoundingClientRect().width), height: Math.round(img.getBoundingClientRect().height)})"
+        )
+        observations.append({"projectsNetSageIconMobile": mobile_icon_size})
+        if mobile_icon_size["width"] > 224 or mobile_icon_size["height"] > 224:
+            issues.append(f"projects mobile: NetSage icon is oversized at {mobile_icon_size}")
         mobile.close()
 
         for scheme in ["light", "dark"]:
@@ -336,4 +365,3 @@ def run():
 
 if __name__ == "__main__":
     run()
-

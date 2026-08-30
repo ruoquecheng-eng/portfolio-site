@@ -85,6 +85,12 @@ const jensenStatus = publicClaim("jensen", "statusText");
 const jensenSummary = publicClaim("jensen", "summary");
 const hypergraphStatus = publicClaim("hypergraph", "statusText");
 const hypergraphSummary = publicClaim("hypergraph", "summary");
+const submittedVenue = (statusText) => statusText.match(/^Submitted to\s+(.+)$/i)?.[1] ?? null;
+const jensenVenue = submittedVenue(jensenStatus);
+const hypergraphVenue = submittedVenue(hypergraphStatus);
+const homeResearchStatusSummary = jensenVenue && hypergraphVenue
+  ? `Two manuscripts are currently submitted: one to ${jensenVenue} and one to ${hypergraphVenue}.`
+  : `Current verified statuses: Jensen-polynomial research — ${jensenStatus}; hypergraph-tensor research — ${hypergraphStatus}.`;
 const defaultOgUrl = `${config.canonicalOrigin}${config.basePath}assets/images/og-portfolio.png`;
 
 const figure = ({ depth, src, width, height, alt, caption, eager = false, className = "figure" }) => `
@@ -227,7 +233,8 @@ const homeBody = `
       <div class="project-copy">
         <p class="project-type">Mathematical research</p>
         <h2><a href="research/">Two research lines in real-rootedness and tensor spectra</a></h2>
-        <p>One manuscript is submitted to the International Journal of Number Theory. A second manuscript on edge-local information in nonuniform hypergraph tensors is in preparation.</p>
+        <p>Current work spans real-rootedness of Jensen polynomials associated with the Riemann xi-function and edge-local spectral structure in nonuniform hypergraph tensors.</p>
+        <p class="research-status-summary">${escapeHtml(homeResearchStatusSummary)}</p>
         <a class="text-link" href="research/">View research <span aria-hidden="true">→</span></a>
       </div>
       <div class="research-mini-list">
@@ -251,7 +258,7 @@ const projectsBody = `
     <div><p class="hero-kicker">Engineering and modeling</p><h1>Projects</h1><p>Two primary case studies, followed by concise evidence-safe summaries of supporting work.</p></div>
   </section>
   <section class="section project-index-page">
-    ${projectRow({depth: 1, href: "projects/netsage/", index: "01", type: netsage.type, title: netsage.title, summary: netsageSummary, meta: "Primary engineering case study", visual: `<div class="project-visual"><img src="${local(1, "assets/images/netsage-icon.webp")}" width="216" height="216" alt="NetSage application icon" loading="lazy"></div>`})}
+    ${projectRow({depth: 1, href: "projects/netsage/", index: "01", type: netsage.type, title: netsage.title, summary: netsageSummary, meta: "Primary engineering case study", visual: `<div class="project-visual project-visual-netsage"><img src="${local(1, "assets/images/netsage-icon.webp")}" width="216" height="216" alt="NetSage application icon" loading="lazy"></div>`})}
     ${projectRow({depth: 1, href: "projects/battery-rul/", index: "02", type: `${battery.type} · ${batteryDataBoundary}`, title: battery.title, summary: batterySummary, meta: "Primary modeling case study", visual: `<div class="project-visual"><img src="${local(1, "assets/visuals/battery-workflow.svg")}" width="1240" height="650" alt="Conceptual Q1 to Q4 battery modeling workflow" loading="lazy"></div>`})}
   </section>
   <section class="section supporting-projects">
@@ -326,7 +333,7 @@ const netsageBody = `
   </article>`;
 
 const batteryFigures = `
-  <div class="figure-stack">
+  <div class="figure-stack battery-figure-grid">
     ${figure({depth: 2, src: "images/battery-rul-parity.webp", width: 2160, height: 833, alt: "Three-panel original model output showing RUL predictions, interval coverage by degradation stage, and interval width", caption: "Real model output. The original Chinese labels show observed versus predicted RUL, nominal 90% interval coverage, and interval width. Results use fully simulated data generated with semi-empirical assumptions."})}
     ${figure({depth: 2, src: "images/battery-compatibility-graph.webp", width: 2520, height: 1890, alt: "Four-panel original model output showing retired-cell grades, gate failures, compatibility graph density, and one complete group", caption: "Real model output. The compatibility graph is generated after scenario-specific hard gates. The displayed group is evidence from the simulated candidate pool, not a physical battery assembly."})}
     ${figure({depth: 2, src: "images/battery-strategy-comparison.webp", width: 2134, height: 1615, alt: "Four-panel original model output comparing nominal, adaptive, and robust strategies across six stress scenarios", caption: "Real model output. Strategy comparison covers expected value, constraint risk, utilization, and lower-tail lifetime under six simulated stress scenarios."})}
@@ -732,7 +739,7 @@ const researchDetailBody = (record, kind) => {
     : `<div class="formula" role="img" aria-label="Neighbor profile spectral bound"><span>ρ(A<sup>η</sup>(H)) ≤ B<sub>np</sub><sup>η</sup>(H) ≤ max<sub>i</sub> R<sub>i</sub><sup>η</sup></span><strong>vertex profiles → edge-local arrangement → spectral information</strong></div>`;
   const contribution = isJensen
     ? "The submitted manuscript presents a proof of a subcritical criterion for every positive epsilon, combines exact Hermite reconstruction with finite-difference and shifted-saddle estimates, and explicitly leaves the endpoint M comparable to d cubed untreated."
-    : "The current manuscript proves robust spectral non-determination beyond complete labelled vertex profiles, including a five-vertex minimality result and separation for every positive choice of 2- and 3-edge masses. It then develops the edge-local bound, exact equality and defect theory, comparisons with classical uniform bounds, quotient reductions, and size-dependent loose-star scaling laws.";
+    : "The submitted manuscript proves robust spectral non-determination beyond complete labelled vertex profiles, including a five-vertex minimality result and separation for every positive choice of 2- and 3-edge masses. It then develops the edge-local bound, exact equality and defect theory, comparisons with classical uniform bounds, quotient reductions, and size-dependent loose-star scaling laws.";
   return `
     <article class="research-paper">
       <header class="paper-hero">
@@ -743,7 +750,7 @@ const researchDetailBody = (record, kind) => {
       <section class="section split-section"><div><h2>Non-specialist summary</h2><p>${escapeHtml(researchSummaryFor(record))}</p></div><div><h2>Current contribution</h2><p>${escapeHtml(contribution)}</p></div></section>
       <section class="section"><div class="two-column-lists"><div><h2>Mathematical objects</h2>${textList(record.objects)}</div><div><h2>Core techniques</h2>${textList(record.techniques)}</div></div></section>
       <section class="section keyword-section"><h2>Keywords</h2><ul class="keyword-list">${record.keywords.map((keyword) => `<li>${escapeHtml(keyword)}</li>`).join("")}</ul></section>
-      <section class="section limitations paper-access"><div><h2>Access and status boundary</h2><p>${isJensen ? "The first submitted version is available above. Its public availability does not change the verified submission status or imply acceptance or publication." : "The current manuscript is available above with Wanzheng Ning listed as first and corresponding author and Qianzhi Ao as second author. Public availability does not imply journal submission, acceptance, or publication."}</p></div><a class="button-secondary" href="${local(2, "research/")}">Back to research</a></section>
+      <section class="section limitations paper-access"><div><h2>Access and status boundary</h2><p>${isJensen ? "The first submitted version is available above. Its public availability does not change the verified submission status or imply acceptance or publication." : "The submitted manuscript is available above with the complete verified author order. Its public availability does not imply acceptance or publication."}</p></div><a class="button-secondary" href="${local(2, "research/")}">Back to research</a></section>
     </article>`;
 };
 
@@ -820,7 +827,7 @@ const routes = [
   {
     file: "research/hypergraph-tensor/index.html",
     route: "/research/hypergraph-tensor/",
-    html: page({title: "Edge-Local Spectra of Nonuniform Hypergraph Tensors", description: "Research summary for a manuscript in preparation on edge-local spectral information and size-dependent scaling.", route: "/research/hypergraph-tensor/", depth: 2, active: "research", body: researchDetailBody(hypergraph, "hypergraph"), schema: {"@context": "https://schema.org", "@type": "ScholarlyArticle", headline: hypergraph.title, author: hypergraph.authors.map((name) => ({"@type": "Person", name})), keywords: hypergraph.keywords.join(", "), description: hypergraphSummary}})
+    html: page({title: "Edge-Local Spectra of Nonuniform Hypergraph Tensors", description: "Research summary for a manuscript submitted to Linear and Multilinear Algebra on edge-local spectral information and size-dependent scaling.", route: "/research/hypergraph-tensor/", depth: 2, active: "research", body: researchDetailBody(hypergraph, "hypergraph"), schema: {"@context": "https://schema.org", "@type": "ScholarlyArticle", headline: hypergraph.title, author: hypergraph.authors.map((name) => ({"@type": "Person", name})), keywords: hypergraph.keywords.join(", "), description: hypergraphSummary}})
   },
   {
     file: "resume/index.html",
@@ -895,4 +902,3 @@ await writeFile(path.join(dist, "sitemap.xml"), `<?xml version="1.0" encoding="U
 await writeFile(path.join(dist, "manifest.webmanifest"), JSON.stringify({name: config.title, short_name: "WN Portfolio", start_url: config.basePath, display: "standalone", background_color: "#ffffff", theme_color: "#14243a", icons: []}, null, 2), "utf8");
 
 console.log(`Built ${routes.length} pages plus 404 into ${path.relative(root, dist)}.`);
-
