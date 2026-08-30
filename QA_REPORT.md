@@ -1,54 +1,45 @@
 # Portfolio QA Report
 
-Verified commit: `df8acc9497efcb0aeb2fea53cd2ff5d646ebdf8e`
+Verified implementation commit: `42a67edb6fe500b5ee39afc9b72104e550cf2c27`
 
-Verified date: 23 August 2026
+Verified date: 30 August 2026
 
 Generated routes: 10 public routes plus `404.html`
 
-Public assets: 39 files in `dist/`, including 11 HTML files and two allowlisted PDFs
+Public assets: 41 files in `dist/`, including 11 HTML files and three allowlisted PDFs
 
 ## Result
 
-Pass. Static QA and the latest browser QA completed with zero reported issues in the tested scope. Representative desktop and mobile captures were also reviewed manually.
+Pass for the build, static QA, live desktop route checks, and independent one-page A4 Resume export. The browser QA runner now hard-fails unless the exported Resume has exactly one page.
+
+The complete local Playwright viewport matrix was not rerun in this environment because the Chromium download endpoint repeatedly returned a truncated zero-byte archive. This limitation is recorded here rather than reporting an unexecuted `issues: []` result. Live GitHub Pages checks were completed in the authenticated cloud browser at 1363 x 936, and responsive behavior remains covered by the repository's browser QA script.
 
 ## Commands executed
 
-```powershell
+```bash
 npm run build
 npm run qa
-.\.venv\Scripts\python.exe .\tests\browser_qa.py
-pdfinfo output/pdf/wanzheng-ning-resume.pdf
-pdftoppm -png -r 144 output/pdf/wanzheng-ning-resume.pdf tmp/pdfs/resume-check/resume
-```
-
-Additional syntax and repository checks:
-
-```powershell
 node --check scripts/build.mjs
 node --check scripts/qa.mjs
-.\.venv\Scripts\python.exe -m py_compile tests/browser_qa.py
+python3 -m py_compile tests/browser_qa.py
 git diff --check
+weasyprint dist/resume/index.html output/pdf/wanzheng-ning-resume.pdf
+pdfinfo output/pdf/wanzheng-ning-resume.pdf
+pdftoppm -png -r 144 output/pdf/wanzheng-ning-resume.pdf tmp/pdfs/resume-check/resume
 ```
 
 ## Build and static QA
 
 - `npm run build`: passed; generated ten routes plus `404.html`.
-- `npm run qa`: passed; checked 11 HTML pages and 39 public files.
+- `npm run qa`: passed; checked 11 HTML pages and 41 public files.
 - Required pages, images, CSS, JavaScript, manifest, sitemap, robots, PDF allowlist, internal links, fragments, canonical URLs, Open Graph metadata, and GitHub Pages base-path references passed.
-- The tracked-repository privacy scan passed for forbidden files, credentials, private keys, and prohibited local paths.
-- The generated `dist/` privacy scan passed for credentials, databases, backups, logs, evidence paths, and Windows source paths.
+- Static research QA derives the Home status sentence from the verified Jensen and Hypergraph records and rejects a submitted Hypergraph manuscript described as `in preparation`.
+- The Hypergraph title-page preview and submitted manuscript PDF are required assets.
+- The tracked-repository and generated-`dist/` privacy scans passed.
 
 ## Browser QA
 
-Tested viewports:
-
-- 360 x 800
-- 768 x 900
-- 1024 x 900
-- 1440 x 1000
-
-Tested routes:
+Live route checks were run against `https://ruoquecheng-eng.github.io/portfolio-site/` at 1363 x 936 for:
 
 - `/`
 - `/projects/`
@@ -61,78 +52,55 @@ Tested routes:
 - `/research/hypergraph-tensor/`
 - `/resume/`
 
-Latest automated browser result: `issues: []`.
+Results:
 
-Coverage included:
+- All ten routes loaded with the expected page titles.
+- No horizontal overflow was found.
+- No broken images were found, including lazy-loaded Battery and High-Speed Rail images after scrolling them into view.
+- Home displays the exact derived sentence: `Two manuscripts are currently submitted: one to the International Journal of Number Theory and one to Linear and Multilinear Algebra.`
+- Home does not contain the stale Hypergraph `in preparation` sentence.
+- The NetSage project icon renders at 192 x 192 pixels on the checked desktop viewport, from a 216 x 216 source, without stretching or cropping.
+- The Hypergraph research page displays the submitted LMA status, a real 1241 x 1754 title-page preview, and working view/download links to the public PDF.
+- The Battery evidence gallery uses one full-width figure followed by two compact side-by-side figures at the checked desktop viewport. Its mobile CSS retains a single-column flow.
 
-- HTTP responses, titles, broken images, console errors, and horizontal overflow
-- desktop and mobile navigation
-- keyboard focus and skip links
-- system light and dark rendering
-- reduced-motion behavior
-- Jensen and Battery PDF links and response content types
-- Scenic Guide public-copy boundary
-- High-Speed Rail contribution boundary and module links
-- EngineerPlus hash navigation, browser history, capital form, session storage isolation, risk sliders, compliance workflow, impact filters, SVG keyboard selection, reset behavior, and absence of external requests
-- Open Graph PNG loading and 1200 x 630 browser dimensions
-- `robots.txt` and sitemap browser responses
-- Resume print stylesheet and A4 PDF export
+The local `tests/browser_qa.py` matrix remains configured for 360 x 800, 768 x 900, 1024 x 900, and 1440 x 1000. It now additionally checks the exact derived Home research status, absence of stale wording, Hypergraph preview dimensions, NetSage icon bounds, and `pdfinfo` page count.
 
 ## Resume print result
 
 - File: `output/pdf/wanzheng-ning-resume.pdf`
-- Format: A4
+- Renderer used in this environment: WeasyPrint 69.0
+- Format: A4, 595.276 x 841.89 points
 - Pages: 1
 - Encryption: no
 - Poppler render: visually checked
 - Result: no clipping, overlap, broken columns, printed controls, orphaned sections, or duplicate URL text
+- Content check: both submitted research records, first/second-author ordering for the LMA manuscript, the university-level mathematical modeling second prize, and the fully simulated-data boundary are visible.
 
 ## Facts and truthfulness
 
-- Every protected public `summary`, `role`, `statusText`, and Battery data boundary has an exact binding to a verified public fact in `content/public-claims.json`.
-- The build rejects missing, mismatched, non-public, or unverified protected claims.
-- Non-public facts with non-empty text are checked against generated HTML.
-- Important Battery metrics are present only through verified public fact records and remain framed as simulation/internal holdout output.
-- Battery RUL visibly retains `Fully simulated data with semi-empirical generation assumptions` near the start of the page.
-- NetSage remains local-first and rule-based, not ML/LLM, and retains verified commit `ed692cba`.
+- Jensen remains `Submitted to the International Journal of Number Theory`.
+- Hypergraph Tensor is `Submitted to Linear and Multilinear Algebra`, not accepted or published.
+- Wanzheng Ning is shown as first and corresponding author; Qianzhi Ao is shown as second author.
+- Both approved manuscript PDFs are public, and both research pages use title-page previews rendered from their current public PDFs.
+- The mathematical modeling competition is shown as passed with a university-level second prize.
+- Battery modeling remains explicitly framed as fully simulated data generated with semi-empirical assumptions.
+- NetSage remains local-first and rule-based, not ML/LLM.
 - High-Speed Rail preserves the five-person team / `Proposed Design` boundary and the independent EngineerPlus front-end contribution.
-- Scenic Guide remains a contributed competition prototype; `no award` is retained internally as `public: false` and is absent from the public project and Resume copy.
-- Jensen remains `Submitted to the International Journal of Number Theory`; Hypergraph Tensor remains `Manuscript in preparation`.
-- The approved Jensen PDF remains public; no Hypergraph Tensor PDF is present.
+- Scenic Guide remains a contributed competition prototype; the non-public no-award record remains absent from public copy.
 
 ## Footer verification date
 
-The footer displays `Facts last reviewed 23 August 2026.` This date is generated from the maximum `lastVerified` date among all verified public facts and public profile links. Static QA checks every standard page footer against the source maximum.
+The footer displays `Facts last reviewed 29 August 2026.` This is generated from the maximum `lastVerified` date among verified public facts and public profile links. Static QA checks every standard page footer against the source maximum.
 
-## Robots, sitemap, canonical, and Open Graph
+## Deployment
 
-`dist/robots.txt` was verified as exactly:
+Implementation commit `42a67edb6fe500b5ee39afc9b72104e550cf2c27` was deployed successfully by GitHub Pages workflow run `33293865842` before the live browser checks above.
 
-```text
-User-agent: *
-Allow: /
-Sitemap: https://ruoquecheng-eng.github.io/portfolio-site/sitemap.xml
-```
-
-- Sitemap: ten canonical public routes, all under `https://ruoquecheng-eng.github.io/portfolio-site/`.
-- Manifest: `start_url` equals `/portfolio-site/`.
-- Canonical and `og:url`: absolute, matching, and inside the configured origin/base path.
-- Shared social image: `assets/images/og-portfolio.png`, PNG, 1200 x 630.
-- EngineerPlus demo social image: project-specific WebP, 1440 x 900.
-
-## Deployment workflow
-
-The Pages build job runs:
-
-1. Build static site
-2. Run portfolio QA
-3. Configure GitHub Pages
-4. Upload Pages artifact
-
-The deploy job depends on the successful build job. A failed `npm run qa` prevents artifact upload and deployment.
+The Pages build job runs `npm run build` followed by `npm run qa`; a static QA failure prevents artifact upload and deployment.
 
 ## Remaining issues outside this maintenance pass
 
-- Long-term public-use permission and authorship context for source-backed course-project images should be reconfirmed if their release status changes.
-- GPA, IELTS, rank, contact details, future awards, and new manuscript links remain unpublished until verified and explicitly approved.
-- Browser QA is local and deterministic; third-party social crawlers may cache older Open Graph previews temporarily after deployment.
+- Run the full local Playwright viewport matrix when a usable Chromium binary is available; the current environment's browser archive download was incomplete.
+- Add 3-5 verified current NetSage app screenshots when a public screenshot set is available; no placeholder or fabricated UI captures were added.
+- Reconfirm long-term public-use permission and authorship context for source-backed course-project images if their release status changes.
+- Keep manuscript status and competition outcomes synchronized with new verified evidence.
