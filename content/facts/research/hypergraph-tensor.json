@@ -89,6 +89,9 @@
   "manuscript": {
     "label": "Submitted manuscript",
     "file": "documents/beyond-vertex-profiles-nonuniform-hypergraph-tensors.pdf",
+    "preview": "images/hypergraph-manuscript-title-page.png",
+    "previewWidth": 1241,
+    "previewHeight": 1754,
     "pages": 27,
     "date": "August 2026",
     "status": "verified",
