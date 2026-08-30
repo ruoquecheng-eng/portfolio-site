@@ -1,12 +1,12 @@
 # Portfolio Implementation Summary
 
-Reviewed: 23 August 2026
+Reviewed: 30 August 2026
 
 ## Outcome
 
-The existing static portfolio design and information architecture remain intact. This maintenance pass strengthened publication governance, deployment safety, SEO metadata, and current QA coverage without modifying NetSage, battery-modeling, railway, Scenic Guide, or manuscript source repositories.
+The existing static portfolio design and information architecture remain intact. This maintenance pass corrected the research-status presentation, added a current Hypergraph manuscript preview, tightened the printable Resume to a real one-page A4 document, refined two scoped project visuals, and strengthened QA without changing global typography or spacing.
 
-The build now generates ten public routes plus `404.html`, a printable one-page A4 resume, a three-line `robots.txt`, a canonical sitemap, and a shared 1200 x 630 PNG Open Graph image.
+The build generates ten public routes plus `404.html`, a printable one-page A4 Resume, a canonical sitemap, a three-line `robots.txt`, and the shared 1200 x 630 Open Graph image.
 
 ## Public routes
 
@@ -23,82 +23,50 @@ The build now generates ten public routes plus `404.html`, a printable one-page 
 
 The generated `404.html` is tested separately and is not included in the sitemap.
 
-## Structure
+## Research status and authorship
 
-```text
-portfolio-site/
-|-- content/
-|   |-- facts/                  Structured fact records
-|   |-- public-claims.json      Verified bindings for public summaries, roles, and statuses
-|   `-- evidence/               Private evidence map; Git-ignored and never copied to dist
-|-- scripts/
-|   |-- build.mjs               Static build and public-claim gate
-|   |-- qa.mjs                  Structural, SEO, privacy, and governance QA
-|   `-- serve.mjs               Local static server
-|-- src/
-|   |-- assets/documents/       Two explicitly approved public PDFs
-|   |-- assets/images/          Project previews and raster Open Graph image
-|   |-- assets/visuals/         Site diagrams retained for in-page use
-|   |-- scripts/                Site and EngineerPlus interaction code
-|   `-- styles/                 Main, responsive, demo, and print styles
-|-- tests/browser_qa.py         Browser, interaction, SEO, theme, and print QA
-|-- dist/                       Generated public site
-|-- output/pdf/                 Generated resume PDF
-|-- QA_REPORT.md                Current verification record
-`-- .github/workflows/          QA-gated GitHub Pages deployment
-```
+- Home keeps one short research-positioning sentence followed by a status sentence derived from the verified research facts.
+- The current derived sentence says that two manuscripts are submitted: one to the International Journal of Number Theory and one to Linear and Multilinear Algebra.
+- Hypergraph is no longer described as `in preparation` anywhere in the generated public site.
+- The LMA manuscript preserves Wanzheng Ning as first and corresponding author and Qianzhi Ao as second author, with four shared third authors.
+- Submitted/public manuscript access is not presented as acceptance or publication.
+- Both research pages show title-page previews rendered from their current public PDFs.
+
+## Scoped visual and print changes
+
+- The NetSage project-card icon is constrained to a maximum of `12rem`, preserves its natural aspect ratio, and is not cropped.
+- The Battery evidence gallery becomes one large figure plus two smaller figures on desktop and remains a single column below the desktop breakpoint.
+- Resume compaction is print-only. The public site typography and spacing system is unchanged.
+- The checked Resume export is one A4 page with no clipping or overlap.
 
 ## Fact and publication governance
 
-- `publicFacts()` continues to expose only `public: true` and `status: verified` facts.
-- `content/public-claims.json` binds every important public `summary`, `role`, `statusText`, and battery data boundary to an exact verified public fact.
-- The build fails if a binding is missing, mismatched, non-public, or not verified.
-- The build also rejects any non-public fact with non-empty text if that text appears in generated HTML.
-- Important battery metrics remain rendered from verified public fact records.
-- The footer review date is computed from the newest `lastVerified` value among verified public facts and public profile links; it is no longer hard-coded.
-- Fact verification dates are kept in source governance data rather than repeated beside every public fact on the page.
+- `publicFacts()` exposes only `public: true` and `status: verified` facts.
+- `content/public-claims.json` binds important public summaries, roles, statuses, and the Battery data boundary to exact verified facts.
+- The build rejects missing, mismatched, non-public, or unverified protected claims.
+- Static QA constructs the expected Home research status from the source facts instead of accepting a hard-coded claim.
+- The footer review date is computed from the newest `lastVerified` value among verified public facts and public profile links.
+- The mathematical modeling result is published as a university-level second prize while the fully simulated-data boundary remains explicit.
 
-Research wording remains unchanged in substance: Jensen is `Submitted to the International Journal of Number Theory`; Hypergraph Tensor is `Manuscript in preparation`. The approved Jensen PDF remains public, and no Hypergraph Tensor PDF is included.
-
-## SEO and deployment
-
-- Ordinary pages use `assets/images/og-portfolio.png`, a 1200 x 630 PNG with absolute Open Graph and Twitter image URLs.
-- The EngineerPlus demo keeps its project-specific 1440 x 900 WebP preview.
-- Open Graph width and height metadata are emitted and QA-checked.
-- Canonical URLs, `og:url`, sitemap entries, manifest start URL, internal references, and GitHub Pages `/portfolio-site/` base-path behavior are checked.
-- `robots.txt` is generated as three newline-separated directives and verified against the configured canonical origin and base path.
-- GitHub Pages runs `npm run build` followed by `npm run qa`; artifact upload and deployment cannot run if QA fails.
-
-## Public-copy adjustment
-
-Scenic Guide remains a contributed competition prototype. The internal no-award record remains `public: false`, while the public project card and Resume no longer foreground `no award` or `production deployment` disclaimers. EngineerPlus boundaries are consolidated at section level while the interactive demo continues to display `Interactive concept prototype` and `Illustrative data only`.
-
-## Visual and document assets
-
-Published source-backed previews include NetSage, battery-modeling figures and paper cover, high-speed rail and EngineerPlus captures, Scenic Guide, and the Jensen manuscript title page. The original in-page SVG system artwork remains available, but it is no longer the default social-sharing image.
-
-The approved public documents remain:
+## Public documents
 
 - `subcritical-hyperbolicity-jensen-polynomials-riemann-xi.pdf`
+- `beyond-vertex-profiles-nonuniform-hypergraph-tensors.pdf`
 - `lithium-ion-battery-rul-cascade-utilization-modeling.pdf`
 
-## Local verification
+The Hypergraph title-page preview is `hypergraph-manuscript-title-page.png`, rendered from the current 27-page public LMA submission PDF at 1241 x 1754 pixels.
 
-```powershell
-cd portfolio-site
-npm run build
-npm run qa
-npm run serve
-```
+## QA changes
 
-Then run:
-
-```powershell
-.\.venv\Scripts\python.exe .\tests\browser_qa.py
-```
+- Static QA requires the Hypergraph preview and submitted manuscript PDF.
+- Static QA checks the exact dynamic Home research summary and rejects stale `in preparation` wording.
+- Browser QA checks the Home summary, Hypergraph preview dimensions, NetSage icon bounds, and Resume page count.
+- Resume page count is a hard gate: `pdfinfo` must report exactly one page.
+- Current detailed results and the browser-runtime limitation are recorded in `QA_REPORT.md`.
 
 ## Known follow-up items
 
+- Add 3-5 current NetSage app screenshots when a verified public screenshot set is available. No fabricated screenshots or placeholder app UI should be published.
+- Rerun the full Playwright viewport matrix when Chromium installation is available in the execution environment.
 - Reconfirm long-term public-use permission and authorship context for source-backed course-project images if their release status changes.
-- Add contact details, academic metrics, awards, or new manuscript links only after verification and an explicit public-release decision.
-- Keep manuscript status and competition outcomes synchronized with new evidence; no status was upgraded in this pass.
+- Add contact details, academic metrics, future awards, or new manuscript links only after verification and an explicit public-release decision.
