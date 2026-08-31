@@ -1,12 +1,10 @@
 # Portfolio Implementation Summary
 
-Reviewed: 30 August 2026
+Reviewed: 31 August 2026
 
 ## Outcome
 
-The existing static portfolio design and information architecture remain intact. This maintenance pass corrected the research-status presentation, added a current Hypergraph manuscript preview, tightened the printable Resume to a real one-page A4 document, refined two scoped project visuals, and strengthened QA without changing global typography or spacing.
-
-The build generates ten public routes plus `404.html`, a printable one-page A4 Resume, a canonical sitemap, a three-line `robots.txt`, and the shared 1200 x 630 Open Graph image.
+The portfolio now publishes eleven routes plus `404.html`. This maintenance pass replaces the former public Jensen manuscript record with two verified `Under review` records, preserves the newer Hypergraph LMA submission and mathematical-modeling second-prize updates from the remote branch, and adds five real NetSage Android screenshots captured from the running 0.1.2 build.
 
 ## Public routes
 
@@ -17,56 +15,56 @@ The build generates ten public routes plus `404.html`, a printable one-page A4 R
 - `/projects/high-speed-rail/`
 - `/projects/high-speed-rail/demo/`
 - `/research/`
-- `/research/jensen-polynomials/`
+- `/research/connected-diagram-expansions/`
+- `/research/critical-cubic-crossover/`
 - `/research/hypergraph-tensor/`
 - `/resume/`
 
 The generated `404.html` is tested separately and is not included in the sitemap.
 
-## Research status and authorship
+## Research status and access
 
-- Home keeps one short research-positioning sentence followed by a status sentence derived from the verified research facts.
-- The current derived sentence says that two manuscripts are submitted: one to the International Journal of Number Theory and one to Linear and Multilinear Algebra.
-- Hypergraph is no longer described as `in preparation` anywhere in the generated public site.
-- The LMA manuscript preserves Wanzheng Ning as first and corresponding author and Qianzhi Ao as second author, with four shared third authors.
-- Submitted/public manuscript access is not presented as acceptance or publication.
-- Both research pages show title-page previews rendered from their current public PDFs.
+- *Connected-Diagram Expansions for Hermite–Jensen Multipliers: All-Excess Summation and Critical Zero Asymptotics* is shown as `Under review` at *Advances in Mathematics*.
+- *Critical Cubic Crossover from Hermite Universality in Riemann-ξ Jensen Polynomials* is shown as `Under review` at the *Journal of the London Mathematical Society*.
+- Both records use the verified submission date of 31 August 2026.
+- Their manuscripts, portal screenshots, submission identifiers, email addresses, and private controls are not public because the current submission agreements restrict sharing.
+- `Under review` is explicitly separated from acceptance or publication.
+- The separately submitted Hypergraph manuscript remains public with its verified LMA status, PDF, title-page preview, complete author order, and Wanzheng Ning's first/corresponding-author role.
 
-## Scoped visual and print changes
+## NetSage runtime evidence
 
-- The NetSage project-card icon is constrained to a maximum of `12rem`, preserves its natural aspect ratio, and is not cropped.
-- The Battery evidence gallery becomes one large figure plus two smaller figures on desktop and remains a single column below the desktop breakpoint.
-- Resume compaction is print-only. The public site typography and spacing system is unchanged.
-- The checked Resume export is one A4 page with no clipping or overlap.
+Five screenshots were captured from NetSage 0.1.2 running on the Android Studio emulator:
 
-## Fact and publication governance
+- dashboard and feature entry points;
+- diagnosis input with a bundled DNS sample;
+- diagnosis report with rule-derived confidence, evidence, repair guidance, and task flow;
+- local history with search and protocol filters;
+- offline fault-scenario library.
 
-- `publicFacts()` exposes only `public: true` and `status: verified` facts.
-- `content/public-claims.json` binds important public summaries, roles, statuses, and the Battery data boundary to exact verified facts.
-- The build rejects missing, mismatched, non-public, or unverified protected claims.
-- Static QA constructs the expected Home research status from the source facts instead of accepting a hard-coded claim.
-- The footer review date is computed from the newest `lastVerified` value among verified public facts and public profile links.
-- The mathematical modeling result is published as a university-level second prize while the fully simulated-data boundary remains explicit.
+The screenshots are compressed 720 x 1600 WebP assets. The page states that confidence is produced by explicit rules rather than a trained model and retains the local-first/product-boundary wording.
+
+## Preserved remote updates
+
+- Hypergraph remains `Submitted to Linear and Multilinear Algebra`, with its approved public PDF and title-page preview.
+- The mathematical-modeling result remains `University-level Second Prize in the Mathematical Modeling Competition`.
+- Battery modeling remains explicitly based on fully simulated data generated with semi-empirical assumptions.
+- Resume export remains one A4 page; print-only layout compaction does not alter normal site typography.
 
 ## Public documents
 
-- `subcritical-hyperbolicity-jensen-polynomials-riemann-xi.pdf`
 - `beyond-vertex-profiles-nonuniform-hypergraph-tensors.pdf`
 - `lithium-ion-battery-rul-cascade-utilization-modeling.pdf`
 
-The Hypergraph title-page preview is `hypergraph-manuscript-title-page.png`, rendered from the current 27-page public LMA submission PDF at 1241 x 1754 pixels.
+The former public Jensen PDF and title-page image have been removed.
 
-## QA changes
+## Verification
 
-- Static QA requires the Hypergraph preview and submitted manuscript PDF.
-- Static QA checks the exact dynamic Home research summary and rejects stale `in preparation` wording.
-- Browser QA checks the Home summary, Hypergraph preview dimensions, NetSage icon bounds, and Resume page count.
-- Resume page count is a hard gate: `pdfinfo` must report exactly one page.
-- Current detailed results and the browser-runtime limitation are recorded in `QA_REPORT.md`.
+- Static QA verifies eleven sitemap routes, twelve HTML files, two allowlisted PDFs, five distinct NetSage screenshots, research status wording, private-manuscript boundaries, and the existing project truthfulness constraints.
+- Browser QA covers 360 x 800, 768 x 900, 1024 x 900, and 1440 x 1000 viewports, including NetSage screenshot dimensions and responsive columns.
+- Resume page count is a hard gate and must remain exactly one A4 page.
 
 ## Known follow-up items
 
-- Add 3-5 current NetSage app screenshots when a verified public screenshot set is available. No fabricated screenshots or placeholder app UI should be published.
-- Rerun the full Playwright viewport matrix when Chromium installation is available in the execution environment.
-- Reconfirm long-term public-use permission and authorship context for source-backed course-project images if their release status changes.
-- Add contact details, academic metrics, future awards, or new manuscript links only after verification and an explicit public-release decision.
+- Reconfirm long-term public-use permission and authorship context for course-project imagery if release status changes.
+- Add academic metrics, contact details, future awards, or new manuscript links only after verification and an explicit public-release decision.
+- Keep manuscript statuses and competition outcomes synchronized with new evidence.

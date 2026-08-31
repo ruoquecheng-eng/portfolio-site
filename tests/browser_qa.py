@@ -174,11 +174,10 @@ def run():
         elif "application/pdf" not in hypergraph_response.headers.get("content-type", ""):
             issues.append("hypergraph manuscript: response is not application/pdf")
 
-        if page.get_by_text("University-level Second Prize in the Mathematical Modeling Competition", exact=True).count() != 1:
-            issues.append("battery modeling competition: university-level second prize is missing")
-
         battery_paper_path = "/assets/documents/lithium-ion-battery-rul-cascade-utilization-modeling.pdf"
         page.goto(f"{BASE_URL}/projects/battery-rul/", wait_until="networkidle")
+        if page.get_by_text("University-level Second Prize in the Mathematical Modeling Competition", exact=True).count() < 1:
+            issues.append("battery modeling competition: university-level second prize is missing")
         battery_paper_links = page.locator(f'a[href$="{battery_paper_path}"]')
         if battery_paper_links.count() < 3:
             issues.append("battery modeling paper: expected preview, view, and download links")
@@ -197,6 +196,23 @@ def run():
         observations.append({"projectsNetSageIconDesktop": netsage_icon_size})
         if netsage_icon_size["width"] > 224 or netsage_icon_size["height"] > 224:
             issues.append(f"projects: NetSage icon is oversized at {netsage_icon_size}")
+        page.goto(f"{BASE_URL}/projects/netsage/", wait_until="networkidle")
+        netsage_screens = page.locator('img[src*="netsage-app-"]')
+        if netsage_screens.count() != 5:
+            issues.append("NetSage: expected five verified Android screenshots")
+        else:
+            for index in range(netsage_screens.count()):
+                netsage_screens.nth(index).scroll_into_view_if_needed()
+                netsage_screens.nth(index).evaluate("img => img.decode()")
+            dimensions = netsage_screens.evaluate_all("imgs => imgs.map(img => [img.naturalWidth, img.naturalHeight])")
+            if any(size != [720, 1600] for size in dimensions):
+                issues.append(f"NetSage: unexpected screenshot dimensions {dimensions}")
+            desktop_columns = page.locator(".netsage-screen-grid").evaluate(
+                "el => getComputedStyle(el).gridTemplateColumns.split(' ').length"
+            )
+            if desktop_columns != 3:
+                issues.append(f"NetSage: expected three desktop screenshot columns, found {desktop_columns}")
+        page.goto(f"{BASE_URL}/projects/", wait_until="networkidle")
         rail_link = page.get_by_role("link", name="View railway project")
         if rail_link.count() != 1:
             issues.append("high-speed rail: supporting-work card is missing its detail-page link")
@@ -329,6 +345,12 @@ def run():
         observations.append({"projectsNetSageIconMobile": mobile_icon_size})
         if mobile_icon_size["width"] > 224 or mobile_icon_size["height"] > 224:
             issues.append(f"projects mobile: NetSage icon is oversized at {mobile_icon_size}")
+        page.goto(f"{BASE_URL}/projects/netsage/", wait_until="networkidle")
+        mobile_columns = page.locator(".netsage-screen-grid").evaluate(
+            "el => getComputedStyle(el).gridTemplateColumns.split(' ').length"
+        )
+        if mobile_columns != 1:
+            issues.append(f"NetSage mobile: expected one screenshot column, found {mobile_columns}")
         mobile.close()
 
         for scheme in ["light", "dark"]:

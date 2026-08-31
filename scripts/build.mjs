@@ -299,6 +299,17 @@ const netsageBody = `
       <div><h2>Problem</h2><p>Network failures often arrive as partial logs, ambiguous browser errors, DNS symptoms, TLS failures, or intermittent packet loss. A useful diagnostic tool has to turn that fragmented evidence into a bounded set of hypotheses without pretending certainty.</p></div>
       <div><h2>Diagnosis philosophy</h2><p>The engine uses explicit rules and evidence matching. Confidence is a ranking aid within the rule system, not a probability produced by a trained machine-learning model.</p></div>
     </section>
+    <section class="section netsage-screens" id="app-walkthrough">
+      <div class="section-heading"><p>Real Android build</p><h2>Five verified screens from the running application</h2></div>
+      <p class="section-lead">Captured from NetSage 0.1.2 on the Android Studio emulator on 31 August 2026. The interface is the current local-first build; the displayed confidence values come from explicit rules rather than a trained model.</p>
+      <div class="netsage-screen-grid">
+        ${figure({depth: 2, src: "images/netsage-app-home.webp", width: 720, height: 1600, alt: "NetSage Android dashboard with diagnosis, history, terminology, examples, scenario library, display, privacy, and onboarding controls", caption: "Dashboard. One-tap diagnosis and direct access to local troubleshooting resources.", className: "netsage-screen"})}
+        ${figure({depth: 2, src: "images/netsage-app-diagnosis-input.webp", width: 720, height: 1600, alt: "NetSage diagnosis input screen containing a bundled DNS NXDOMAIN failure sample and input quality guidance", caption: "Diagnosis input. A bundled DNS sample activates quality guidance and the rule-based diagnosis action.", className: "netsage-screen"})}
+        ${figure({depth: 2, src: "images/netsage-app-diagnosis-result.webp", width: 720, height: 1600, alt: "NetSage diagnosis report ranking DNS configuration as the main cause with rule-derived confidence, evidence, suggestions, and a task checklist", caption: "Diagnosis report. Ranked cause, rule-derived confidence, matched evidence, repair guidance, and next-step tasks.", className: "netsage-screen"})}
+        ${figure({depth: 2, src: "images/netsage-app-history.webp", width: 720, height: 1600, alt: "NetSage local diagnosis history with search, protocol filters, result summaries, and refill-to-input actions", caption: "History center. Local records support search, protocol filters, and refill-to-input actions.", className: "netsage-screen"})}
+        ${figure({depth: 2, src: "images/netsage-app-scenarios.webp", width: 720, height: 1600, alt: "NetSage offline fault scenario library covering DNS, connection, TLS, HTTP, and packet-loss cases", caption: "Scenario library. Ten offline fault cases can be sent directly into the diagnostic workflow.", className: "netsage-screen"})}
+      </div>
+    </section>
     <section class="section section-dark" id="pipeline">
       <div class="section-heading"><p>Conceptual diagnostic flow</p><h2>The rule engine stays visible.</h2></div>
       ${figure({depth: 2, src: "visuals/netsage-diagnostic-flow.svg", width: 1280, height: 520, alt: "Conceptual NetSage diagnostic flow from log input through rule matching, ranked causes, evidence, recommendations, actions, and retest", caption: "Conceptual Diagnostic Flow. This diagram represents the implemented rule sequence; it is not a measured network topology.", className: "flow-figure"})}
@@ -325,7 +336,7 @@ const netsageBody = `
       <dl class="evidence-ledger">
         <div><dt>Repository</dt><dd><a href="${escapeHtml(netsage.repository)}">github.com/lbrswne/NetSage</a></dd></div>
         <div><dt>Verified main commit</dt><dd><code>${escapeHtml(netsage.commit)}</code></dd></div>
-        <div><dt>Published visual</dt><dd>Application icon and an original conceptual diagnostic flow</dd></div>
+        <div><dt>Published visual</dt><dd>Five screenshots from the verified Android 0.1.2 build, the application icon, and an original conceptual diagnostic flow</dd></div>
       </dl>
     </section>
     <section class="section limitations" id="limitations">

@@ -1714,6 +1714,31 @@ button.button-secondary:hover {
   margin: 0;
 }
 
+.netsage-screen-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(0.8rem, 1.6vw, 1.4rem);
+  margin-top: clamp(2rem, 4vw, 3rem);
+  align-items: start;
+}
+
+.netsage-screen {
+  min-width: 0;
+  margin: 0;
+}
+
+.netsage-screen img {
+  display: block;
+  aspect-ratio: 9 / 20;
+  object-fit: cover;
+  box-shadow: 0 1rem 2.25rem color-mix(in oklch, var(--ink) 10%, transparent);
+}
+
+.netsage-screen figcaption {
+  margin-top: 0.75rem;
+  font-size: 0.78rem;
+}
+
 .research-hero {
   overflow: hidden;
 }
@@ -2140,6 +2165,10 @@ button.button-secondary:hover {
   .project-row > :last-child {
     grid-column: 2;
   }
+
+  .netsage-screen-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 @media (max-width: 52rem) {
@@ -2150,6 +2179,10 @@ button.button-secondary:hover {
     --space-section-large: clamp(3.5rem, 14vw, 4.5rem);
     --space-content: clamp(1.5rem, 6vw, 2rem);
     --space-heading: clamp(1.75rem, 7vw, 2.25rem);
+  }
+
+  .netsage-screen-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .site-header__inner,
@@ -2305,6 +2338,10 @@ button.button-secondary:hover {
   }
 
   .fact-list {
+    grid-template-columns: 1fr;
+  }
+
+  .netsage-screen-grid {
     grid-template-columns: 1fr;
   }
 

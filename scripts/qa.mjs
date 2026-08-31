@@ -56,6 +56,11 @@ const requiredAssets = new Map([
   ['EngineerPlus demo stylesheet', ['styles/engineerplus-demo.css']],
   ['EngineerPlus demo script', ['scripts/engineerplus-demo.js']],
   ['NetSage icon', ['assets/images/netsage-icon.webp']],
+  ['NetSage app dashboard', ['assets/images/netsage-app-home.webp']],
+  ['NetSage diagnosis input', ['assets/images/netsage-app-diagnosis-input.webp']],
+  ['NetSage diagnosis result', ['assets/images/netsage-app-diagnosis-result.webp']],
+  ['NetSage diagnosis history', ['assets/images/netsage-app-history.webp']],
+  ['NetSage scenario library', ['assets/images/netsage-app-scenarios.webp']],
   ['battery RUL parity figure', ['assets/images/battery-rul-parity.webp']],
   ['battery compatibility figure', ['assets/images/battery-compatibility-graph.webp']],
   ['battery strategy figure', ['assets/images/battery-strategy-comparison.webp']],
@@ -390,6 +395,15 @@ function checkResearchAndProjectFacts(pageFiles, htmlByName) {
   const repositoryLink = (netsage.match(/<a\b[^>]*>/gi) ?? []).some((tag) =>
     (attribute(tag, 'href') ?? '').replace(/\/$/, '') === 'https://github.com/lbrswne/NetSage');
   if (!repositoryLink) addIssue('truthfulness', 'NetSage page is missing the verified repository link');
+  const netsageScreens = (netsage.match(/<img\b[^>]*>/gi) ?? [])
+    .map((tag) => attribute(tag, 'src') ?? '')
+    .filter((src) => /assets\/images\/netsage-app-[^/]+\.webp$/i.test(src));
+  if (new Set(netsageScreens).size !== 5) {
+    addIssue('projects', 'NetSage page must publish five distinct verified Android screenshots');
+  }
+  if (!/Captured from NetSage 0\.1\.2/i.test(visibleText(netsage))) {
+    addIssue('truthfulness', 'NetSage screenshots are missing their verified build and capture context');
+  }
 
   const projects = htmlByName.get(pageFiles.get('Projects')) ?? '';
   const projectsText = visibleText(projects);
