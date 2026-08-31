@@ -16,7 +16,8 @@ const sourceFiles = {
   battery: 'content/facts/projects/battery-rul.json',
   rail: 'content/facts/projects/high-speed-rail.json',
   scenic: 'content/facts/projects/scenic-guide.json',
-  jensen: 'content/facts/research/jensen-polynomials.json',
+  connected: 'content/facts/research/connected-diagram-expansions.json',
+  cubic: 'content/facts/research/critical-cubic-crossover.json',
   hypergraph: 'content/facts/research/hypergraph-tensor.json',
 };
 const [siteConfig, publicClaimsData, sourceRecords] = await Promise.all([
@@ -27,7 +28,6 @@ const [siteConfig, publicClaimsData, sourceRecords] = await Promise.all([
 const siteBaseUrl = `${siteConfig.canonicalOrigin}${siteConfig.basePath}`;
 const defaultOgUrl = `${siteBaseUrl}assets/images/og-portfolio.png`;
 const allowedPublicPdfs = new Set([
-  'assets/documents/subcritical-hyperbolicity-jensen-polynomials-riemann-xi.pdf',
   'assets/documents/lithium-ion-battery-rul-cascade-utilization-modeling.pdf',
   'assets/documents/beyond-vertex-profiles-nonuniform-hypergraph-tensors.pdf',
 ]);
@@ -40,7 +40,8 @@ const requiredPages = new Map([
   ['High-speed rail project', ['projects/high-speed-rail/index.html', 'projects/high-speed-rail.html']],
   ['EngineerPlus interactive demo', ['projects/high-speed-rail/demo/index.html']],
   ['Research', ['research/index.html', 'research.html']],
-  ['Jensen Polynomials research', ['research/jensen-polynomials/index.html', 'research/jensen-polynomials.html']],
+  ['Connected-diagram research', ['research/connected-diagram-expansions/index.html', 'research/connected-diagram-expansions.html']],
+  ['Critical cubic crossover research', ['research/critical-cubic-crossover/index.html', 'research/critical-cubic-crossover.html']],
   ['Hypergraph Tensor research', ['research/hypergraph-tensor/index.html', 'research/hypergraph-tensor.html']],
   ['Resume', ['resume/index.html', 'resume.html']],
   ['404', ['404.html']],
@@ -67,9 +68,7 @@ const requiredAssets = new Map([
   ['EngineerPlus compliance module', ['assets/images/engineerplus-compliance-hub.webp']],
   ['EngineerPlus impact dashboard module', ['assets/images/engineerplus-impact-dashboard.webp']],
   ['Scenic Guide visitor interface', ['assets/images/scenic-guide-visitor.webp']],
-  ['Jensen manuscript title page', ['assets/images/jensen-manuscript-title-page.png']],
   ['Hypergraph manuscript title page', ['assets/images/hypergraph-manuscript-title-page.png']],
-  ['Jensen submitted manuscript', ['assets/documents/subcritical-hyperbolicity-jensen-polynomials-riemann-xi.pdf']],
   ['Hypergraph submitted manuscript', ['assets/documents/beyond-vertex-profiles-nonuniform-hypergraph-tensors.pdf']],
   ['Portfolio Open Graph image', ['assets/images/og-portfolio.png']],
 ]);
@@ -82,7 +81,8 @@ const sitemapRoutes = [
   '/projects/high-speed-rail/',
   '/projects/high-speed-rail/demo/',
   '/research/',
-  '/research/jensen-polynomials/',
+  '/research/connected-diagram-expansions/',
+  '/research/critical-cubic-crossover/',
   '/research/hypergraph-tensor/',
   '/resume/',
 ];
@@ -355,11 +355,8 @@ function checkResearchAndProjectFacts(pageFiles, htmlByName) {
   const homeResearchSummaryMatch = homeHtml.match(/<p\s+class=["']research-status-summary["'][^>]*>([\s\S]*?)<\/p>/i);
   const homeResearchSummary = visibleText(homeResearchSummaryMatch?.[1] ?? '');
   const submittedVenue = (statusText) => statusText.match(/^Submitted to\s+(.+)$/i)?.[1] ?? null;
-  const jensenVenue = submittedVenue(sourceRecords.jensen.statusText);
   const hypergraphVenue = submittedVenue(sourceRecords.hypergraph.statusText);
-  const expectedHomeResearchSummary = jensenVenue && hypergraphVenue
-    ? `Two manuscripts are currently submitted: one to ${jensenVenue} and one to ${hypergraphVenue}.`
-    : `Current verified statuses: Jensen-polynomial research — ${sourceRecords.jensen.statusText}; hypergraph-tensor research — ${sourceRecords.hypergraph.statusText}.`;
+  const expectedHomeResearchSummary = `Two single-author manuscripts are under review. The hypergraph-tensor collaboration is ${hypergraphVenue ? `submitted to ${hypergraphVenue}` : sourceRecords.hypergraph.statusText}.`;
   if (homeResearchSummary !== expectedHomeResearchSummary) {
     addIssue('truthfulness', 'Home research status summary is not synchronized with verified research statuses');
   }
@@ -454,19 +451,24 @@ function checkResearchAndProjectFacts(pageFiles, htmlByName) {
     addIssue('privacy', 'EngineerPlus demo must not depend on an external resource or service');
   }
 
-  const jensenHtml = htmlByName.get(pageFiles.get('Jensen Polynomials research')) ?? '';
-  const jensenText = visibleText(jensenHtml);
-  if (!/Submitted to the International Journal of Number Theory/i.test(jensenText)) {
-    addIssue('truthfulness', 'Jensen page must use the verified status: Submitted to the International Journal of Number Theory');
-  }
-  if (/\b(?:under review|accepted|published)\b/i.test(jensenText)) {
-    addIssue('truthfulness', 'Jensen page exposes an unsupported publication status');
-  }
-  const jensenPdfLinks = (jensenHtml.match(/<a\b[^>]*>/gi) ?? [])
-    .map((tag) => attribute(tag, 'href') ?? '')
-    .filter((href) => /\.pdf(?:[?#]|$)/i.test(href));
-  if (!jensenPdfLinks.some((href) => href.endsWith('assets/documents/subcritical-hyperbolicity-jensen-polynomials-riemann-xi.pdf'))) {
-    addIssue('research', 'Jensen page is missing the approved submitted-manuscript PDF link');
+  for (const [pageName, journal] of [
+    ['Connected-diagram research', 'Advances in Mathematics'],
+    ['Critical cubic crossover research', 'Journal of the London Mathematical Society'],
+  ]) {
+    const manuscriptHtml = htmlByName.get(pageFiles.get(pageName)) ?? '';
+    const manuscriptText = visibleText(manuscriptHtml);
+    if (!/Under review/i.test(manuscriptText) || !manuscriptText.includes(journal) || !/31 August 2026/i.test(manuscriptText)) {
+      addIssue('truthfulness', `${pageName} must expose the verified journal, submission date, and Under review status`);
+    }
+    if (!/submission agreement restricts public sharing/i.test(manuscriptText) || !/does not mean accepted or published/i.test(manuscriptText)) {
+      addIssue('truthfulness', `${pageName} is missing the manuscript access and review-status boundary`);
+    }
+    if (/\.pdf(?:[?#]|$)/i.test(manuscriptHtml)) {
+      addIssue('privacy', `${pageName} must not expose a manuscript PDF`);
+    }
+    if (/ruoquecheng@gmail\.com|260831-Ning|Withdraw this Article|Upload a Revised Version/i.test(manuscriptHtml)) {
+      addIssue('privacy', `${pageName} exposes private submission-portal material`);
+    }
   }
 
   const hypergraphHtml = htmlByName.get(pageFiles.get('Hypergraph Tensor research')) ?? '';
@@ -526,7 +528,8 @@ function checkFactGovernance(pageFiles, htmlByName) {
     'profile.hero.name', 'profile.hero.summary', 'netsage.summary', 'battery.dataBoundary', 'battery.summary', 'battery.competitionResult',
     'rail.summary', 'rail.role', 'rail.components.engineeringDesign.context', 'rail.components.engineeringDesign.role',
     'rail.components.engineeringDesign.summary', 'rail.components.engineerPlus.context', 'rail.components.engineerPlus.role',
-    'rail.components.engineerPlus.summary', 'scenic.summary', 'jensen.statusText', 'jensen.summary',
+    'rail.components.engineerPlus.summary', 'scenic.summary', 'connected.statusText', 'connected.summary', 'connected.accessText',
+    'cubic.statusText', 'cubic.summary', 'cubic.accessText',
     'hypergraph.statusText', 'hypergraph.summary', 'hypergraph.title', 'hypergraph.authorshipText',
   ]);
   const seenBindings = new Set();
@@ -628,7 +631,13 @@ async function checkTrackedRepository() {
   for (const name of tracked) {
     if (forbiddenTracked.test(name)) addIssue('privacy', `Forbidden private file tracked by Git: ${name}`);
     if (!readable.has(path.extname(name).toLowerCase())) continue;
-    const content = await readFile(path.join(projectRoot, ...name.split('/')), 'utf8');
+    let content;
+    try {
+      content = await readFile(path.join(projectRoot, ...name.split('/')), 'utf8');
+    } catch (error) {
+      if (error?.code === 'ENOENT') continue;
+      throw error;
+    }
     for (const [label, pattern] of leakPatterns) {
       if (pattern.test(content)) addIssue('privacy', `${name}: tracked source leaks ${label}`);
     }

@@ -8,7 +8,7 @@ const factsRoot = path.join(root, "content", "facts");
 
 const readJson = async (...segments) => JSON.parse(await readFile(path.join(root, ...segments), "utf8"));
 
-const [config, publicClaimsData, profile, education, netsage, battery, rail, scenic, jensen, hypergraph] = await Promise.all([
+const [config, publicClaimsData, profile, education, netsage, battery, rail, scenic, connected, cubic, hypergraph] = await Promise.all([
   readJson("site.config.json"),
   readJson("content", "public-claims.json"),
   readJson("content", "facts", "profile.json"),
@@ -17,7 +17,8 @@ const [config, publicClaimsData, profile, education, netsage, battery, rail, sce
   readJson("content", "facts", "projects", "battery-rul.json"),
   readJson("content", "facts", "projects", "high-speed-rail.json"),
   readJson("content", "facts", "projects", "scenic-guide.json"),
-  readJson("content", "facts", "research", "jensen-polynomials.json"),
+  readJson("content", "facts", "research", "connected-diagram-expansions.json"),
+  readJson("content", "facts", "research", "critical-cubic-crossover.json"),
   readJson("content", "facts", "research", "hypergraph-tensor.json")
 ]);
 
@@ -28,7 +29,7 @@ const escapeHtml = (value = "") => String(value)
   .replaceAll('"', "&quot;")
   .replaceAll("'", "&#39;");
 
-const recordsByKey = { profile, education, netsage, battery, rail, scenic, jensen, hypergraph };
+const recordsByKey = { profile, education, netsage, battery, rail, scenic, connected, cubic, hypergraph };
 const publicFacts = (record) => (record.facts || []).filter((fact) => fact.public === true && fact.status === "verified" && fact.publicText);
 const displayFacts = (record) => publicFacts(record).filter((fact) => fact.display !== false);
 const publicLinks = (profile.links || []).filter((link) => link.public === true && link.status === "verified" && link.label && link.url);
@@ -81,16 +82,17 @@ const engineerPlusContext = publicClaim("rail", "components.engineerPlus.context
 const engineerPlusRole = publicClaim("rail", "components.engineerPlus.role");
 const engineerPlusSummary = publicClaim("rail", "components.engineerPlus.summary");
 const scenicSummary = publicClaim("scenic", "summary");
-const jensenStatus = publicClaim("jensen", "statusText");
-const jensenSummary = publicClaim("jensen", "summary");
+const connectedStatus = publicClaim("connected", "statusText");
+const connectedSummary = publicClaim("connected", "summary");
+const connectedAccess = publicClaim("connected", "accessText");
+const cubicStatus = publicClaim("cubic", "statusText");
+const cubicSummary = publicClaim("cubic", "summary");
+const cubicAccess = publicClaim("cubic", "accessText");
 const hypergraphStatus = publicClaim("hypergraph", "statusText");
 const hypergraphSummary = publicClaim("hypergraph", "summary");
 const submittedVenue = (statusText) => statusText.match(/^Submitted to\s+(.+)$/i)?.[1] ?? null;
-const jensenVenue = submittedVenue(jensenStatus);
 const hypergraphVenue = submittedVenue(hypergraphStatus);
-const homeResearchStatusSummary = jensenVenue && hypergraphVenue
-  ? `Two manuscripts are currently submitted: one to ${jensenVenue} and one to ${hypergraphVenue}.`
-  : `Current verified statuses: Jensen-polynomial research — ${jensenStatus}; hypergraph-tensor research — ${hypergraphStatus}.`;
+const homeResearchStatusSummary = `Two single-author manuscripts are under review. The hypergraph-tensor collaboration is ${hypergraphVenue ? `submitted to ${hypergraphVenue}` : hypergraphStatus}.`;
 const defaultOgUrl = `${config.canonicalOrigin}${config.basePath}assets/images/og-portfolio.png`;
 
 const figure = ({ depth, src, width, height, alt, caption, eager = false, className = "figure" }) => `
@@ -232,13 +234,14 @@ const homeBody = `
       <div class="project-index" aria-hidden="true">03</div>
       <div class="project-copy">
         <p class="project-type">Mathematical research</p>
-        <h2><a href="research/">Two research lines in real-rootedness and tensor spectra</a></h2>
-        <p>Current work spans real-rootedness of Jensen polynomials associated with the Riemann xi-function and edge-local spectral structure in nonuniform hypergraph tensors.</p>
+        <h2><a href="research/">Three research records in asymptotic analysis and tensor spectra</a></h2>
+        <p>Current work spans Hermite–Jensen asymptotics, Riemann-xi Jensen polynomials, and edge-local spectral structure in nonuniform hypergraph tensors.</p>
         <p class="research-status-summary">${escapeHtml(homeResearchStatusSummary)}</p>
         <a class="text-link" href="research/">View research <span aria-hidden="true">→</span></a>
       </div>
       <div class="research-mini-list">
-        <a href="research/jensen-polynomials/"><span>${escapeHtml(jensenStatus)}</span><strong>Jensen polynomials and the Riemann xi-function</strong></a>
+        <a href="research/connected-diagram-expansions/"><span>${escapeHtml(connectedStatus)}</span><strong>Connected-diagram expansions for Hermite–Jensen multipliers</strong></a>
+        <a href="research/critical-cubic-crossover/"><span>${escapeHtml(cubicStatus)}</span><strong>Critical cubic crossover in Riemann-xi Jensen polynomials</strong></a>
         <a href="research/hypergraph-tensor/"><span>${escapeHtml(hypergraphStatus)}</span><strong>Edge-local spectra of nonuniform hypergraph tensors</strong></a>
       </div>
     </article>
@@ -666,14 +669,15 @@ const engineerPlusDemo = () => `<!doctype html>
 </body>
 </html>`;
 
-const researchStatusFor = (record) => record === jensen ? jensenStatus : hypergraphStatus;
-const researchSummaryFor = (record) => record === jensen ? jensenSummary : hypergraphSummary;
-const researchAuthorshipFor = (record) => record === jensen
-  ? "Single-author manuscript"
-  : "Six-author manuscript · Wanzheng Ning is first and corresponding author";
-const researchBylineFor = (record) => record === jensen
-  ? profileName
-  : hypergraph.authorshipText;
+const researchClaims = new Map([
+  [connected, { status: connectedStatus, summary: connectedSummary, access: connectedAccess, authorship: "Single-author manuscript", byline: profileName }],
+  [cubic, { status: cubicStatus, summary: cubicSummary, access: cubicAccess, authorship: "Single-author manuscript", byline: profileName }],
+  [hypergraph, { status: hypergraphStatus, summary: hypergraphSummary, authorship: "Six-author manuscript · Wanzheng Ning is first and corresponding author", byline: hypergraph.authorshipText }]
+]);
+const researchStatusFor = (record) => researchClaims.get(record)?.status ?? "";
+const researchSummaryFor = (record) => researchClaims.get(record)?.summary ?? "";
+const researchAuthorshipFor = (record) => researchClaims.get(record)?.authorship ?? "";
+const researchBylineFor = (record) => researchClaims.get(record)?.byline ?? "";
 
 const researchItem = ({ depth, href, record, question }) => `
   <article class="research-item">
@@ -683,25 +687,25 @@ const researchItem = ({ depth, href, record, question }) => `
 
 const researchBody = `
   <section class="page-hero research-hero">
-    <div><p class="hero-kicker">Mathematical research</p><h1>Research</h1><p>One single-author manuscript and one first-author collaboration on real-rooted polynomials and spectral information in nonuniform hypergraph tensors.</p></div>
+    <div><p class="hero-kicker">Mathematical research</p><h1>Research</h1><p>Two single-author manuscripts and one first-author collaboration spanning asymptotic analysis, Jensen polynomials, and nonuniform hypergraph tensor spectra.</p></div>
     <div class="spectral-mark" aria-hidden="true"><span>ξ</span><span>ρ</span><span>H</span></div>
   </section>
   <section class="section research-list">
-    ${researchItem({depth: 1, href: "research/jensen-polynomials/", record: jensen, question: "How far can effective hyperbolicity of xi-associated Jensen polynomials be pushed toward the cubic endpoint scale?"})}
+    ${researchItem({depth: 1, href: "research/connected-diagram-expansions/", record: connected, question: "How can connected-diagram expansions organize all-excess summation and critical zero asymptotics for Hermite–Jensen multipliers?"})}
+    ${researchItem({depth: 1, href: "research/critical-cubic-crossover/", record: cubic, question: "What changes at the critical cubic crossover from Hermite universality in Riemann-xi Jensen polynomials?"})}
     ${researchItem({depth: 1, href: "research/hypergraph-tensor/", record: hypergraph, question: "What spectral information is carried by the arrangement of vertex profiles inside nonuniform hyperedges?"})}
   </section>
-  <section class="section research-policy"><div class="section-heading"><p>Publication policy</p><h2>Status and authorship are stated at the lowest verified level.</h2></div><p>Submitted does not mean accepted or published. Manuscript in preparation does not imply submission. Only files explicitly approved for public release are linked; the submitted Jensen and hypergraph manuscripts are available, with the hypergraph author order stated explicitly.</p></section>`;
+  <section class="section research-policy"><div class="section-heading"><p>Publication policy</p><h2>Status and authorship are stated at the lowest verified level.</h2></div><p>Under review does not mean accepted or published. The two reviewed manuscripts and their private submission materials are unavailable because the current submission agreements restrict public sharing. The separately submitted hypergraph manuscript remains publicly available with its complete verified author order.</p></section>`;
 
 const manuscriptFeature = (record) => {
   const manuscript = record.manuscript;
   if (!manuscript || manuscript.public !== true || manuscript.status !== "verified") return "";
-  const isJensen = record === jensen;
-  const isSubmitted = isJensen || /^Submitted\b/.test(researchStatusFor(record));
+  const isSubmitted = /^Submitted\b/.test(researchStatusFor(record));
   const manuscriptHref = local(2, `assets/${manuscript.file}`);
   const downloadName = path.posix.basename(manuscript.file);
-  const ariaLabel = isJensen ? "Open the submitted Jensen manuscript PDF" : "Open the submitted hypergraph tensor manuscript PDF";
-  const previewAlt = isJensen ? "Title page of the submitted Jensen polynomial manuscript" : "Title page of the submitted hypergraph tensor manuscript";
-  const caption = isJensen ? "Title page from the first submitted version." : "Title page of the submitted manuscript.";
+  const ariaLabel = "Open the submitted hypergraph tensor manuscript PDF";
+  const previewAlt = "Title page of the submitted hypergraph tensor manuscript";
+  const caption = "Title page of the submitted manuscript.";
   const preview = manuscript.preview ? `
         <figure class="manuscript-preview">
           <a href="${manuscriptHref}" aria-label="${escapeHtml(ariaLabel)}">
@@ -710,7 +714,7 @@ const manuscriptFeature = (record) => {
           <figcaption>${escapeHtml(caption)}</figcaption>
         </figure>` : "";
   const label = `${isSubmitted ? "Submitted" : "Current"} manuscript · ${manuscript.date}`;
-  const heading = isSubmitted ? (isJensen ? "Read the first submitted version." : "Read the submitted manuscript.") : "Read the current manuscript.";
+  const heading = isSubmitted ? "Read the submitted manuscript." : "Read the current manuscript.";
   const note = isSubmitted
     ? `This ${manuscript.pages}-page file documents the work as submitted. Making it available here does not indicate peer-review acceptance or publication.`
     : `This ${manuscript.pages}-page file is available for public reading. Public availability does not indicate journal submission, acceptance, or publication.`;
@@ -729,30 +733,27 @@ const manuscriptFeature = (record) => {
       </section>`;
 };
 
-const researchDetailBody = (record, kind) => {
-  const isJensen = kind === "jensen";
-  const question = isJensen
-    ? "Can one prove a polynomial-scale effective real-rootedness range for Jensen polynomials associated with the Riemann xi-function?"
-    : "Do complete vertex edge-size profiles determine the spectral behavior of a weighted nonuniform hypergraph tensor, or does edge-local arrangement add information?";
-  const formula = isJensen
-    ? `<div class="formula" role="img" aria-label="Jensen polynomial definition and subcritical hyperbolicity scale"><span>J<sub>γ</sub><sup>d,n</sup>(X) = Σ<sub>j=0</sub><sup>d</sup> C(d,j) γ(n+j) X<sup>j</sup></span><strong>M = n + d ≥ C<sub>ε</sub>d<sup>3+ε</sup></strong></div>`
-    : `<div class="formula" role="img" aria-label="Neighbor profile spectral bound"><span>ρ(A<sup>η</sup>(H)) ≤ B<sub>np</sub><sup>η</sup>(H) ≤ max<sub>i</sub> R<sub>i</sub><sup>η</sup></span><strong>vertex profiles → edge-local arrangement → spectral information</strong></div>`;
-  const contribution = isJensen
-    ? "The submitted manuscript presents a proof of a subcritical criterion for every positive epsilon, combines exact Hermite reconstruction with finite-difference and shifted-saddle estimates, and explicitly leaves the endpoint M comparable to d cubed untreated."
-    : "The submitted manuscript proves robust spectral non-determination beyond complete labelled vertex profiles, including a five-vertex minimality result and separation for every positive choice of 2- and 3-edge masses. It then develops the edge-local bound, exact equality and defect theory, comparisons with classical uniform bounds, quotient reductions, and size-dependent loose-star scaling laws.";
+const reviewedResearchDetailBody = (record) => {
+  const claims = researchClaims.get(record);
   return `
     <article class="research-paper">
-      <header class="paper-hero">
-        <div>${status(researchStatusFor(record))}<p class="project-type">${escapeHtml(researchAuthorshipFor(record))}</p><h1>${escapeHtml(record.title)}</h1><p>${escapeHtml(researchBylineFor(record))}</p></div>
-      </header>
-      ${manuscriptFeature(record)}
-      <section class="section paper-question"><div class="section-heading"><p>Research question</p><h2>${escapeHtml(question)}</h2></div>${formula}</section>
-      <section class="section split-section"><div><h2>Non-specialist summary</h2><p>${escapeHtml(researchSummaryFor(record))}</p></div><div><h2>Current contribution</h2><p>${escapeHtml(contribution)}</p></div></section>
-      <section class="section"><div class="two-column-lists"><div><h2>Mathematical objects</h2>${textList(record.objects)}</div><div><h2>Core techniques</h2>${textList(record.techniques)}</div></div></section>
+      <header class="paper-hero"><div>${status(claims.status)}<p class="project-type">${escapeHtml(claims.authorship)}</p><h1>${escapeHtml(record.title)}</h1><p>${escapeHtml(claims.byline)}</p></div></header>
+      <section class="section split-section"><div><p class="project-type">Journal</p><h2>${escapeHtml(record.journal)}</h2><p>Submitted ${escapeHtml(record.submittedDate)}</p></div><div><p class="project-type">Verified research record</p><h2>Current status</h2><p>${escapeHtml(claims.summary)}</p></div></section>
       <section class="section keyword-section"><h2>Keywords</h2><ul class="keyword-list">${record.keywords.map((keyword) => `<li>${escapeHtml(keyword)}</li>`).join("")}</ul></section>
-      <section class="section limitations paper-access"><div><h2>Access and status boundary</h2><p>${isJensen ? "The first submitted version is available above. Its public availability does not change the verified submission status or imply acceptance or publication." : "The submitted manuscript is available above with the complete verified author order. Its public availability does not imply acceptance or publication."}</p></div><a class="button-secondary" href="${local(2, "research/")}">Back to research</a></section>
+      <section class="section limitations paper-access"><div><h2>Access and status boundary</h2><p>${escapeHtml(claims.access)} Under review does not mean accepted or published.</p></div><a class="button-secondary" href="${local(2, "research/")}">Back to research</a></section>
     </article>`;
 };
+
+const hypergraphDetailBody = (record) => `
+  <article class="research-paper">
+    <header class="paper-hero"><div>${status(hypergraphStatus)}<p class="project-type">${escapeHtml(researchAuthorshipFor(record))}</p><h1>${escapeHtml(record.title)}</h1><p>${escapeHtml(researchBylineFor(record))}</p></div></header>
+    ${manuscriptFeature(record)}
+    <section class="section paper-question"><div class="section-heading"><p>Research question</p><h2>Do complete vertex edge-size profiles determine spectral behavior, or does edge-local arrangement add information?</h2></div><div class="formula" role="img" aria-label="Neighbor profile spectral bound"><span>ρ(A<sup>η</sup>(H)) ≤ B<sub>np</sub><sup>η</sup>(H) ≤ max<sub>i</sub> R<sub>i</sub><sup>η</sup></span><strong>vertex profiles → edge-local arrangement → spectral information</strong></div></section>
+    <section class="section split-section"><div><h2>Non-specialist summary</h2><p>${escapeHtml(hypergraphSummary)}</p></div><div><h2>Current contribution</h2><p>The submitted manuscript proves robust spectral non-determination beyond complete labelled vertex profiles, including a five-vertex minimality result and separation for every positive choice of 2- and 3-edge masses. It then develops the edge-local bound, exact equality and defect theory, comparisons with classical uniform bounds, quotient reductions, and size-dependent loose-star scaling laws.</p></div></section>
+    <section class="section"><div class="two-column-lists"><div><h2>Mathematical objects</h2>${textList(record.objects)}</div><div><h2>Core techniques</h2>${textList(record.techniques)}</div></div></section>
+    <section class="section keyword-section"><h2>Keywords</h2><ul class="keyword-list">${record.keywords.map((keyword) => `<li>${escapeHtml(keyword)}</li>`).join("")}</ul></section>
+    <section class="section limitations paper-access"><div><h2>Access and status boundary</h2><p>The submitted manuscript is available above with the complete verified author order. Its public availability does not imply acceptance or publication.</p></div><a class="button-secondary" href="${local(2, "research/")}">Back to research</a></section>
+  </article>`;
 
 const resumeBody = `
   <article class="resume">
@@ -761,7 +762,7 @@ const resumeBody = `
       <button class="button print-button" type="button" onclick="window.print()">Print or save as PDF</button>
     </header>
     <section class="resume-section"><h2>Education</h2><div class="resume-entry"><div><strong>${escapeHtml(publicFacts(education).find((fact) => fact.id === "education.institution")?.publicText || "")}</strong><span>Qinhuangdao, China</span></div><p>${escapeHtml(publicFacts(education).find((fact) => fact.id === "education.program")?.publicText || "")}</p></div></section>
-    <section class="resume-section"><h2>Research</h2><div class="resume-entry"><div><strong>${escapeHtml(jensen.title)}</strong><span>${escapeHtml(jensenStatus)}</span></div><p>Single-author work on effective hyperbolicity, Hermite reconstruction, finite differences, and shifted-saddle analysis.</p></div><div class="resume-entry"><div><strong>${escapeHtml(hypergraph.title)}</strong><span>${escapeHtml(hypergraphStatus)}</span></div><p>First- and corresponding-author work with Qianzhi Ao as second author and four shared third authors, covering robust profile non-determination, edge-local tensor bounds, quotient reduction, and loose-star asymptotics.</p></div></section>
+    <section class="resume-section"><h2>Research</h2><div class="resume-entry"><div><strong>${escapeHtml(connected.title)}</strong><span>${escapeHtml(connectedStatus)} · ${escapeHtml(connected.journal)}</span></div><p>Single-author work on connected-diagram expansions, all-excess summation, and critical zero asymptotics.</p></div><div class="resume-entry"><div><strong>${escapeHtml(cubic.title)}</strong><span>${escapeHtml(cubicStatus)} · ${escapeHtml(cubic.journal)}</span></div><p>Single-author work on the critical cubic crossover from Hermite universality in Riemann-xi Jensen polynomials.</p></div><div class="resume-entry"><div><strong>${escapeHtml(hypergraph.title)}</strong><span>${escapeHtml(hypergraphStatus)}</span></div><p>First- and corresponding-author work with Qianzhi Ao as second author and four shared third authors, covering robust profile non-determination, edge-local tensor bounds, quotient reduction, and loose-star asymptotics.</p></div></section>
     <section class="resume-section"><h2>Projects</h2><div class="resume-entry"><div><strong>NetSage</strong><span>Kotlin · Jetpack Compose · FastAPI</span></div><p>Local-first, rule-based Android network diagnosis with ranked causes, matched evidence, repair suggestions, history, favorites, and troubleshooting references.</p></div><div class="resume-entry"><div><strong>Battery RUL and cascade utilization modeling</strong><span>Python · survival modeling · graph optimization</span></div><p>Q1 to Q4 workflow on fully simulated data generated with semi-empirical assumptions, covering degradation stages, SOH/RUL, compatibility graphs, MILP grouping, and robust stress testing.</p></div><div class="resume-entry"><div><strong>Australian high-speed rail design and management concept</strong><span>Five-person carbody team · Proposed Design</span></div><p>Contributed to a lightweight composite carriage concept and independently developed a five-page front-end prototype for capital pooling, risk simulation, compliance workflow, and impact reporting using illustrative data.</p></div></section>
     <section class="resume-section"><h2>Competitions</h2><div class="resume-entry"><div><strong>Mathematical modeling project</strong><span>${escapeHtml(batteryCompetitionResult)}</span></div><p>Four-part battery reliability and utilization workflow on fully simulated data generated with semi-empirical assumptions; received the stated university-level second prize.</p></div><div class="resume-entry"><div><strong>Scenic Guide Digital Human</strong><span>Competition software project</span></div><p>Tourism guide prototype to which I contributed, with conversational and voice interaction, route guidance, narration, and knowledge management.</p></div></section>
     <section class="resume-section"><h2>Technical skills</h2><dl class="skills-context"><div><dt>Network and mobile</dt><dd>Kotlin, Jetpack Compose, Android, network diagnostics, DNS/TLS/HTTP troubleshooting concepts</dd></div><div><dt>Modeling and research</dt><dd>Python, change-point regression, survival modeling, graph methods, mathematical optimization, asymptotic analysis, LaTeX</dd></div><div><dt>Software</dt><dd>FastAPI, JSON, Git</dd></div></dl></section>
@@ -817,17 +818,22 @@ const routes = [
   {
     file: "research/index.html",
     route: "/research/",
-    html: page({title: "Research", description: "Research by Wanzheng Ning on Jensen polynomial hyperbolicity and nonuniform hypergraph tensor spectra.", route: "/research/", depth: 1, active: "research", body: researchBody})
+    html: page({title: "Research", description: "Research by Wanzheng Ning on Hermite–Jensen asymptotics, Riemann-xi Jensen polynomials, and nonuniform hypergraph tensor spectra.", route: "/research/", depth: 1, active: "research", body: researchBody})
   },
   {
-    file: "research/jensen-polynomials/index.html",
-    route: "/research/jensen-polynomials/",
-    html: page({title: "Jensen Polynomials and the Riemann Xi-Function", description: "Research summary for a submitted single-author manuscript on subcritical hyperbolicity of xi-associated Jensen polynomials.", route: "/research/jensen-polynomials/", depth: 2, active: "research", body: researchDetailBody(jensen, "jensen"), schema: {"@context": "https://schema.org", "@type": "ScholarlyArticle", headline: jensen.title, author: {"@type": "Person", name: profileName}, keywords: jensen.keywords.join(", "), description: jensenSummary}})
+    file: "research/connected-diagram-expansions/index.html",
+    route: "/research/connected-diagram-expansions/",
+    html: page({title: "Connected-Diagram Expansions for Hermite–Jensen Multipliers", description: connectedSummary, route: "/research/connected-diagram-expansions/", depth: 2, active: "research", body: reviewedResearchDetailBody(connected), schema: {"@context": "https://schema.org", "@type": "ScholarlyArticle", headline: connected.title, author: {"@type": "Person", name: profileName}, isPartOf: {"@type": "Periodical", name: connected.journal}, keywords: connected.keywords.join(", "), description: connectedSummary}})
+  },
+  {
+    file: "research/critical-cubic-crossover/index.html",
+    route: "/research/critical-cubic-crossover/",
+    html: page({title: "Critical Cubic Crossover in Riemann-ξ Jensen Polynomials", description: cubicSummary, route: "/research/critical-cubic-crossover/", depth: 2, active: "research", body: reviewedResearchDetailBody(cubic), schema: {"@context": "https://schema.org", "@type": "ScholarlyArticle", headline: cubic.title, author: {"@type": "Person", name: profileName}, isPartOf: {"@type": "Periodical", name: cubic.journal}, keywords: cubic.keywords.join(", "), description: cubicSummary}})
   },
   {
     file: "research/hypergraph-tensor/index.html",
     route: "/research/hypergraph-tensor/",
-    html: page({title: "Edge-Local Spectra of Nonuniform Hypergraph Tensors", description: "Research summary for a manuscript submitted to Linear and Multilinear Algebra on edge-local spectral information and size-dependent scaling.", route: "/research/hypergraph-tensor/", depth: 2, active: "research", body: researchDetailBody(hypergraph, "hypergraph"), schema: {"@context": "https://schema.org", "@type": "ScholarlyArticle", headline: hypergraph.title, author: hypergraph.authors.map((name) => ({"@type": "Person", name})), keywords: hypergraph.keywords.join(", "), description: hypergraphSummary}})
+    html: page({title: "Edge-Local Spectra of Nonuniform Hypergraph Tensors", description: "Research summary for a manuscript submitted to Linear and Multilinear Algebra on edge-local spectral information and size-dependent scaling.", route: "/research/hypergraph-tensor/", depth: 2, active: "research", body: hypergraphDetailBody(hypergraph), schema: {"@context": "https://schema.org", "@type": "ScholarlyArticle", headline: hypergraph.title, author: hypergraph.authors.map((name) => ({"@type": "Person", name})), keywords: hypergraph.keywords.join(", "), description: hypergraphSummary}})
   },
   {
     file: "resume/index.html",

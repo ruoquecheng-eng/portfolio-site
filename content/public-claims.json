@@ -72,14 +72,34 @@
       "factId": "guide.summary"
     },
     {
-      "record": "jensen",
+      "record": "connected",
       "field": "statusText",
-      "factId": "jensen.status"
+      "factId": "connected.status"
     },
     {
-      "record": "jensen",
+      "record": "connected",
       "field": "summary",
-      "factId": "jensen.summary"
+      "factId": "connected.summary"
+    },
+    {
+      "record": "connected",
+      "field": "accessText",
+      "factId": "connected.access"
+    },
+    {
+      "record": "cubic",
+      "field": "statusText",
+      "factId": "cubic.status"
+    },
+    {
+      "record": "cubic",
+      "field": "summary",
+      "factId": "cubic.summary"
+    },
+    {
+      "record": "cubic",
+      "field": "accessText",
+      "factId": "cubic.access"
     },
     {
       "record": "hypergraph",
@@ -108,4 +128,3 @@
     }
   ]
 }
-

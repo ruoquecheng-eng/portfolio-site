@@ -28,7 +28,8 @@ ROUTES = [
     ("high-speed-rail", "/projects/high-speed-rail/"),
     ("engineerplus-demo", "/projects/high-speed-rail/demo/#overview"),
     ("research", "/research/"),
-    ("jensen", "/research/jensen-polynomials/"),
+    ("connected-diagram", "/research/connected-diagram-expansions/"),
+    ("critical-cubic", "/research/critical-cubic-crossover/"),
     ("hypergraph", "/research/hypergraph-tensor/"),
     ("resume", "/resume/"),
 ]
@@ -71,7 +72,7 @@ def check_page(page, name, route, viewport_name, issues):
     if console_errors:
         issues.append(f"{viewport_name}/{name}: console errors {console_errors}")
 
-    if viewport_name in {"mobile", "desktop"} and name in {"home", "projects", "netsage", "battery", "high-speed-rail", "engineerplus-demo", "research", "jensen", "hypergraph", "resume"}:
+    if viewport_name in {"mobile", "desktop"} and name in {"home", "projects", "netsage", "battery", "high-speed-rail", "engineerplus-demo", "research", "connected-diagram", "critical-cubic", "hypergraph", "resume"}:
         page.screenshot(path=str(OUTPUT / f"{name}-{viewport_name}.png"), full_page=True)
 
 
@@ -94,8 +95,8 @@ def run():
         desktop = browser.new_context(viewport=VIEWPORTS["desktop"])
         page = desktop.new_page()
         page.goto(f"{BASE_URL}/", wait_until="networkidle")
-        if page.get_by_text("Two manuscripts are currently submitted: one to the International Journal of Number Theory and one to Linear and Multilinear Algebra.", exact=True).count() != 1:
-            issues.append("home research: dynamic submitted-status summary is missing")
+        if page.get_by_text("Two single-author manuscripts are under review. The hypergraph-tensor collaboration is submitted to Linear and Multilinear Algebra.", exact=True).count() != 1:
+            issues.append("home research: synchronized status summary is missing")
         if page.get_by_text("A second manuscript on edge-local information in nonuniform hypergraph tensors is in preparation.", exact=True).count() != 0:
             issues.append("home research: stale Hypergraph in-preparation summary remains")
         page.keyboard.press("Tab")
@@ -139,16 +140,19 @@ def run():
                 issues.append(f"SEO: shared Open Graph image dimensions are {dimensions}, expected [1200, 630]")
         og_page.close()
 
-        manuscript_path = "/assets/documents/subcritical-hyperbolicity-jensen-polynomials-riemann-xi.pdf"
-        page.goto(f"{BASE_URL}/research/jensen-polynomials/", wait_until="networkidle")
-        manuscript_links = page.locator(f'a[href$="{manuscript_path}"]')
-        if manuscript_links.count() < 2:
-            issues.append("jensen manuscript: expected view and download links")
-        manuscript_response = page.request.get(f"{BASE_URL}{manuscript_path}")
-        if not manuscript_response.ok:
-            issues.append(f"jensen manuscript: HTTP {manuscript_response.status}")
-        elif "application/pdf" not in manuscript_response.headers.get("content-type", ""):
-            issues.append("jensen manuscript: response is not application/pdf")
+        for route, journal in [
+            ("/research/connected-diagram-expansions/", "Advances in Mathematics"),
+            ("/research/critical-cubic-crossover/", "Journal of the London Mathematical Society"),
+        ]:
+            page.goto(f"{BASE_URL}{route}", wait_until="networkidle")
+            if page.get_by_text("Under review", exact=True).count() < 1:
+                issues.append(f"research record {route}: Under review status is missing")
+            if page.get_by_text(journal, exact=True).count() != 1:
+                issues.append(f"research record {route}: journal metadata is missing or duplicated")
+            if page.locator('a[href$=".pdf"]').count() != 0:
+                issues.append(f"research record {route}: manuscript PDF must not be public")
+            if page.get_by_text("submission agreement restricts public sharing", exact=False).count() < 1:
+                issues.append(f"research record {route}: agreement-limited access note is missing")
 
         hypergraph_manuscript_path = "/assets/documents/beyond-vertex-profiles-nonuniform-hypergraph-tensors.pdf"
         page.goto(f"{BASE_URL}/research/hypergraph-tensor/", wait_until="networkidle")

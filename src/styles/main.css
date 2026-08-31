@@ -2486,7 +2486,7 @@ button.button-secondary:hover {
 
   .resume {
     width: 100%;
-    font-size: 8.8pt;
+    font-size: 8pt;
     line-height: 1.17;
   }
 
@@ -2527,6 +2527,22 @@ button.button-secondary:hover {
 
   .resume .skills-context > div {
     padding-block: 0.6mm;
+  }
+
+  .resume-contact .account-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 4mm;
+  }
+
+  .resume-contact .account-list > div {
+    display: block;
+    padding: 0;
+    border-bottom: 0;
+  }
+
+  .resume-contact .account-list dd {
+    display: none;
   }
 
   .resume a[href^="http"]::after {

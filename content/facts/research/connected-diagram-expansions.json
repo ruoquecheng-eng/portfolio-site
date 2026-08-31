@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 1,
+  "slug": "connected-diagram-expansions",
+  "title": "Connected-Diagram Expansions for Hermite–Jensen Multipliers: All-Excess Summation and Critical Zero Asymptotics",
+  "author": "Wanzheng Ning",
+  "journal": "Advances in Mathematics",
+  "submittedDate": "31 August 2026",
+  "statusText": "Under review",
+  "summary": "A single-author manuscript on connected-diagram expansions for Hermite–Jensen multipliers, all-excess summation, and critical zero asymptotics. It was submitted to Advances in Mathematics on 31 August 2026 and is currently under review.",
+  "accessText": "The manuscript and private submission materials are not publicly available while the article is under review because the current submission agreement restricts public sharing.",
+  "keywords": [
+    "Hermite–Jensen multipliers",
+    "connected-diagram expansions",
+    "all-excess summation",
+    "critical zero asymptotics"
+  ],
+  "facts": [
+    {
+      "id": "connected.status",
+      "publicText": "Under review",
+      "status": "verified",
+      "sourceType": "submission_status_evidence",
+      "lastVerified": "2026-08-31",
+      "public": true
+    },
+    {
+      "id": "connected.summary",
+      "publicText": "A single-author manuscript on connected-diagram expansions for Hermite–Jensen multipliers, all-excess summation, and critical zero asymptotics. It was submitted to Advances in Mathematics on 31 August 2026 and is currently under review.",
+      "status": "verified",
+      "sourceType": "submission_status_evidence",
+      "lastVerified": "2026-08-31",
+      "public": true,
+      "display": false
+    },
+    {
+      "id": "connected.access",
+      "publicText": "The manuscript and private submission materials are not publicly available while the article is under review because the current submission agreement restricts public sharing.",
+      "status": "verified",
+      "sourceType": "user_confirmation",
+      "lastVerified": "2026-08-31",
+      "public": true,
+      "display": false
+    }
+  ]
+}
