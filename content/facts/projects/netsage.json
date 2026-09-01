@@ -5,7 +5,7 @@
   "type": "Android network diagnostics",
   "summary": "A local-first, rule-based Android network diagnostics workbench that combines log analysis with on-device DNS, TCP, TLS, and HTTP probes, ranked evidence, retesting, and local session export.",
   "repository": "https://github.com/lbrswne/NetSage",
-  "commit": "91864a8",
+  "commit": "39d51ec",
   "features": [
     "Quick checkup, log diagnosis, and combined diagnosis workflows",
     "On-device network snapshot plus DNS, TCP, TLS, and HTTP probes",
@@ -22,6 +22,7 @@
     "Kotlin and Jetpack Compose Android client",
     "Versioned local JSON rules with structured observation parsing",
     "Isolated cancellable probes with per-step timeout handling",
+    "116 JVM unit tests plus six Android 36.1 emulator integration tests using local loopback servers",
     "Local session persistence plus Android Storage Access Framework import and export",
     "No NetSage server, account, telemetry, or advertising SDK in the v0.2 runtime"
   ],
@@ -42,9 +43,17 @@
     },
     {
       "id": "netsage.version.commit",
-      "publicText": "Verified against main commit 91864a8",
+      "publicText": "Verified against main commit 39d51ec",
       "status": "verified",
       "sourceType": "repository",
+      "lastVerified": "2026-09-01",
+      "public": true
+    },
+    {
+      "id": "netsage.testing",
+      "publicText": "Verified with 116 JVM unit tests and six Android 36.1 emulator integration tests covering local HTTP success, same-host redirects, refused connections, timeouts, self-signed TLS failures, and cancellation",
+      "status": "verified",
+      "sourceType": "test_results",
       "lastVerified": "2026-09-01",
       "public": true
     },
