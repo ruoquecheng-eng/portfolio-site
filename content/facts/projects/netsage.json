@@ -5,7 +5,7 @@
   "type": "Android network diagnostics",
   "summary": "A local-first, rule-based Android network diagnostics workbench that combines log analysis with on-device DNS, TCP, TLS, and HTTP probes, ranked evidence, retesting, and local session export.",
   "repository": "https://github.com/lbrswne/NetSage",
-  "commit": "a157338",
+  "commit": "91864a8",
   "features": [
     "Quick checkup, log diagnosis, and combined diagnosis workflows",
     "On-device network snapshot plus DNS, TCP, TLS, and HTTP probes",
@@ -42,7 +42,7 @@
     },
     {
       "id": "netsage.version.commit",
-      "publicText": "Verified against main commit a157338",
+      "publicText": "Verified against main commit 91864a8",
       "status": "verified",
       "sourceType": "repository",
       "lastVerified": "2026-09-01",
