@@ -82,6 +82,7 @@ const engineerPlusContext = publicClaim("rail", "components.engineerPlus.context
 const engineerPlusRole = publicClaim("rail", "components.engineerPlus.role");
 const engineerPlusSummary = publicClaim("rail", "components.engineerPlus.summary");
 const scenicSummary = publicClaim("scenic", "summary");
+const scenicSourceDisclosure = publicClaim("scenic", "download.disclosure");
 const connectedStatus = publicClaim("connected", "statusText");
 const connectedSummary = publicClaim("connected", "summary");
 const connectedAccess = publicClaim("connected", "accessText");
@@ -273,7 +274,7 @@ const projectsBody = `
       </article>
       <article class="project-card scenic-card">
         ${figure({depth: 1, src: "images/scenic-guide-visitor.webp", width: 1440, height: 900, alt: "Scenic Guide visitor interface showing the female digital guide and a five-stop route preview", caption: "Real project interface: female guide mode with route planning, text questions, voice input, and answer playback.", className: "card-figure scenic-figure"})}
-        <div><p class="project-type">${escapeHtml(scenic.type)}</p><h2>${escapeHtml(scenic.title)}</h2><p>${escapeHtml(scenicSummary)}</p></div>
+        <div><p class="project-type">${escapeHtml(scenic.type)}</p><h2>${escapeHtml(scenic.title)}</h2><p>${escapeHtml(scenicSummary)}</p><a class="text-link" href="${local(1, `assets/${scenic.download.file}`)}" download="Scenic-Guide-Digital-Human-Source-v0.1.0.zip">${escapeHtml(scenic.download.label)} <span aria-hidden="true">↓</span></a><p class="supporting-disclosure">${escapeHtml(scenicSourceDisclosure)}</p></div>
       </article>
     </div>
   </section>`;
@@ -285,7 +286,7 @@ const netsageBody = `
         <p class="hero-kicker">Primary engineering case study</p>
         <h1>${escapeHtml(netsage.title)}</h1>
         <p>${escapeHtml(netsageSummary)}</p>
-        <div class="case-meta">${status("Rule-based, not machine learning")}${status("Android · local-first")}${status("Verified commit ed692cba")}</div>
+        <div class="case-meta">${status("Rule-based, not machine learning")}${status("Android · local-first")}${status(`Verified commit ${netsage.commit}`)}</div>
         <a class="button" href="${escapeHtml(netsage.repository)}" rel="noopener">Open GitHub repository</a>
       </div>
       <img class="case-icon" src="${local(2, "assets/images/netsage-icon.webp")}" width="216" height="216" alt="NetSage application icon">
@@ -297,15 +298,16 @@ const netsageBody = `
     </section>
     <section class="section split-section" id="problem">
       <div><h2>Problem</h2><p>Network failures often arrive as partial logs, ambiguous browser errors, DNS symptoms, TLS failures, or intermittent packet loss. A useful diagnostic tool has to turn that fragmented evidence into a bounded set of hypotheses without pretending certainty.</p></div>
-      <div><h2>Diagnosis philosophy</h2><p>The engine uses explicit rules and evidence matching. Confidence is a ranking aid within the rule system, not a probability produced by a trained machine-learning model.</p></div>
+      <div><h2>Diagnosis philosophy</h2><p>The engine uses explicit rules and evidence matching. Evidence strength is a deterministic ranking aid, not a probability produced by a trained machine-learning model.</p></div>
     </section>
     <section class="section netsage-screens" id="app-walkthrough">
-      <div class="section-heading"><p>Real Android build</p><h2>Five verified screens from the running application</h2></div>
-      <p class="section-lead">Captured from NetSage 0.1.2 on the Android Studio emulator on 31 August 2026. The interface is the current local-first build; the displayed confidence values come from explicit rules rather than a trained model.</p>
+      <div class="section-heading"><p>Real Android build</p><h2>Six verified screens from the running application</h2></div>
+      <p class="section-lead">The first three screens were captured from NetSage 0.2.0 on an Android 36.1 emulator on 1 September 2026 after a successful DNS, TCP, TLS, and HTTP check. The remaining screens document retained local log-analysis and reference workflows.</p>
       <div class="netsage-screen-grid">
-        ${figure({depth: 2, src: "images/netsage-app-home.webp", width: 720, height: 1600, alt: "NetSage Android dashboard with diagnosis, history, terminology, examples, scenario library, display, privacy, and onboarding controls", caption: "Dashboard. One-tap diagnosis and direct access to local troubleshooting resources.", className: "netsage-screen"})}
-        ${figure({depth: 2, src: "images/netsage-app-diagnosis-input.webp", width: 720, height: 1600, alt: "NetSage diagnosis input screen containing a bundled DNS NXDOMAIN failure sample and input quality guidance", caption: "Diagnosis input. A bundled DNS sample activates quality guidance and the rule-based diagnosis action.", className: "netsage-screen"})}
-        ${figure({depth: 2, src: "images/netsage-app-diagnosis-result.webp", width: 720, height: 1600, alt: "NetSage diagnosis report ranking DNS configuration as the main cause with rule-derived confidence, evidence, suggestions, and a task checklist", caption: "Diagnosis report. Ranked cause, rule-derived confidence, matched evidence, repair guidance, and next-step tasks.", className: "netsage-screen"})}
+        ${figure({depth: 2, src: "images/netsage-app-v020-home.webp", width: 1080, height: 2400, alt: "NetSage 0.2.0 Android dashboard describing its local-first and serverless diagnostic boundary", caption: "v0.2 dashboard. Local log analysis, diagnostic sessions, privacy boundaries, and access to the expanded workflow.", className: "netsage-screen"})}
+        ${figure({depth: 2, src: "images/netsage-app-v020-checkup.webp", width: 1080, height: 2400, alt: "NetSage 0.2.0 quick checkup form for a user-confirmed host, protocol, and port", caption: "Quick checkup. The user confirms the target before on-device DNS, TCP, TLS, and HTTP probes run.", className: "netsage-screen"})}
+        ${figure({depth: 2, src: "images/netsage-app-v020-result.webp", width: 1080, height: 2400, alt: "NetSage 0.2.0 local diagnostic result showing the network snapshot and successful DNS probe", caption: "Active diagnostic result. A real emulator run records the network snapshot, evidence timeline, duration, and protocol results.", className: "netsage-screen"})}
+        ${figure({depth: 2, src: "images/netsage-app-diagnosis-input.webp", width: 720, height: 1600, alt: "NetSage diagnosis input screen containing a bundled DNS NXDOMAIN failure sample and input quality guidance", caption: "Log diagnosis input. A bundled DNS sample activates quality guidance and the local rule engine.", className: "netsage-screen"})}
         ${figure({depth: 2, src: "images/netsage-app-history.webp", width: 720, height: 1600, alt: "NetSage local diagnosis history with search, protocol filters, result summaries, and refill-to-input actions", caption: "History center. Local records support search, protocol filters, and refill-to-input actions.", className: "netsage-screen"})}
         ${figure({depth: 2, src: "images/netsage-app-scenarios.webp", width: 720, height: 1600, alt: "NetSage offline fault scenario library covering DNS, connection, TLS, HTTP, and packet-loss cases", caption: "Scenario library. Ten offline fault cases can be sent directly into the diagnostic workflow.", className: "netsage-screen"})}
       </div>
@@ -315,16 +317,16 @@ const netsageBody = `
       ${figure({depth: 2, src: "visuals/netsage-diagnostic-flow.svg", width: 1280, height: 520, alt: "Conceptual NetSage diagnostic flow from log input through rule matching, ranked causes, evidence, recommendations, actions, and retest", caption: "Conceptual Diagnostic Flow. This diagram represents the implemented rule sequence; it is not a measured network topology.", className: "flow-figure"})}
     </section>
     <section class="section architecture" id="architecture">
-      <div class="section-heading"><p>Architecture</p><h2>Local Android workflow with retained service endpoints</h2></div>
+      <div class="section-heading"><p>Architecture</p><h2>A serverless Android diagnostic workflow</h2></div>
       <div class="evidence-grid">
         <div><h3>Presentation</h3><p>Jetpack Compose screens handle symptom input, diagnosis results, scenario browsing, saved reports, history, and settings.</p></div>
-        <div><h3>Diagnosis</h3><p>Rules map features and keywords to candidate causes, evidence, confidence values, and remediation actions.</p></div>
-        <div><h3>Persistence</h3><p>SharedPreferences and Gson store local history, favorites, reports, and user settings.</p></div>
-        <div><h3>Service boundary</h3><p>The Android client supports an offline-capable workflow; the repository also retains FastAPI health and diagnosis endpoints.</p></div>
+        <div><h3>Diagnosis</h3><p>A structured parser and versioned local rules combine log observations with DNS, TCP, TLS, HTTP, and network-snapshot evidence.</p></div>
+        <div><h3>Persistence</h3><p>Local stores retain bounded diagnostic sessions, history, favorites, reports, and settings; the Storage Access Framework handles explicit import and export.</p></div>
+        <div><h3>Network boundary</h3><p>The v0.2 Android runtime has no NetSage backend. Active checks connect directly to the target confirmed by the user; logs and results remain local.</p></div>
       </div>
     </section>
     <section class="section split-section" id="explainability">
-      <div><h2>Explainability</h2><p>A diagnosis is presented as a set of candidate causes rather than a single opaque answer. Each candidate can carry confidence, matched evidence, and a repair suggestion.</p></div>
+      <div><h2>Explainability</h2><p>A diagnosis is presented as a set of hypotheses rather than a single opaque answer. Each hypothesis carries evidence strength, matched and conflicting evidence, and repair actions.</p></div>
       <div><h2>Action flow</h2><p>Checklists, action branches, command templates, and offline references help a user move from explanation to a concrete test, then retest after a change.</p></div>
     </section>
     <section class="section" id="implementation">
@@ -336,7 +338,7 @@ const netsageBody = `
       <dl class="evidence-ledger">
         <div><dt>Repository</dt><dd><a href="${escapeHtml(netsage.repository)}">github.com/lbrswne/NetSage</a></dd></div>
         <div><dt>Verified main commit</dt><dd><code>${escapeHtml(netsage.commit)}</code></dd></div>
-        <div><dt>Published visual</dt><dd>Five screenshots from the verified Android 0.1.2 build, the application icon, and an original conceptual diagnostic flow</dd></div>
+        <div><dt>Published visual</dt><dd>Six Android screenshots, including a verified v0.2.0 active-check run, the application icon, and an original conceptual diagnostic flow</dd></div>
       </dl>
     </section>
     <section class="section limitations" id="limitations">
@@ -774,7 +776,7 @@ const resumeBody = `
     </header>
     <section class="resume-section"><h2>Education</h2><div class="resume-entry"><div><strong>${escapeHtml(publicFacts(education).find((fact) => fact.id === "education.institution")?.publicText || "")}</strong><span>Qinhuangdao, China</span></div><p>${escapeHtml(publicFacts(education).find((fact) => fact.id === "education.program")?.publicText || "")}</p></div></section>
     <section class="resume-section"><h2>Research</h2><div class="resume-entry"><div><strong>${escapeHtml(connected.title)}</strong><span>${escapeHtml(connectedStatus)} · ${escapeHtml(connected.journal)}</span></div><p>Single-author work on connected-diagram expansions, all-excess summation, and critical zero asymptotics.</p></div><div class="resume-entry"><div><strong>${escapeHtml(cubic.title)}</strong><span>${escapeHtml(cubicStatus)} · ${escapeHtml(cubic.journal)}</span></div><p>Single-author work on the critical cubic crossover from Hermite universality in Riemann-xi Jensen polynomials.</p></div><div class="resume-entry"><div><strong>${escapeHtml(hypergraph.title)}</strong><span>${escapeHtml(hypergraphStatus)}</span></div><p>First- and corresponding-author work with Qianzhi Ao as second author and four shared third authors, covering robust profile non-determination, edge-local tensor bounds, quotient reduction, and loose-star asymptotics.</p></div></section>
-    <section class="resume-section"><h2>Projects</h2><div class="resume-entry"><div><strong>NetSage</strong><span>Kotlin · Jetpack Compose · FastAPI</span></div><p>Local-first, rule-based Android network diagnosis with ranked causes, matched evidence, repair suggestions, history, favorites, and troubleshooting references.</p></div><div class="resume-entry"><div><strong>Battery RUL and cascade utilization modeling</strong><span>Python · survival modeling · graph optimization</span></div><p>Q1 to Q4 workflow on fully simulated data generated with semi-empirical assumptions, covering degradation stages, SOH/RUL, compatibility graphs, MILP grouping, and robust stress testing.</p></div><div class="resume-entry"><div><strong>Australian high-speed rail design and management concept</strong><span>Five-person carbody team · Proposed Design</span></div><p>Contributed to a lightweight composite carriage concept and independently developed a five-page front-end prototype for capital pooling, risk simulation, compliance workflow, and impact reporting using illustrative data.</p></div></section>
+    <section class="resume-section"><h2>Projects</h2><div class="resume-entry"><div><strong>NetSage</strong><span>Kotlin · Jetpack Compose · DNS/TCP/TLS/HTTP</span></div><p>Built a serverless Android network-diagnostics workbench combining local log rules with active probes, explainable evidence, retesting, session history, and Markdown/JSON export.</p></div><div class="resume-entry"><div><strong>Battery RUL and cascade utilization modeling</strong><span>Python · survival modeling · graph optimization</span></div><p>Q1 to Q4 workflow on fully simulated data generated with semi-empirical assumptions, covering degradation stages, SOH/RUL, compatibility graphs, MILP grouping, and robust stress testing.</p></div><div class="resume-entry"><div><strong>Australian high-speed rail design and management concept</strong><span>Five-person carbody team · Proposed Design</span></div><p>Contributed to a lightweight composite carriage concept and independently developed a five-page front-end prototype for capital pooling, risk simulation, compliance workflow, and impact reporting using illustrative data.</p></div></section>
     <section class="resume-section"><h2>Competitions</h2><div class="resume-entry"><div><strong>Mathematical modeling project</strong><span>${escapeHtml(batteryCompetitionResult)}</span></div><p>Four-part battery reliability and utilization workflow on fully simulated data generated with semi-empirical assumptions; received the stated university-level second prize.</p></div><div class="resume-entry"><div><strong>Scenic Guide Digital Human</strong><span>Competition software project</span></div><p>Tourism guide prototype to which I contributed, with conversational and voice interaction, route guidance, narration, and knowledge management.</p></div></section>
     <section class="resume-section"><h2>Technical skills</h2><dl class="skills-context"><div><dt>Network and mobile</dt><dd>Kotlin, Jetpack Compose, Android, network diagnostics, DNS/TLS/HTTP troubleshooting concepts</dd></div><div><dt>Modeling and research</dt><dd>Python, change-point regression, survival modeling, graph methods, mathematical optimization, asymptotic analysis, LaTeX</dd></div><div><dt>Software</dt><dd>FastAPI, JSON, Git</dd></div></dl></section>
     <section class="resume-section"><h2>Languages</h2><p>Chinese</p></section>

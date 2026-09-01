@@ -3,62 +3,65 @@
   "slug": "netsage",
   "title": "NetSage",
   "type": "Android network diagnostics",
-  "summary": "A local-first, rule-based Android application that maps network symptoms and logs to ranked candidate causes, matched evidence, and troubleshooting actions.",
+  "summary": "A local-first, rule-based Android network diagnostics workbench that combines log analysis with on-device DNS, TCP, TLS, and HTTP probes, ranked evidence, retesting, and local session export.",
   "repository": "https://github.com/lbrswne/NetSage",
-  "commit": "ed692cba339343f32898b05e3a35878070d575d7",
+  "commit": "ba30a5c",
   "features": [
-    "Log and symptom input",
-    "One-click diagnosis",
-    "Top-cause ranking with rule-derived confidence",
-    "Matched evidence and repair suggestions",
+    "Quick checkup, log diagnosis, and combined diagnosis workflows",
+    "On-device network snapshot plus DNS, TCP, TLS, and HTTP probes",
+    "Top-three hypotheses ranked by evidence strength rather than statistical probability",
+    "Matched evidence, conflicting evidence, and step-by-step repair suggestions",
+    "Repair-and-retest comparison across diagnostic sessions",
+    "Text import, Android share intake, and Markdown or JSON export",
     "Scenario and sample libraries",
     "Troubleshooting checklists and action branches",
-    "History, favorites, report copy, and command templates",
+    "Complete local diagnostic sessions, legacy history, favorites, and command templates",
     "Offline reference, privacy onboarding, and local persistence"
   ],
   "implementation": [
     "Kotlin and Jetpack Compose Android client",
-    "Rule-based diagnosis with explicit evidence mapping",
-    "SharedPreferences and Gson for local persistence",
-    "Retained FastAPI health and diagnosis endpoints"
+    "Versioned local JSON rules with structured observation parsing",
+    "Isolated cancellable probes with per-step timeout handling",
+    "Local session persistence plus Android Storage Access Framework import and export",
+    "No NetSage server, account, telemetry, or advertising SDK in the v0.2 runtime"
   ],
   "limitations": [
     "The diagnostic engine is rule-based, not a machine-learning model.",
     "No verified real-user performance metrics are published.",
-    "Cloud synchronization, PDF export, and real-time packet capture are outside the verified scope."
+    "ICMP ping, traceroute, VPN packet capture, cloud synchronization, and background monitoring are outside the verified scope."
   ],
   "facts": [
     {
       "id": "netsage.summary",
-      "publicText": "A local-first, rule-based Android application that maps network symptoms and logs to ranked candidate causes, matched evidence, and troubleshooting actions.",
+      "publicText": "A local-first, rule-based Android network diagnostics workbench that combines log analysis with on-device DNS, TCP, TLS, and HTTP probes, ranked evidence, retesting, and local session export.",
       "status": "verified",
       "sourceType": "source_code",
-      "lastVerified": "2026-08-23",
+      "lastVerified": "2026-09-01",
       "public": true,
       "display": false
     },
     {
       "id": "netsage.version.commit",
-      "publicText": "Verified against main commit ed692cba",
+      "publicText": "Verified against main commit ba30a5c",
       "status": "verified",
       "sourceType": "repository",
-      "lastVerified": "2026-08-22",
+      "lastVerified": "2026-09-01",
       "public": true
     },
     {
       "id": "netsage.engine",
-      "publicText": "Local rule-based network diagnosis",
+      "publicText": "Local rule-based diagnosis with on-device DNS, TCP, TLS, and HTTP probes",
       "status": "verified",
       "sourceType": "source_code",
-      "lastVerified": "2026-08-22",
+      "lastVerified": "2026-09-01",
       "public": true
     },
     {
       "id": "netsage.output",
-      "publicText": "Ranks up to three candidate causes using rule-derived confidence values, matched evidence, and suggested actions",
+      "publicText": "Ranks up to three hypotheses using evidence strength, matched and conflicting evidence, and suggested actions",
       "status": "verified",
       "sourceType": "source_code",
-      "lastVerified": "2026-08-22",
+      "lastVerified": "2026-09-01",
       "public": true
     },
     {

@@ -56,9 +56,10 @@ const requiredAssets = new Map([
   ['EngineerPlus demo stylesheet', ['styles/engineerplus-demo.css']],
   ['EngineerPlus demo script', ['scripts/engineerplus-demo.js']],
   ['NetSage icon', ['assets/images/netsage-icon.webp']],
-  ['NetSage app dashboard', ['assets/images/netsage-app-home.webp']],
+  ['NetSage v0.2 app dashboard', ['assets/images/netsage-app-v020-home.webp']],
+  ['NetSage v0.2 quick checkup', ['assets/images/netsage-app-v020-checkup.webp']],
+  ['NetSage v0.2 active result', ['assets/images/netsage-app-v020-result.webp']],
   ['NetSage diagnosis input', ['assets/images/netsage-app-diagnosis-input.webp']],
-  ['NetSage diagnosis result', ['assets/images/netsage-app-diagnosis-result.webp']],
   ['NetSage diagnosis history', ['assets/images/netsage-app-history.webp']],
   ['NetSage scenario library', ['assets/images/netsage-app-scenarios.webp']],
   ['battery RUL parity figure', ['assets/images/battery-rul-parity.webp']],
@@ -73,6 +74,7 @@ const requiredAssets = new Map([
   ['EngineerPlus compliance module', ['assets/images/engineerplus-compliance-hub.webp']],
   ['EngineerPlus impact dashboard module', ['assets/images/engineerplus-impact-dashboard.webp']],
   ['Scenic Guide visitor interface', ['assets/images/scenic-guide-visitor.webp']],
+  ['Scenic Guide sanitized source package', ['assets/downloads/Scenic-Guide-Digital-Human-Source-v0.1.0.zip']],
   ['Hypergraph manuscript title page', ['assets/images/hypergraph-manuscript-title-page.png']],
   ['Hypergraph submitted manuscript', ['assets/documents/beyond-vertex-profiles-nonuniform-hypergraph-tensors.pdf']],
   ['Portfolio Open Graph image', ['assets/images/og-portfolio.png']],
@@ -389,8 +391,8 @@ function checkResearchAndProjectFacts(pageFiles, htmlByName) {
   }
 
   const netsage = htmlByName.get(pageFiles.get('NetSage case study')) ?? '';
-  if (!/ed692cba/i.test(visibleText(netsage))) {
-    addIssue('truthfulness', 'NetSage page is missing verified commit ed692cba');
+  if (!/ba30a5c/i.test(visibleText(netsage))) {
+    addIssue('truthfulness', 'NetSage page is missing verified commit ba30a5c');
   }
   const repositoryLink = (netsage.match(/<a\b[^>]*>/gi) ?? []).some((tag) =>
     (attribute(tag, 'href') ?? '').replace(/\/$/, '') === 'https://github.com/lbrswne/NetSage');
@@ -398,10 +400,10 @@ function checkResearchAndProjectFacts(pageFiles, htmlByName) {
   const netsageScreens = (netsage.match(/<img\b[^>]*>/gi) ?? [])
     .map((tag) => attribute(tag, 'src') ?? '')
     .filter((src) => /assets\/images\/netsage-app-[^/]+\.webp$/i.test(src));
-  if (new Set(netsageScreens).size !== 5) {
-    addIssue('projects', 'NetSage page must publish five distinct verified Android screenshots');
+  if (new Set(netsageScreens).size !== 6) {
+    addIssue('projects', 'NetSage page must publish six distinct verified Android screenshots');
   }
-  if (!/Captured from NetSage 0\.1\.2/i.test(visibleText(netsage))) {
+  if (!/captured from NetSage 0\.2\.0 on an Android 36\.1 emulator on 1 September 2026/i.test(visibleText(netsage))) {
     addIssue('truthfulness', 'NetSage screenshots are missing their verified build and capture context');
   }
 
@@ -415,6 +417,13 @@ function checkResearchAndProjectFacts(pageFiles, htmlByName) {
   }
   if (/\bno award\b|production deployment/i.test(projectsText)) {
     addIssue('copy', 'Scenic Guide supporting-work copy must not foreground award or deployment disclaimers');
+  }
+  const scenicSourcePath = 'assets/downloads/Scenic-Guide-Digital-Human-Source-v0.1.0.zip';
+  if (!projects.includes(scenicSourcePath) || !/Download sanitized source package/i.test(projectsText)) {
+    addIssue('projects', 'Projects page is missing the Scenic Guide sanitized-source download link');
+  }
+  if (!/excludes credentials, runtime data, logs, and third-party Live2D assets/i.test(projectsText)) {
+    addIssue('truthfulness', 'Scenic Guide source download must disclose its excluded credentials, runtime data, logs, and third-party Live2D assets');
   }
 
   const railHtml = htmlByName.get(pageFiles.get('High-speed rail project')) ?? '';

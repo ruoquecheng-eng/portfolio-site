@@ -57,8 +57,8 @@
       <g transform="translate(982 126)">
         <rect width="180" height="100" rx="8" fill="#ffffff" stroke="#8fa5b8"/>
         <text x="16" y="31" fill="#2879cf" font-size="12" font-weight="700">EXPLAIN</text>
-        <text x="16" y="58" fill="#142a42" font-size="16" font-weight="650">Confidence</text>
-        <text x="16" y="80" fill="#142a42" font-size="16" font-weight="650">and evidence</text>
+        <text x="16" y="58" fill="#142a42" font-size="16" font-weight="650">Evidence</text>
+        <text x="16" y="80" fill="#142a42" font-size="16" font-weight="650">strength</text>
       </g>
 
       <g transform="translate(982 300)">

@@ -42,6 +42,7 @@ const mimeTypes = new Map([
   ['.woff', 'font/woff'],
   ['.woff2', 'font/woff2'],
   ['.xml', 'application/xml; charset=utf-8'],
+  ['.zip', 'application/zip'],
 ]);
 
 function isInside(root, candidate) {

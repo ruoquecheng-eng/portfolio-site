@@ -72,6 +72,11 @@
       "factId": "guide.summary"
     },
     {
+      "record": "scenic",
+      "field": "download.disclosure",
+      "factId": "guide.source-package"
+    },
+    {
       "record": "connected",
       "field": "statusText",
       "factId": "connected.status"

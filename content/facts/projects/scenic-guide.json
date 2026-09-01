@@ -4,6 +4,11 @@
   "title": "Scenic Guide Digital Human",
   "type": "Competition software project",
   "summary": "A competition prototype to which I contributed, combining text and voice interaction, route guidance, attraction narration, and knowledge management for a scenic-area visitor experience.",
+  "download": {
+    "file": "downloads/Scenic-Guide-Digital-Human-Source-v0.1.0.zip",
+    "label": "Download sanitized source package",
+    "disclosure": "The public source package excludes credentials, runtime data, logs, and third-party Live2D assets; it includes a static SVG guide fallback."
+  },
   "facts": [
     {
       "id": "guide.summary",
@@ -21,6 +26,15 @@
       "sourceType": "source_code",
       "lastVerified": "2026-08-22",
       "public": true
+    },
+    {
+      "id": "guide.source-package",
+      "publicText": "The public source package excludes credentials, runtime data, logs, and third-party Live2D assets; it includes a static SVG guide fallback.",
+      "status": "verified",
+      "sourceType": "source_code_and_packaging_audit",
+      "lastVerified": "2026-09-01",
+      "public": true,
+      "display": false
     },
     {
       "id": "guide.competition.award",

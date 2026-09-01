@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 820" role="img" aria-labelledby="title desc">
+  <title id="title">Static Scenic Guide fallback</title>
+  <desc id="desc">An original vector illustration of a scenic-area guide used when excluded Live2D assets are unavailable.</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" x2="1" y1="0" y2="1"><stop stop-color="#dff2ec"/><stop offset="1" stop-color="#f7eddc"/></linearGradient>
+    <linearGradient id="robe" x1="0" x2="1"><stop stop-color="#2b7f74"/><stop offset="1" stop-color="#1e5c70"/></linearGradient>
+  </defs>
+  <rect width="640" height="820" rx="44" fill="url(#sky)"/>
+  <path d="M0 650c100-80 168-42 248-95 98-66 176 2 392-78v343H0z" fill="#a6d6c7" opacity=".78"/>
+  <circle cx="320" cy="220" r="122" fill="#2a3d49"/>
+  <path d="M222 242c0-95 45-151 98-151s98 56 98 151v62H222z" fill="#303b47"/>
+  <ellipse cx="320" cy="274" rx="95" ry="113" fill="#f1d5bc"/>
+  <path d="M244 237c24-89 126-120 168-18-26-24-49-31-92-31-39 0-59 14-76 49z" fill="#313943"/>
+  <circle cx="282" cy="279" r="10" fill="#23394a"/><circle cx="358" cy="279" r="10" fill="#23394a"/>
+  <path d="M286 330c20 17 48 17 68 0" fill="none" stroke="#b76d71" stroke-linecap="round" stroke-width="8"/>
+  <path d="M205 654c18-180 66-244 115-244s99 64 115 244z" fill="url(#robe)"/>
+  <path d="M267 409h106l-18 86h-70z" fill="#f7f0e4"/>
+  <path d="M238 549c54 22 108 22 164 0" fill="none" stroke="#f0c86a" stroke-width="12"/>
+  <circle cx="320" cy="525" r="17" fill="#f0c86a"/>
+  <rect x="149" y="692" width="342" height="74" rx="37" fill="#fff" opacity=".88"/>
+  <text x="320" y="738" text-anchor="middle" fill="#245c61" font-family="system-ui, sans-serif" font-size="26" font-weight="700">STATIC GUIDE FALLBACK</text>
+</svg>
