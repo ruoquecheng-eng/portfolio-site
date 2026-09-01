@@ -391,8 +391,8 @@ function checkResearchAndProjectFacts(pageFiles, htmlByName) {
   }
 
   const netsage = htmlByName.get(pageFiles.get('NetSage case study')) ?? '';
-  if (!/ba30a5c/i.test(visibleText(netsage))) {
-    addIssue('truthfulness', 'NetSage page is missing verified commit ba30a5c');
+  if (!/a157338/i.test(visibleText(netsage))) {
+    addIssue('truthfulness', 'NetSage page is missing verified commit a157338');
   }
   const repositoryLink = (netsage.match(/<a\b[^>]*>/gi) ?? []).some((tag) =>
     (attribute(tag, 'href') ?? '').replace(/\/$/, '') === 'https://github.com/lbrswne/NetSage');
