@@ -8,13 +8,14 @@ const factsRoot = path.join(root, "content", "facts");
 
 const readJson = async (...segments) => JSON.parse(await readFile(path.join(root, ...segments), "utf8"));
 
-const [config, publicClaimsData, zhTranslations, profile, education, netsage, battery, rail, scenic, connected, cubic, hypergraph] = await Promise.all([
+const [config, publicClaimsData, zhTranslations, profile, education, netsage, commlab, battery, rail, scenic, connected, cubic, hypergraph] = await Promise.all([
   readJson("site.config.json"),
   readJson("content", "public-claims.json"),
   readJson("content", "i18n", "zh-CN.json"),
   readJson("content", "facts", "profile.json"),
   readJson("content", "facts", "education.json"),
   readJson("content", "facts", "projects", "netsage.json"),
+  readJson("content", "facts", "projects", "commlab.json"),
   readJson("content", "facts", "projects", "battery-rul.json"),
   readJson("content", "facts", "projects", "high-speed-rail.json"),
   readJson("content", "facts", "projects", "scenic-guide.json"),
@@ -30,7 +31,7 @@ const escapeHtml = (value = "") => String(value)
   .replaceAll('"', "&quot;")
   .replaceAll("'", "&#39;");
 
-const recordsByKey = { profile, education, netsage, battery, rail, scenic, connected, cubic, hypergraph };
+const recordsByKey = { profile, education, netsage, commlab, battery, rail, scenic, connected, cubic, hypergraph };
 const publicFacts = (record) => (record.facts || []).filter((fact) => fact.public === true && fact.status === "verified" && fact.publicText);
 const displayFacts = (record) => publicFacts(record).filter((fact) => fact.display !== false);
 const publicLinks = (profile.links || []).filter((link) => link.public === true && link.status === "verified" && link.label && link.url);
@@ -72,6 +73,7 @@ const engineerPlus = rail.components.engineerPlus;
 const profileName = publicClaim("profile", "hero.name");
 const profileSummary = publicClaim("profile", "hero.summary");
 const netsageSummary = publicClaim("netsage", "summary");
+const commlabSummary = publicClaim("commlab", "summary");
 const batteryDataBoundary = publicClaim("battery", "dataBoundary");
 const batterySummary = publicClaim("battery", "summary");
 const batteryCompetitionResult = publicClaim("battery", "competitionResult");
@@ -304,7 +306,7 @@ const homeBody = `
         <img src="assets/visuals/signal-field.svg" width="880" height="640" alt="Conceptual signal field connecting diagnostics, systems, modeling, and research" fetchpriority="high">
       </div>
     </div>
-    <div class="hero-foot" aria-label="Focus areas"><span>Network diagnostics</span><span>Engineering software</span><span>Mathematical modeling</span><span>Spectral research</span></div>
+    <div class="hero-foot" aria-label="Focus areas"><span>Network diagnostics</span><span>Wireless systems</span><span>Edge intelligence</span><span>Mathematical modeling</span><span>Spectral research</span></div>
   </section>
   <section class="section section-intro">
     <div class="section-heading">
@@ -326,8 +328,18 @@ const homeBody = `
     })}
     ${projectRow({
       depth: 0,
-      href: "projects/battery-rul/",
+      href: "projects/commlab/",
       index: "02",
+      type: commlab.type,
+      title: commlab.title,
+      summary: commlabSummary,
+      meta: "Python · Streamlit · wireless systems · edge intelligence · reliability orchestration",
+      visual: `<div class="project-visual project-visual-commlab"><img src="assets/images/commlab-isac.webp" width="1440" height="1000" alt="Running CommLab ISAC laboratory with local controls, metrics, and a range-Doppler result" loading="lazy"></div>`
+    })}
+    ${projectRow({
+      depth: 0,
+      href: "projects/battery-rul/",
+      index: "03",
       type: `${battery.type} · ${batteryDataBoundary}`,
       title: battery.title,
       summary: batterySummary,
@@ -335,7 +347,7 @@ const homeBody = `
       visual: `<div class="project-visual project-visual-battery"><img src="assets/visuals/battery-workflow.svg" width="1240" height="650" alt="Conceptual four-stage battery modeling workflow" loading="lazy"></div>`
     })}
     <article class="project-row research-preview">
-      <div class="project-index" aria-hidden="true">03</div>
+      <div class="project-index" aria-hidden="true">04</div>
       <div class="project-copy">
         <p class="project-type">Mathematical research</p>
         <h2><a href="research/">Three research records in asymptotic analysis and tensor spectra</a></h2>
@@ -362,11 +374,12 @@ const homeBody = `
 
 const projectsBody = `
   <section class="page-hero page-hero-dark">
-    <div><p class="hero-kicker">Engineering and modeling</p><h1>Projects</h1><p>Two primary case studies, followed by concise evidence-safe summaries of supporting work.</p></div>
+    <div><p class="hero-kicker">Engineering and modeling</p><h1>Projects</h1><p>Three primary case studies, followed by concise evidence-safe summaries of supporting work.</p></div>
   </section>
   <section class="section project-index-page">
     ${projectRow({depth: 1, href: "projects/netsage/", index: "01", type: netsage.type, title: netsage.title, summary: netsageSummary, meta: "Primary engineering case study", visual: `<div class="project-visual project-visual-netsage"><img src="${local(1, "assets/images/netsage-icon.webp")}" width="216" height="216" alt="NetSage application icon" loading="lazy"></div>`})}
-    ${projectRow({depth: 1, href: "projects/battery-rul/", index: "02", type: `${battery.type} · ${batteryDataBoundary}`, title: battery.title, summary: batterySummary, meta: "Primary modeling case study", visual: `<div class="project-visual"><img src="${local(1, "assets/visuals/battery-workflow.svg")}" width="1240" height="650" alt="Conceptual Q1 to Q4 battery modeling workflow" loading="lazy"></div>`})}
+    ${projectRow({depth: 1, href: "projects/commlab/", index: "02", type: commlab.type, title: commlab.title, summary: commlabSummary, meta: "Primary communications systems case study", visual: `<div class="project-visual project-visual-commlab"><img src="${local(1, "assets/images/commlab-isac.webp")}" width="1440" height="1000" alt="Running CommLab ISAC laboratory with local controls, metrics, and a range-Doppler result" loading="lazy"></div>`})}
+    ${projectRow({depth: 1, href: "projects/battery-rul/", index: "03", type: `${battery.type} · ${batteryDataBoundary}`, title: battery.title, summary: batterySummary, meta: "Primary modeling case study", visual: `<div class="project-visual"><img src="${local(1, "assets/visuals/battery-workflow.svg")}" width="1240" height="650" alt="Conceptual Q1 to Q4 battery modeling workflow" loading="lazy"></div>`})}
   </section>
   <section class="section supporting-projects">
     <div class="section-heading"><p>Supporting work</p><h2>Engineering design and competition software</h2></div>
@@ -381,6 +394,61 @@ const projectsBody = `
       </article>
     </div>
   </section>`;
+
+const commlabBody = `
+  <article class="case-study commlab-case">
+    <header class="case-hero commlab-hero">
+      <div class="case-title">
+        <p class="hero-kicker">Primary communications systems case study</p>
+        <h1>${escapeHtml(commlab.title)}</h1>
+        <p>${escapeHtml(commlabSummary)}</p>
+        <div class="case-meta">${status(commlab.version)}${status("Local-first")}${status("130 interactive labs")}${status(`Verified commit ${commlab.verifiedCommit.slice(0, 7)}`)}</div>
+        <div class="hero-actions"><a class="button" href="${escapeHtml(commlab.repository)}" rel="noopener">View CommLab source <span aria-hidden="true">→</span></a><a class="button-secondary button-secondary-on-dark" href="${escapeHtml(commlab.windowsBuild)}" rel="noopener">View successful Windows build</a></div>
+      </div>
+      <img class="case-wide-visual" src="${local(2, "assets/images/commlab-ofdm-link.webp")}" width="1440" height="1000" alt="Running CommLab OFDM link laboratory with local controls, BER, EVM, and a received constellation">
+    </header>
+    <section class="section notice-section" aria-label="Evidence boundary">
+      <strong>Evidence boundary</strong><p>CommLab is a local simulation and research platform. Its numerical outputs use explicit synthetic models and assumptions; they are not measurements from a calibrated radio, standards-compliance certification, or live base-station deployment.</p>
+    </section>
+    <section class="section split-section" id="overview">
+      <div><p class="project-type">System purpose</p><h2>One workbench across the communication stack</h2><p>The project connects waveform and receiver experiments to scheduling, edge inference, resilient control, and offline policy evaluation. The aim is to study cross-layer trade-offs without requiring a cloud account, rented server, real base station, or GPU.</p></div>
+      <div><p class="project-type">Current interface</p><h2>Local Streamlit Dashboard and Windows launcher</h2><p>The Dashboard exposes deterministic laboratory controls and result explanations. The Windows desktop launcher starts Streamlit on an available <code>127.0.0.1</code> port, checks local health, opens the browser, records startup diagnostics, and terminates the service when its control window closes.</p></div>
+    </section>
+    <section class="section commlab-metrics" aria-label="Verified project evidence">
+      <div class="metric-grid">
+        <div><strong>130</strong><span>interactive laboratory modes in the current Dashboard</span></div>
+        <div><strong>297</strong><span>tests passed on the published v3.7.1 main baseline</span></div>
+        <div><strong>628</strong><span>CSV and PNG result artifacts verified by SHA-256 for v3.7.1</span></div>
+        <div><strong>Windows</strong><span>portable ZIP and installer built successfully in GitHub Actions</span></div>
+      </div>
+    </section>
+    <section class="section section-dark" id="experiment-map">
+      <div class="section-heading"><p>Experiment map</p><h2>From physical links to decision robustness</h2></div>
+      <div class="two-column-lists commlab-domain-grid">
+        <div><h3>Wireless and sensing</h3>${textList(["OFDM, QAM, synchronization, channel estimation and equalization", "Convolutional, LDPC and Polar coding with soft decisions, HARQ and OLLA", "MIMO, Massive MIMO, Cell-Free, RIS and hybrid beamforming", "OTFS, Doppler, ICI, PA nonlinearity, DPD, IQ imbalance and phase noise", "OFDMA, proportional-fair scheduling, queues, AoI and eMBB/URLLC", "ISAC range-Doppler, CFAR, MUSIC and tracking"])}</div>
+        <div><h3>Edge intelligence and resilience</h3>${textList(["Federated learning, AirComp, semantic and task-oriented communication", "Split inference, edge offloading, model caching and model multicast", "Digital twins, networked control and safety-aware control", "Predictive migration, failure-domain replication and chance-constrained inference", "Control UEP, Multi-Connectivity and adaptive duplication", "Unified resilience budgets, confounding stress tests and robust off-policy evaluation"])}</div>
+      </div>
+    </section>
+    <section class="section" id="running-interface">
+      <div class="section-heading"><p>Running interface</p><h2>Four views from the current local Dashboard</h2></div>
+      <p class="section-lead">These screenshots were captured from a locally running v3.7.1 Dashboard on 4 September 2026. Values are reproducible simulation outputs for the displayed seed and controls, not field-performance claims.</p>
+      <div class="commlab-gallery">
+        ${figure({depth: 2, src: "images/commlab-ofdm-link.webp", width: 1440, height: 1000, alt: "Running CommLab OFDM link laboratory with local controls, BER, EVM, and a received constellation", caption: "OFDM link. QPSK symbols, channel impairment controls, BER, RMS EVM, and the received constellation are shown in one local experiment.", className: "commlab-figure"})}
+        ${figure({depth: 2, src: "images/commlab-isac.webp", width: 1440, height: 1000, alt: "Running CommLab ISAC laboratory with local controls, metrics, and a range-Doppler result", caption: "OFDM sensing / ISAC. The range-Doppler view and CFAR detections come from a normalized monostatic simulation, not calibrated radar hardware.", className: "commlab-figure"})}
+        ${figure({depth: 2, src: "images/commlab-resilience.webp", width: 1440, height: 1000, alt: "Running CommLab unified resilience-budget laboratory showing cross-layer controls and deadline metrics", caption: "Unified resilience budget. Radio duplication, replica execution, and proactive migration share an illustrative decision budget while physical metrics remain separate.", className: "commlab-figure"})}
+        ${figure({depth: 2, src: "images/commlab-ope.webp", width: 1440, height: 1000, alt: "Running CommLab propensity-robust policy evaluation laboratory showing uncertainty and a failed coverage warning", caption: "Propensity-robust OPE. The interface preserves a negative result: the selected odds envelope fails row-wise coverage under the displayed hidden-confounding stress.", className: "commlab-figure"})}
+      </div>
+    </section>
+    <section class="section split-section" id="architecture">
+      <div><p class="project-type">Architecture</p><h2>Local code, reproducible experiments, recorded results</h2><p><code>app/dashboard.py</code> is the interactive entry point; reusable simulation modules live under <code>src/commlab</code>; experiment scripts and recorded CSV/PNG outputs remain available for reproduction and audit. Desktop packaging wraps this same Dashboard rather than creating a second implementation.</p></div>
+      <div><p class="project-type">Decision integrity</p><h2>No hidden genie in adaptive policies</h2><p>Adaptive decisions use forecasts, pre-transmission observations, delayed feedback, or explicitly available telemetry. Realized packet outcomes and component failures are reserved for evaluation and are not exposed to the policy before it acts.</p></div>
+    </section>
+    <section class="section limitations">
+      <div><h2>Validation and limitations</h2>${factList(commlab, "fact-list compact")}</div>
+      <p>The successful Windows artifact proves that the portable package and installer built on the GitHub Windows runner. It does not replace testing on a broader matrix of Windows versions, restricted accounts, antivirus products, and installation paths.</p>
+    </section>
+    <section class="section final-link"><p>Inspect the current source, experiments, tests, release records, and Windows packaging workflow on GitHub.</p><a class="button" href="${escapeHtml(commlab.repository)}" rel="noopener">Open CommLab on GitHub</a></section>
+  </article>`;
 
 const netsageBody = `
   <article class="case-study">
@@ -884,7 +952,7 @@ const resumeBody = `
     </header>
     <section class="resume-section"><h2>Education</h2><div class="resume-entry"><div><strong>${escapeHtml(publicFacts(education).find((fact) => fact.id === "education.institution")?.publicText || "")}</strong><span>Qinhuangdao, China</span></div><p>${escapeHtml(publicFacts(education).find((fact) => fact.id === "education.program")?.publicText || "")}</p></div></section>
     <section class="resume-section"><h2>Research</h2><div class="resume-entry"><div><strong>${escapeHtml(connected.title)}</strong><span>${escapeHtml(connectedStatus)} · ${escapeHtml(connected.journal)}</span></div><p>Single-author work on connected-diagram expansions, all-excess summation, and critical zero asymptotics.</p></div><div class="resume-entry"><div><strong>${escapeHtml(cubic.title)}</strong><span>${escapeHtml(cubicStatus)} · ${escapeHtml(cubic.journal)}</span></div><p>Single-author work on the critical cubic crossover from Hermite universality in Riemann-xi Jensen polynomials.</p></div><div class="resume-entry"><div><strong>${escapeHtml(hypergraph.title)}</strong><span>${escapeHtml(hypergraphStatus)}</span></div><p>First- and corresponding-author work with Qianzhi Ao as second author and four shared third authors, covering robust profile non-determination, edge-local tensor bounds, quotient reduction, and loose-star asymptotics.</p></div></section>
-    <section class="resume-section"><h2>Projects</h2><div class="resume-entry"><div><strong>NetSage</strong><span>Kotlin · Jetpack Compose · DNS/TCP/TLS/HTTP</span></div><p>Built a serverless Android network-diagnostics workbench combining local log rules with active probes, explainable evidence, retesting, session history, and Markdown/JSON export.</p></div><div class="resume-entry"><div><strong>Battery RUL and cascade utilization modeling</strong><span>Python · survival modeling · graph optimization</span></div><p>Q1 to Q4 workflow on fully simulated data generated with semi-empirical assumptions, covering degradation stages, SOH/RUL, compatibility graphs, MILP grouping, and robust stress testing.</p></div><div class="resume-entry"><div><strong>Australian high-speed rail design and management concept</strong><span>Five-person carbody team · Proposed Design</span></div><p>Contributed to a lightweight composite carriage concept and independently developed a five-page front-end prototype for capital pooling, risk simulation, compliance workflow, and impact reporting using illustrative data.</p></div></section>
+    <section class="resume-section"><h2>Projects</h2><div class="resume-entry"><div><strong>NetSage</strong><span>Kotlin · Jetpack Compose · DNS/TCP/TLS/HTTP</span></div><p>Built a serverless Android network-diagnostics workbench combining local log rules with active probes, explainable evidence, retesting, session history, and Markdown/JSON export.</p></div><div class="resume-entry"><div><strong>CommLab</strong><span>Python · Streamlit · wireless systems · edge intelligence</span></div><p>Built a local-first research platform with 130 interactive laboratory modes spanning physical-layer communications, ISAC, distributed learning, resilient edge inference, networked control, and robust offline policy evaluation.</p></div><div class="resume-entry"><div><strong>Battery RUL and cascade utilization modeling</strong><span>Python · survival modeling · graph optimization</span></div><p>Q1 to Q4 workflow on fully simulated data generated with semi-empirical assumptions, covering degradation stages, SOH/RUL, compatibility graphs, MILP grouping, and robust stress testing.</p></div><div class="resume-entry"><div><strong>Australian high-speed rail design and management concept</strong><span>Five-person carbody team · Proposed Design</span></div><p>Contributed to a lightweight composite carriage concept and independently developed a five-page front-end prototype for capital pooling, risk simulation, compliance workflow, and impact reporting using illustrative data.</p></div></section>
     <section class="resume-section"><h2>Competitions</h2><div class="resume-entry"><div><strong>Mathematical modeling project</strong><span>${escapeHtml(batteryCompetitionResult)}</span></div><p>Four-part battery reliability and utilization workflow on fully simulated data generated with semi-empirical assumptions; received the stated university-level second prize.</p></div><div class="resume-entry"><div><strong>Scenic Guide Digital Human</strong><span>Competition software project</span></div><p>Tourism guide prototype to which I contributed, with conversational and voice interaction, route guidance, narration, and knowledge management.</p></div></section>
     <section class="resume-section"><h2>Technical skills</h2><dl class="skills-context"><div><dt>Network and mobile</dt><dd>Kotlin, Jetpack Compose, Android, network diagnostics, DNS/TLS/HTTP troubleshooting concepts</dd></div><div><dt>Modeling and research</dt><dd>Python, change-point regression, survival modeling, graph methods, mathematical optimization, asymptotic analysis, LaTeX</dd></div><div><dt>Software</dt><dd>FastAPI, JSON, Git</dd></div></dl></section>
     <section class="resume-section"><h2>Languages</h2><p>Chinese</p></section>
@@ -920,6 +988,11 @@ const baseRoutes = [
     file: "projects/netsage/index.html",
     route: "/projects/netsage/",
     html: page({title: "NetSage Network Diagnostics", description: "Case study of NetSage, a local-first rule-based Android network diagnostics application.", route: "/projects/netsage/", depth: 2, active: "projects", body: netsageBody, schema: {"@context": "https://schema.org", "@type": "SoftwareSourceCode", name: "NetSage", codeRepository: netsage.repository, programmingLanguage: ["Kotlin", "Python"], description: netsageSummary}})
+  },
+  {
+    file: "projects/commlab/index.html",
+    route: "/projects/commlab/",
+    html: page({title: "CommLab Communications Research Platform", description: "Case study of CommLab, a local-first platform for wireless systems, edge intelligence, resilience orchestration, networked control, and robust policy evaluation.", route: "/projects/commlab/", depth: 2, active: "projects", body: commlabBody, schema: {"@context": "https://schema.org", "@type": "SoftwareSourceCode", name: "CommLab", codeRepository: commlab.repository, programmingLanguage: "Python", softwareVersion: commlab.version, description: commlabSummary}})
   },
   {
     file: "projects/battery-rul/index.html",

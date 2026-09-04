@@ -3,7 +3,7 @@
   "hero": {
     "name": "Wanzheng Ning",
     "title": "Building network tools, engineering systems, and mathematical models.",
-    "summary": "My work connects network diagnosis, Android engineering, reliability modeling, and mathematical research. Each case study separates implementation evidence from targets, assumptions, and open limitations."
+    "summary": "My work connects wireless communication systems, network diagnosis, Android engineering, reliability-aware edge intelligence, and mathematical research. Each case study separates implementation evidence from targets, assumptions, and open limitations."
   },
   "links": [
     {
@@ -17,9 +17,9 @@
     {
       "label": "ruoquecheng-eng",
       "url": "https://github.com/ruoquecheng-eng",
-      "purpose": "Portfolio source repository and GitHub Pages hosting",
+      "purpose": "CommLab and portfolio source repositories, including GitHub Pages hosting",
       "status": "verified",
-      "lastVerified": "2026-08-22",
+      "lastVerified": "2026-09-04",
       "public": true
     }
   ],
@@ -42,10 +42,10 @@
     },
     {
       "id": "profile.hero.summary",
-      "publicText": "My work connects network diagnosis, Android engineering, reliability modeling, and mathematical research. Each case study separates implementation evidence from targets, assumptions, and open limitations.",
+      "publicText": "My work connects wireless communication systems, network diagnosis, Android engineering, reliability-aware edge intelligence, and mathematical research. Each case study separates implementation evidence from targets, assumptions, and open limitations.",
       "status": "verified",
       "sourceType": "user_record",
-      "lastVerified": "2026-08-23",
+      "lastVerified": "2026-09-04",
       "public": true,
       "display": false
     },

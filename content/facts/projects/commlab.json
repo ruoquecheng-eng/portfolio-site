@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 1,
+  "slug": "commlab",
+  "title": "CommLab",
+  "type": "Primary communications systems case study",
+  "version": "3.7.1 Desktop",
+  "repository": "https://github.com/ruoquecheng-eng/CommLab",
+  "verifiedCommit": "1bcf1d8617d5c21c50fa789e94dc24bbb906bd66",
+  "windowsBuild": "https://github.com/ruoquecheng-eng/CommLab/actions/runs/33851381105",
+  "summary": "A local-first research platform spanning wireless physical layers, edge intelligence, reliability orchestration, networked control, and robust offline policy evaluation.",
+  "facts": [
+    {
+      "id": "commlab.summary",
+      "publicText": "A local-first research platform spanning wireless physical layers, edge intelligence, reliability orchestration, networked control, and robust offline policy evaluation.",
+      "status": "verified",
+      "sourceType": "source_code_and_runtime",
+      "lastVerified": "2026-09-04",
+      "public": true,
+      "display": false
+    },
+    {
+      "id": "commlab.experiments",
+      "publicText": "130 interactive laboratory modes in the current Dashboard",
+      "status": "verified",
+      "sourceType": "source_code_and_runtime",
+      "lastVerified": "2026-09-04",
+      "public": true
+    },
+    {
+      "id": "commlab.validation",
+      "publicText": "Published v3.7.1 main baseline: 297 tests passed",
+      "status": "verified",
+      "sourceType": "repository_and_local_regression",
+      "lastVerified": "2026-09-04",
+      "public": true
+    },
+    {
+      "id": "commlab.artifacts",
+      "publicText": "628 recorded result artifacts passed the v3.7.1 SHA-256 release check",
+      "status": "verified",
+      "sourceType": "release_acceptance_record",
+      "lastVerified": "2026-09-04",
+      "public": true
+    },
+    {
+      "id": "commlab.desktop",
+      "publicText": "Windows portable package and installer completed successfully in GitHub Actions",
+      "status": "verified",
+      "sourceType": "github_actions",
+      "lastVerified": "2026-09-04",
+      "public": true
+    },
+    {
+      "id": "commlab.boundary",
+      "publicText": "Local simulations and synthetic experiments; no claim of standards compliance, calibrated hardware, or live base-station validation",
+      "status": "verified",
+      "sourceType": "source_code_and_documentation",
+      "lastVerified": "2026-09-04",
+      "public": true
+    }
+  ]
+}

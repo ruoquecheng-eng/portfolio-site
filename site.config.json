@@ -8,5 +8,5 @@
     "en": { "label": "EN", "pathPrefix": "" },
     "zh-CN": { "label": "中文", "pathPrefix": "/zh" }
   },
-  "description": "Communication engineering, network diagnostics, mathematical modeling, and mathematical research by Wanzheng Ning."
+  "description": "Communication engineering, wireless systems, network diagnostics, edge intelligence, mathematical modeling, and research by Wanzheng Ning."
 }

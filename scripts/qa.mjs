@@ -13,6 +13,7 @@ const sourceFiles = {
   profile: 'content/facts/profile.json',
   education: 'content/facts/education.json',
   netsage: 'content/facts/projects/netsage.json',
+  commlab: 'content/facts/projects/commlab.json',
   battery: 'content/facts/projects/battery-rul.json',
   rail: 'content/facts/projects/high-speed-rail.json',
   scenic: 'content/facts/projects/scenic-guide.json',
@@ -37,6 +38,7 @@ const requiredPages = new Map([
   ['Home', ['index.html']],
   ['Projects', ['projects/index.html', 'projects.html']],
   ['NetSage case study', ['projects/netsage/index.html', 'projects/netsage.html']],
+  ['CommLab case study', ['projects/commlab/index.html', 'projects/commlab.html']],
   ['Battery RUL case study', ['projects/battery-rul/index.html', 'projects/battery-rul.html']],
   ['High-speed rail project', ['projects/high-speed-rail/index.html', 'projects/high-speed-rail.html']],
   ['EngineerPlus interactive demo', ['projects/high-speed-rail/demo/index.html']],
@@ -63,6 +65,10 @@ const requiredAssets = new Map([
   ['NetSage diagnosis input', ['assets/images/netsage-app-diagnosis-input.webp']],
   ['NetSage diagnosis history', ['assets/images/netsage-app-history.webp']],
   ['NetSage scenario library', ['assets/images/netsage-app-scenarios.webp']],
+  ['CommLab OFDM laboratory', ['assets/images/commlab-ofdm-link.webp']],
+  ['CommLab ISAC laboratory', ['assets/images/commlab-isac.webp']],
+  ['CommLab resilience laboratory', ['assets/images/commlab-resilience.webp']],
+  ['CommLab robust OPE laboratory', ['assets/images/commlab-ope.webp']],
   ['battery RUL parity figure', ['assets/images/battery-rul-parity.webp']],
   ['battery compatibility figure', ['assets/images/battery-compatibility-graph.webp']],
   ['battery strategy figure', ['assets/images/battery-strategy-comparison.webp']],
@@ -85,6 +91,7 @@ const sitemapRoutes = [
   '/',
   '/projects/',
   '/projects/netsage/',
+  '/projects/commlab/',
   '/projects/battery-rul/',
   '/projects/high-speed-rail/',
   '/projects/high-speed-rail/demo/',
@@ -423,6 +430,27 @@ function checkResearchAndProjectFacts(pageFiles, htmlByName) {
     addIssue('truthfulness', 'NetSage screenshots are missing their verified build and capture context');
   }
 
+  const commlab = htmlByName.get(pageFiles.get('CommLab case study')) ?? '';
+  const commlabText = visibleText(commlab);
+  const commlabRepositoryLink = (commlab.match(/<a\b[^>]*>/gi) ?? []).some((tag) =>
+    (attribute(tag, 'href') ?? '').replace(/\/$/, '') === sourceRecords.commlab.repository);
+  if (!commlabRepositoryLink) addIssue('truthfulness', 'CommLab page is missing the verified repository link');
+  if (!commlabText.includes(sourceRecords.commlab.verifiedCommit.slice(0, 7))) {
+    addIssue('truthfulness', 'CommLab page is missing its verified main commit');
+  }
+  if (!/130 interactive laboratory modes/i.test(commlabText) || !/297 tests passed/i.test(commlabText) || !/628 recorded result artifacts/i.test(commlabText)) {
+    addIssue('truthfulness', 'CommLab page is missing its verified laboratory, test, or artifact evidence');
+  }
+  const commlabScreens = (commlab.match(/<img\b[^>]*>/gi) ?? [])
+    .map((tag) => attribute(tag, 'src') ?? '')
+    .filter((src) => /assets\/images\/commlab-[^/]+\.webp$/i.test(src));
+  if (new Set(commlabScreens).size !== 4) {
+    addIssue('projects', 'CommLab page must publish four distinct verified runtime screenshots');
+  }
+  if (!/not measurements from a calibrated radio/i.test(commlabText) || !/No hidden genie/i.test(commlabText)) {
+    addIssue('truthfulness', 'CommLab page is missing its simulation or adaptive-decision boundary');
+  }
+
   const projects = htmlByName.get(pageFiles.get('Projects')) ?? '';
   const projectsText = visibleText(projects);
   if (!/assets\/images\/scenic-guide-visitor\.webp/i.test(projects)) {
@@ -550,8 +578,8 @@ function checkProfileLinks(pageFiles, htmlByName) {
   if (!/NetSage and original project repositories/i.test(resumeText)) {
     addIssue('profile', 'Resume does not identify the purpose of the lbrswne account');
   }
-  if (!/Portfolio source repository and GitHub Pages hosting/i.test(resumeText)) {
-    addIssue('profile', 'Resume does not identify the purpose of the ruoquecheng-eng account');
+  if (!/CommLab and portfolio source repositories, including GitHub Pages hosting/i.test(resumeText)) {
+    addIssue('profile', 'Resume does not identify the CommLab and portfolio purpose of the ruoquecheng-eng account');
   }
   if (!/independently developed a five-page front-end prototype/i.test(resumeText)) {
     addIssue('profile', 'Resume is missing the bounded EngineerPlus contribution');

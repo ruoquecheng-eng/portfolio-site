@@ -24,6 +24,7 @@ ROUTES = [
     ("home", "/"),
     ("projects", "/projects/"),
     ("netsage", "/projects/netsage/"),
+    ("commlab", "/projects/commlab/"),
     ("battery", "/projects/battery-rul/"),
     ("high-speed-rail", "/projects/high-speed-rail/"),
     ("engineerplus-demo", "/projects/high-speed-rail/demo/#overview"),
@@ -72,7 +73,7 @@ def check_page(page, name, route, viewport_name, issues):
     if console_errors:
         issues.append(f"{viewport_name}/{name}: console errors {console_errors}")
 
-    if viewport_name in {"mobile", "desktop"} and name in {"home", "projects", "netsage", "battery", "high-speed-rail", "engineerplus-demo", "research", "connected-diagram", "critical-cubic", "hypergraph", "resume"}:
+    if viewport_name in {"mobile", "desktop"} and name in {"home", "projects", "netsage", "commlab", "battery", "high-speed-rail", "engineerplus-demo", "research", "connected-diagram", "critical-cubic", "hypergraph", "resume"}:
         page.screenshot(path=str(OUTPUT / f"{name}-{viewport_name}.png"), full_page=True)
 
 
@@ -121,7 +122,7 @@ def run():
             issues.append("SEO: robots.txt is not the expected three-line production file")
 
         sitemap_response = page.request.get(f"{BASE_URL}/sitemap.xml")
-        if not sitemap_response.ok or sitemap_response.text().count("<loc>") != len(ROUTES):
+        if not sitemap_response.ok or sitemap_response.text().count("<loc>") != len(ROUTES) * 2:
             issues.append("SEO: sitemap route count does not match browser QA route count")
 
         page.goto(f"{BASE_URL}/", wait_until="networkidle")
@@ -196,16 +197,37 @@ def run():
         observations.append({"projectsNetSageIconDesktop": netsage_icon_size})
         if netsage_icon_size["width"] > 224 or netsage_icon_size["height"] > 224:
             issues.append(f"projects: NetSage icon is oversized at {netsage_icon_size}")
+        page.goto(f"{BASE_URL}/projects/commlab/", wait_until="networkidle")
+        commlab_sources = page.locator('img[src*="commlab-"]').evaluate_all(
+            "imgs => [...new Set(imgs.map(img => img.getAttribute('src')))]"
+        )
+        if len(commlab_sources) != 4:
+            issues.append(f"CommLab: expected four distinct runtime screenshots, found {commlab_sources}")
+        if page.get_by_text("Evidence boundary", exact=True).count() != 1:
+            issues.append("CommLab: evidence boundary is missing or duplicated")
+        commlab_columns = page.locator(".commlab-gallery").evaluate(
+            "el => getComputedStyle(el).gridTemplateColumns.split(' ').length"
+        )
+        if commlab_columns != 2:
+            issues.append(f"CommLab: expected two desktop screenshot columns, found {commlab_columns}")
+        page.goto(f"{BASE_URL}/zh/projects/commlab/", wait_until="networkidle")
+        if page.locator("html").get_attribute("lang") != "zh-CN":
+            issues.append("CommLab Chinese: document language is not zh-CN")
+        if page.get_by_role("heading", name="贯穿通信技术栈的一体化工作台").count() != 1:
+            issues.append("CommLab Chinese: translated system-purpose heading is missing")
+        if page.evaluate("document.documentElement.scrollWidth > document.documentElement.clientWidth + 1"):
+            issues.append("CommLab Chinese desktop: horizontal overflow")
+        page.screenshot(path=str(OUTPUT / "commlab-zh-desktop.png"), full_page=True)
         page.goto(f"{BASE_URL}/projects/netsage/", wait_until="networkidle")
         netsage_screens = page.locator('img[src*="netsage-app-"]')
-        if netsage_screens.count() != 5:
-            issues.append("NetSage: expected five verified Android screenshots")
+        if netsage_screens.count() != 11:
+            issues.append("NetSage: expected eleven verified Android screenshots")
         else:
             for index in range(netsage_screens.count()):
                 netsage_screens.nth(index).scroll_into_view_if_needed()
                 netsage_screens.nth(index).evaluate("img => img.decode()")
             dimensions = netsage_screens.evaluate_all("imgs => imgs.map(img => [img.naturalWidth, img.naturalHeight])")
-            if any(size != [720, 1600] for size in dimensions):
+            if any(size != [1080, 2400] for size in dimensions):
                 issues.append(f"NetSage: unexpected screenshot dimensions {dimensions}")
             desktop_columns = page.locator(".netsage-screen-grid").evaluate(
                 "el => getComputedStyle(el).gridTemplateColumns.split(' ').length"
@@ -345,6 +367,16 @@ def run():
         observations.append({"projectsNetSageIconMobile": mobile_icon_size})
         if mobile_icon_size["width"] > 224 or mobile_icon_size["height"] > 224:
             issues.append(f"projects mobile: NetSage icon is oversized at {mobile_icon_size}")
+        page.goto(f"{BASE_URL}/projects/commlab/", wait_until="networkidle")
+        commlab_mobile_columns = page.locator(".commlab-gallery").evaluate(
+            "el => getComputedStyle(el).gridTemplateColumns.split(' ').length"
+        )
+        if commlab_mobile_columns != 1:
+            issues.append(f"CommLab mobile: expected one screenshot column, found {commlab_mobile_columns}")
+        page.goto(f"{BASE_URL}/zh/projects/commlab/", wait_until="networkidle")
+        if page.evaluate("document.documentElement.scrollWidth > document.documentElement.clientWidth + 1"):
+            issues.append("CommLab Chinese mobile: horizontal overflow")
+        page.screenshot(path=str(OUTPUT / "commlab-zh-mobile.png"), full_page=True)
         page.goto(f"{BASE_URL}/projects/netsage/", wait_until="networkidle")
         mobile_columns = page.locator(".netsage-screen-grid").evaluate(
             "el => getComputedStyle(el).gridTemplateColumns.split(' ').length"

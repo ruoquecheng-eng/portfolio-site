@@ -17,6 +17,11 @@
       "factId": "netsage.summary"
     },
     {
+      "record": "commlab",
+      "field": "summary",
+      "factId": "commlab.summary"
+    },
+    {
       "record": "battery",
       "field": "dataBoundary",
       "factId": "battery.dataBoundary"
