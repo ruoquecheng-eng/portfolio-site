@@ -400,10 +400,10 @@ function checkResearchAndProjectFacts(pageFiles, htmlByName) {
   const netsageScreens = (netsage.match(/<img\b[^>]*>/gi) ?? [])
     .map((tag) => attribute(tag, 'src') ?? '')
     .filter((src) => /assets\/images\/netsage-app-[^/]+\.webp$/i.test(src));
-  if (new Set(netsageScreens).size !== 6) {
-    addIssue('projects', 'NetSage page must publish six distinct verified Android screenshots');
+  if (new Set(netsageScreens).size !== 11) {
+    addIssue('projects', 'NetSage page must publish eleven distinct verified Android screenshots');
   }
-  if (!/recaptured from NetSage 0\.2\.0 on an Android 36\.1 emulator on 4 September 2026/i.test(visibleText(netsage))) {
+  if (!/All eleven screens were captured from the running NetSage 0\.2\.0 Android build on an Android 36\.1 emulator on 4 September 2026/i.test(visibleText(netsage))) {
     addIssue('truthfulness', 'NetSage screenshots are missing their verified build and capture context');
   }
 
