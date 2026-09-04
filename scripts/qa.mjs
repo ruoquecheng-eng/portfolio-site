@@ -403,7 +403,7 @@ function checkResearchAndProjectFacts(pageFiles, htmlByName) {
   if (new Set(netsageScreens).size !== 6) {
     addIssue('projects', 'NetSage page must publish six distinct verified Android screenshots');
   }
-  if (!/captured from NetSage 0\.2\.0 on an Android 36\.1 emulator on 1 September 2026/i.test(visibleText(netsage))) {
+  if (!/recaptured from NetSage 0\.2\.0 on an Android 36\.1 emulator on 4 September 2026/i.test(visibleText(netsage))) {
     addIssue('truthfulness', 'NetSage screenshots are missing their verified build and capture context');
   }
 

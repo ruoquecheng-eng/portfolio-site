@@ -302,11 +302,11 @@ const netsageBody = `
     </section>
     <section class="section netsage-screens" id="app-walkthrough">
       <div class="section-heading"><p>Real Android build</p><h2>Six verified screens from the running application</h2></div>
-      <p class="section-lead">The first three screens were captured from NetSage 0.2.0 on an Android 36.1 emulator on 1 September 2026 after a successful DNS, TCP, TLS, and HTTP check. The remaining screens document retained local log-analysis and reference workflows.</p>
+      <p class="section-lead">The first three screens were recaptured from NetSage 0.2.0 on an Android 36.1 emulator on 4 September 2026. They show the serverless dashboard, the explicit HTTP safety warning, and a bundled DNS sample reaching a local diagnostic result. The remaining screens document retained local log-analysis and reference workflows.</p>
       <div class="netsage-screen-grid">
         ${figure({depth: 2, src: "images/netsage-app-v020-home.webp", width: 1080, height: 2400, alt: "NetSage 0.2.0 Android dashboard describing its local-first and serverless diagnostic boundary", caption: "v0.2 dashboard. Local log analysis, diagnostic sessions, privacy boundaries, and access to the expanded workflow.", className: "netsage-screen"})}
-        ${figure({depth: 2, src: "images/netsage-app-v020-checkup.webp", width: 1080, height: 2400, alt: "NetSage 0.2.0 quick checkup form for a user-confirmed host, protocol, and port", caption: "Quick checkup. The user confirms the target before on-device DNS, TCP, TLS, and HTTP probes run.", className: "netsage-screen"})}
-        ${figure({depth: 2, src: "images/netsage-app-v020-result.webp", width: 1080, height: 2400, alt: "NetSage 0.2.0 local diagnostic result showing the network snapshot and successful DNS probe", caption: "Active diagnostic result. A real emulator run records the network snapshot, evidence timeline, duration, and protocol results.", className: "netsage-screen"})}
+        ${figure({depth: 2, src: "images/netsage-app-v020-checkup.webp", width: 1080, height: 2400, alt: "NetSage 0.2.0 quick checkup form showing an explicit warning when HTTP is selected", caption: "Quick checkup. Selecting HTTP displays a clear plaintext warning; HTTPS is never silently downgraded.", className: "netsage-screen"})}
+        ${figure({depth: 2, src: "images/netsage-app-v020-result.webp", width: 1080, height: 2400, alt: "NetSage 0.2.0 local diagnostic result for a bundled DNS NXDOMAIN sample with evidence and repair steps", caption: "Local diagnostic result. A bundled DNS sample shows ranked evidence, a bounded rule score, and three repair steps.", className: "netsage-screen"})}
         ${figure({depth: 2, src: "images/netsage-app-diagnosis-input.webp", width: 720, height: 1600, alt: "NetSage diagnosis input screen containing a bundled DNS NXDOMAIN failure sample and input quality guidance", caption: "Log diagnosis input. A bundled DNS sample activates quality guidance and the local rule engine.", className: "netsage-screen"})}
         ${figure({depth: 2, src: "images/netsage-app-history.webp", width: 720, height: 1600, alt: "NetSage local diagnosis history with search, protocol filters, result summaries, and refill-to-input actions", caption: "History center. Local records support search, protocol filters, and refill-to-input actions.", className: "netsage-screen"})}
         ${figure({depth: 2, src: "images/netsage-app-scenarios.webp", width: 720, height: 1600, alt: "NetSage offline fault scenario library covering DNS, connection, TLS, HTTP, and packet-loss cases", caption: "Scenario library. Ten offline fault cases can be sent directly into the diagnostic workflow.", className: "netsage-screen"})}
@@ -338,7 +338,7 @@ const netsageBody = `
       <dl class="evidence-ledger">
         <div><dt>Repository</dt><dd><a href="${escapeHtml(netsage.repository)}">github.com/lbrswne/NetSage</a></dd></div>
         <div><dt>Verified main commit</dt><dd><code>${escapeHtml(netsage.commit)}</code></dd></div>
-        <div><dt>Published visual</dt><dd>Six Android screenshots, including a verified v0.2.0 active-check run, the application icon, and an original conceptual diagnostic flow</dd></div>
+        <div><dt>Published visual</dt><dd>Six Android screenshots, including three newly recaptured v0.2.0 screens, the application icon, and an original conceptual diagnostic flow</dd></div>
       </dl>
     </section>
     <section class="section limitations" id="limitations">
