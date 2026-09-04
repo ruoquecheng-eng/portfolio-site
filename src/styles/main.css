@@ -82,6 +82,12 @@
   --selection-ink: oklch(0.98 0.01 230);
 }
 
+/* Keep the bilingual version native to each writing system without loading fonts. */
+html[lang="zh-CN"] {
+  --font-display: "Microsoft YaHei UI", "Microsoft YaHei", "PingFang SC", "Noto Sans CJK SC", "Segoe UI", sans-serif;
+  --font-body: "Microsoft YaHei UI", "Microsoft YaHei", "PingFang SC", "Noto Sans CJK SC", "Segoe UI", sans-serif;
+}
+
 *,
 *::before,
 *::after {
@@ -439,12 +445,68 @@ hr {
   font-weight: 700;
 }
 
+.language-switcher {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: stretch;
+  min-height: 2.75rem;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+}
+
+.language-switcher a {
+  display: inline-grid;
+  min-width: 2.75rem;
+  min-height: 2.75rem;
+  place-items: center;
+  padding-inline: 0.6rem;
+  color: var(--ink-soft);
+  font-family: var(--font-body);
+  font-size: 0.76rem;
+  font-weight: 700;
+  line-height: 1;
+  text-decoration: none;
+  transition: color var(--duration-fast) ease, background-color var(--duration-fast) ease;
+}
+
+.language-switcher a + a {
+  border-inline-start: 1px solid var(--line);
+}
+
+.language-switcher a:hover {
+  background: var(--surface-raised);
+  color: var(--ink);
+}
+
+.language-switcher a[aria-current="page"] {
+  background: var(--ink);
+  color: var(--surface);
+}
+
 .theme-toggle::before {
   content: "SYS";
 }
 
 .theme-toggle > [aria-hidden="true"] {
   display: none;
+}
+
+html[lang="zh-CN"] h1,
+html[lang="zh-CN"] h2,
+html[lang="zh-CN"] h3,
+html[lang="zh-CN"] h4 {
+  letter-spacing: -0.035em;
+  line-break: strict;
+  word-break: normal;
+}
+
+html[lang="zh-CN"] .hero h1,
+html[lang="zh-CN"] .case-hero h1,
+html[lang="zh-CN"] .research-hero h1,
+html[lang="zh-CN"] .resume-header h1 {
+  max-width: 13ch;
 }
 
 :root[data-theme-preference="light"] .theme-toggle::before {
@@ -2219,8 +2281,30 @@ button.button-secondary:hover {
   }
 
   .site-nav > a,
-  .site-nav > .theme-toggle {
+  .site-nav > .theme-toggle,
+  .site-nav > .language-switcher {
     width: 100%;
+  }
+
+  .site-nav > .language-switcher {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    overflow: visible;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+  }
+
+  .site-nav > .language-switcher a {
+    min-width: 0;
+    min-height: 2.75rem;
+    border: 1px solid var(--line);
+    border-radius: 0.4rem;
+    padding: 0.9rem 1rem;
+  }
+
+  .site-nav > .language-switcher a + a {
+    border-inline-start: 1px solid var(--line);
   }
 
   .site-nav a {
@@ -2236,6 +2320,11 @@ button.button-secondary:hover {
 
   .site-nav a::after {
     display: none;
+  }
+
+  html[lang="zh-CN"] .site-brand,
+  html[lang="zh-CN"] .brand {
+    font-size: 0.92rem;
   }
 
   @keyframes nav-in {

@@ -4,6 +4,29 @@
   const STORAGE_KEY = "engineerplus-demo-v1";
   const MODULES = ["overview", "capital", "risk", "compliance", "impact"];
   const CAPITAL_TYPES = ["public", "institutional", "green"];
+  const isChinese = () => document.documentElement.lang.toLowerCase().startsWith("zh");
+  const text = (english, chinese) => isChinese() ? chinese : english;
+  const copy = {
+    capitalTypes: {
+      public: ["Public capital", "公共资金"],
+      institutional: ["Institutional", "机构资金"],
+      green: ["Green bond", "绿色债券"]
+    },
+    impactRegions: {
+      all: ["All regions", "所有地区"],
+      nsw: ["New South Wales", "新南威尔士州"],
+      vic: ["Victoria", "维多利亚州"],
+      qld: ["Queensland", "昆士兰州"],
+      sa: ["South Australia", "南澳大利亚州"]
+    },
+    impactScenarios: {
+      baseline: ["Baseline concept", "基准概念方案"],
+      operations: ["Efficient operations", "高效运营"],
+      lightweight: ["Lightweight materials", "轻量化材料"]
+    }
+  };
+  const localized = (pair) => pair[isChinese() ? 1 : 0];
+  const labelForCapitalType = (type) => localized(copy.capitalTypes[type] || copy.capitalTypes.public);
   const DEFAULT_STATE = {
     version: 1,
     capital: {
@@ -19,16 +42,16 @@
   };
 
   const IMPACT_BASE = {
-    all: { label: "All regions", access: 64, carbon: 58, regional: 61 },
-    nsw: { label: "New South Wales", access: 72, carbon: 61, regional: 68 },
-    vic: { label: "Victoria", access: 69, carbon: 64, regional: 65 },
-    qld: { label: "Queensland", access: 57, carbon: 52, regional: 59 },
-    sa: { label: "South Australia", access: 51, carbon: 55, regional: 54 }
+    all: { label: copy.impactRegions.all, access: 64, carbon: 58, regional: 61 },
+    nsw: { label: copy.impactRegions.nsw, access: 72, carbon: 61, regional: 68 },
+    vic: { label: copy.impactRegions.vic, access: 69, carbon: 64, regional: 65 },
+    qld: { label: copy.impactRegions.qld, access: 57, carbon: 52, regional: 59 },
+    sa: { label: copy.impactRegions.sa, access: 51, carbon: 55, regional: 54 }
   };
   const IMPACT_SCENARIOS = {
-    baseline: { label: "Baseline concept", access: 0, carbon: 0, regional: 0 },
-    operations: { label: "Efficient operations", access: 5, carbon: 9, regional: 3 },
-    lightweight: { label: "Lightweight materials", access: 1, carbon: 13, regional: 4 }
+    baseline: { label: copy.impactScenarios.baseline, access: 0, carbon: 0, regional: 0 },
+    operations: { label: copy.impactScenarios.operations, access: 5, carbon: 9, regional: 3 },
+    lightweight: { label: copy.impactScenarios.lightweight, access: 1, carbon: 13, regional: 4 }
   };
 
   const cloneDefaults = () => JSON.parse(JSON.stringify(DEFAULT_STATE));
@@ -83,7 +106,7 @@
       if (link.dataset.moduleLink === module) link.setAttribute("aria-current", "page");
       else link.removeAttribute("aria-current");
     });
-    document.title = `${$("#" + module + " h1")?.textContent || "EngineerPlus"} | EngineerPlus Demo`;
+    document.title = `${$("#" + module + " h1")?.textContent || "EngineerPlus"} | ${text("EngineerPlus Demo", "EngineerPlus 交互演示")}`;
     if (focus) {
       $("#" + module)?.scrollIntoView({ block: "start" });
       $("#" + module + " h1")?.setAttribute("tabindex", "-1");
@@ -110,13 +133,13 @@
     $("[data-capital-submissions]").textContent = capital.submissions.toLocaleString();
 
     const total = CAPITAL_TYPES.reduce((sum, type) => sum + capital.allocations[type], 0);
-    const labels = { public: "Public capital", institutional: "Institutional", green: "Green bond" };
+    const labels = Object.fromEntries(CAPITAL_TYPES.map((type) => [type, localized(copy.capitalTypes[type])]));
     const bar = $("[data-allocation-bar]");
     bar.innerHTML = CAPITAL_TYPES.map((type) => {
       const percentage = total ? (capital.allocations[type] / total) * 100 : 0;
       return `<span style="width:${percentage.toFixed(2)}%" title="${labels[type]} ${percentage.toFixed(1)}%"></span>`;
     }).join("");
-    bar.setAttribute("aria-label", CAPITAL_TYPES.map((type) => `${labels[type]} ${capital.allocations[type]} million`).join(", "));
+    bar.setAttribute("aria-label", CAPITAL_TYPES.map((type) => text(`${labels[type]} ${capital.allocations[type]} million`, `${labels[type]} ${capital.allocations[type]} 百万`)).join(text(", ", "，")));
     $("[data-allocation-legend]").innerHTML = CAPITAL_TYPES.map((type) => `<li><span class="legend-swatch ${type}"></span>${labels[type]}<strong>$${capital.allocations[type].toLocaleString()}M</strong></li>`).join("");
 
     const points = capitalPoints(capital.trend);
@@ -138,10 +161,10 @@
     $("[data-guarantee-output]").textContent = guarantee;
     $("[data-climate-output]").textContent = climate.toFixed(1);
     $("[data-risk-coverage]").textContent = coverage.toFixed(coverage % 1 ? 1 : 0);
-    $("[data-risk-state]").textContent = buffered ? "Illustrative buffer" : "Review required";
+    $("[data-risk-state]").textContent = buffered ? text("Illustrative buffer", "演示缓冲充足") : text("Review required", "需要复核");
     $("[data-risk-explanation]").textContent = buffered
-      ? "The simplified output remains above the demonstration review threshold."
-      : "The simplified output falls below the demonstration threshold and would be flagged for review.";
+      ? text("The simplified output remains above the demonstration review threshold.", "简化计算结果仍高于演示复核阈值。")
+      : text("The simplified output falls below the demonstration threshold and would be flagged for review.", "简化计算结果低于演示阈值，应标记为需要复核。")
     const meter = $(".risk-meter");
     meter.setAttribute("aria-valuenow", coverage);
     $("[data-risk-meter]").style.width = `${clamp(((coverage - 50) / 90) * 100, 0, 100)}%`;
@@ -165,8 +188,8 @@
     $('[name="projectId"]').value = state.compliance.projectId;
     $("[data-compliance-rerun]").hidden = !complete;
     $("[data-compliance-status]").textContent = complete
-      ? `Simulated workflow complete for ${state.compliance.projectId}. No external verification occurred.`
-      : "Ready for an example project ID.";
+      ? text(`Simulated workflow complete for ${state.compliance.projectId}. No external verification occurred.`, `已完成 ${state.compliance.projectId} 的模拟流程；未进行外部验证。`)
+      : text("Ready for an example project ID.", "可输入示例项目编号后开始。 ");
   }
 
   function runCompliance(projectId) {
@@ -177,7 +200,12 @@
     const button = $('[data-compliance-form] button[type="submit"]');
     button.disabled = true;
     $("[data-compliance-rerun]").hidden = true;
-    const messages = ["Initializing local example…", "Simulating participant confirmations…", "Applying fixed demonstration checks…", "Completing local interface state…"];
+    const messages = [
+      text("Initializing local example…", "正在初始化本地示例…"),
+      text("Simulating participant confirmations…", "正在模拟参与方确认…"),
+      text("Applying fixed demonstration checks…", "正在执行固定演示检查…"),
+      text("Completing local interface state…", "正在完成本地界面状态…")
+    ];
     const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
     const delay = reduced ? 20 : 650;
     messages.forEach((message, index) => {
@@ -197,7 +225,7 @@
           saveState();
           button.disabled = false;
           $("[data-compliance-rerun]").hidden = false;
-          status.textContent = `Simulated workflow complete for ${projectId}. No external verification occurred.`;
+          status.textContent = text(`Simulated workflow complete for ${projectId}. No external verification occurred.`, `已完成 ${projectId} 的模拟流程；未进行外部验证。`);
           renderCompliance();
         }
       }, delay * (index + 1)));
@@ -208,7 +236,7 @@
     const base = IMPACT_BASE[state.impact.region];
     const modifier = IMPACT_SCENARIOS[state.impact.scenario];
     return {
-      label: `${base.label} · ${modifier.label}`,
+      label: `${localized(base.label)} · ${localized(modifier.label)}`,
       access: clamp(base.access + modifier.access, 0, 100),
       carbon: clamp(base.carbon + modifier.carbon, 0, 100),
       regional: clamp(base.regional + modifier.regional, 0, 100)
@@ -234,12 +262,20 @@
 
   function bindEvents() {
     addEventListener("hashchange", () => showModule({ focus: true }));
+    $$('[data-language-choice]').forEach((link) => link.addEventListener("click", () => {
+      try { localStorage.setItem("portfolio-language", link.dataset.languageChoice); } catch {}
+      if (location.hash) link.href = `${link.href.split("#")[0]}${location.hash}`;
+    }));
 
     $('[name="esg"]').addEventListener("input", (event) => { $("[data-esg-output]").textContent = event.target.value; });
     $("[data-capital-form]").addEventListener("submit", (event) => {
       event.preventDefault();
       const form = event.currentTarget;
-      if (!form.checkValidity()) { form.reportValidity(); return; }
+      if (!form.checkValidity()) {
+        announce(text("Please complete the required capital-pooling fields.", "请填写资本池演示所需的字段。"));
+        form.reportValidity();
+        return;
+      }
       const data = new FormData(form);
       const amount = clamp(data.get("amount"), 1, 500);
       const type = validChoice(data.get("type"), CAPITAL_TYPES, "public");
@@ -250,7 +286,10 @@
       state.capital.trend = [...state.capital.trend.slice(-7), state.capital.total];
       saveState();
       renderCapital();
-      $("[data-capital-status]").textContent = `${data.get("investor")} added as an illustrative ${type} entry. No data left this tab.`;
+      $("[data-capital-status]").textContent = text(
+        `${data.get("investor")} added as an illustrative ${labelForCapitalType(type)} entry. No data left this tab.`,
+        `已将 ${data.get("investor")} 作为演示用${labelForCapitalType(type)}条目加入。数据未离开此标签页。`
+      );
       form.elements.investor.value = "";
       form.elements.investor.focus();
     });
@@ -264,7 +303,11 @@
 
     $("[data-compliance-form]").addEventListener("submit", (event) => {
       event.preventDefault();
-      if (!event.currentTarget.checkValidity()) { event.currentTarget.reportValidity(); return; }
+      if (!event.currentTarget.checkValidity()) {
+        announce(text("Please enter an example project ID.", "请输入示例项目编号。"));
+        event.currentTarget.reportValidity();
+        return;
+      }
       runCompliance(event.currentTarget.elements.projectId.value.trim());
     });
     $("[data-compliance-rerun]").addEventListener("click", () => runCompliance($('[name="projectId"]').value.trim() || "HSR-DEMO-001"));
@@ -303,7 +346,7 @@
       renderCompliance();
       renderImpact();
       saveState();
-      announce("Demo reset. All modules have returned to their initial illustrative state.");
+      announce(text("Demo reset. All modules have returned to their initial illustrative state.", "演示已重置。所有模块均已恢复为初始演示状态。"));
     });
   }
 

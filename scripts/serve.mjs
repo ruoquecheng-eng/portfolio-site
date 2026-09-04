@@ -1,5 +1,5 @@
 import { createReadStream } from 'node:fs';
-import { realpath, stat } from 'node:fs/promises';
+import { readFile, realpath, stat } from 'node:fs/promises';
 import http from 'node:http';
 import path from 'node:path';
 import process from 'node:process';
@@ -8,6 +8,8 @@ import { fileURLToPath } from 'node:url';
 const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const distRoot = path.resolve(projectRoot, 'dist');
 const host = '127.0.0.1';
+const siteConfig = JSON.parse(await readFile(path.join(projectRoot, 'site.config.json'), 'utf8'));
+const previewBasePath = `/${String(siteConfig.basePath ?? '/').replace(/^\/+|\/+$/g, '')}`;
 
 function readPort() {
   const argumentIndex = process.argv.indexOf('--port');
@@ -74,7 +76,9 @@ async function resolveRequest(pathname, canonicalRoot) {
 
   if (decoded.includes('\0')) return { error: 400 };
 
-  const portablePath = decoded.replaceAll('\\', '/');
+  let portablePath = decoded.replaceAll('\\', '/');
+  if (portablePath === previewBasePath) portablePath = '/';
+  else if (portablePath.startsWith(`${previewBasePath}/`)) portablePath = portablePath.slice(previewBasePath.length);
   const relativePath = portablePath.replace(/^\/+/, '');
   const direct = path.resolve(distRoot, relativePath || 'index.html');
 

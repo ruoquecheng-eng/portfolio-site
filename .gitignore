@@ -5,6 +5,7 @@ node_modules/
 __pycache__/
 *.pyc
 qa-artifacts/
+.playwright-cli/
 tmp/
 .DS_Store
 Thumbs.db

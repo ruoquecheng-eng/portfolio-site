@@ -8,6 +8,8 @@
   const progress = document.querySelector(".reading-progress");
   const colorScheme = window.matchMedia("(prefers-color-scheme: dark)");
   const themeKey = "portfolio-theme";
+  const languageKey = "portfolio-language";
+  const isChinese = root.lang.toLowerCase() === "zh-cn";
   const themeChoices = ["system", "light", "dark"];
 
   const safeStorage = {
@@ -39,11 +41,14 @@
     const effective = resolvedTheme(preference);
     const next = themeChoices[(themeChoices.indexOf(preference) + 1) % themeChoices.length];
     const label = themeButton.querySelector("[data-theme-label]");
-    const text = `${preference[0].toUpperCase()}${preference.slice(1)} theme`;
+    const themeNames = isChinese
+      ? { system: "跟随系统主题", light: "浅色主题", dark: "深色主题" }
+      : { system: "System theme", light: "Light theme", dark: "Dark theme" };
+    const text = themeNames[preference];
 
     themeButton.dataset.themeChoice = preference;
-    themeButton.setAttribute("aria-label", `${text}. Activate ${next} theme.`);
-    themeButton.setAttribute("title", `${text} (${effective} appearance)`);
+    themeButton.setAttribute("aria-label", isChinese ? `${text}。切换至${themeNames[next]}。` : `${text}. Activate ${next} theme.`);
+    themeButton.setAttribute("title", isChinese ? `${text}（当前呈现为${effective === "dark" ? "深色" : "浅色"}）` : `${text} (${effective} appearance)`);
     if (label) label.textContent = text;
   }
 
@@ -57,6 +62,13 @@
   }
 
   applyTheme(safeStorage.get(themeKey) || root.dataset.themePreference || "system");
+
+  document.querySelectorAll("[data-language-choice]").forEach((link) => {
+    link.addEventListener("click", () => {
+      const choice = link.dataset.languageChoice;
+      if (choice === "en" || choice === "zh-CN") safeStorage.set(languageKey, choice);
+    });
+  });
 
   themeButton?.addEventListener("click", () => {
     const current = root.dataset.themePreference || "system";
@@ -138,7 +150,7 @@
 
   if (progress) {
     progress.setAttribute("role", "progressbar");
-    progress.setAttribute("aria-label", "Reading progress");
+    progress.setAttribute("aria-label", isChinese ? "阅读进度" : "Reading progress");
     progress.setAttribute("aria-valuemin", "0");
     progress.setAttribute("aria-valuemax", "100");
     window.addEventListener("scroll", requestProgressUpdate, { passive: true });

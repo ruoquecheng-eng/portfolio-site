@@ -20,9 +20,10 @@ const sourceFiles = {
   cubic: 'content/facts/research/critical-cubic-crossover.json',
   hypergraph: 'content/facts/research/hypergraph-tensor.json',
 };
-const [siteConfig, publicClaimsData, sourceRecords] = await Promise.all([
+const [siteConfig, publicClaimsData, zhTranslations, sourceRecords] = await Promise.all([
   readFile(path.join(projectRoot, 'site.config.json'), 'utf8').then(JSON.parse),
   readFile(path.join(projectRoot, 'content', 'public-claims.json'), 'utf8').then(JSON.parse),
+  readFile(path.join(projectRoot, 'content', 'i18n', 'zh-CN.json'), 'utf8').then(JSON.parse),
   Promise.all(Object.entries(sourceFiles).map(async ([key, file]) => [key, JSON.parse(await readFile(path.join(projectRoot, file), 'utf8'))])).then(Object.fromEntries),
 ]);
 const siteBaseUrl = `${siteConfig.canonicalOrigin}${siteConfig.basePath}`;
@@ -93,6 +94,7 @@ const sitemapRoutes = [
   '/research/hypergraph-tensor/',
   '/resume/',
 ];
+const bilingualSitemapRoutes = sitemapRoutes.flatMap((route) => [route, route === '/' ? '/zh/' : `/zh${route}`]);
 
 function relativeName(file) {
   return path.relative(distRoot, file).split(path.sep).join('/');
@@ -239,6 +241,11 @@ function targetCandidates(sourceFile, rawReference) {
 
 function checkMetadata(file, html) {
   const name = relativeName(file);
+  const isChinesePage = name.startsWith('zh/');
+  const documentLanguage = html.match(/<html\b[^>]*\blang=["']([^"']+)["']/i)?.[1];
+  if (name !== '404.html' && documentLanguage !== (isChinesePage ? 'zh-CN' : 'en')) {
+    addIssue('i18n', `${name}: document language does not match its route`);
+  }
   const titleMatch = html.match(/<title\b[^>]*>([\s\S]*?)<\/title>/i);
   if (!titleMatch || !visibleText(titleMatch[1])) addIssue('metadata', `${name}: missing non-empty <title>`);
 
@@ -263,6 +270,15 @@ function checkMetadata(file, html) {
     addIssue('metadata', `${name}: canonical URL is outside configured GitHub Pages base path`);
   }
 
+  if (name !== '404.html') {
+    const alternates = (html.match(/<link\b[^>]*>/gi) ?? [])
+      .filter((tag) => (attribute(tag, 'rel') ?? '').toLowerCase().split(/\s+/).includes('alternate'));
+    for (const language of ['en', 'zh-CN', 'x-default']) {
+      const matches = alternates.filter((tag) => attribute(tag, 'hreflang') === language && /^https:\/\//i.test(attribute(tag, 'href') ?? ''));
+      if (matches.length !== 1) addIssue('i18n', `${name}: expected one absolute hreflang=${language} alternate`);
+    }
+  }
+
   for (const property of ['og:title', 'og:description', 'og:type', 'og:url', 'og:image', 'og:image:width', 'og:image:height']) {
     if (!metaByProperty.get(property)) addIssue('metadata', `${name}: missing Open Graph ${property}`);
   }
@@ -270,7 +286,7 @@ function checkMetadata(file, html) {
     addIssue('metadata', `${name}: og:url does not match canonical URL`);
   }
   const ogImage = metaByProperty.get('og:image') ?? '';
-  const isEngineerPlusDemo = name === 'projects/high-speed-rail/demo/index.html';
+  const isEngineerPlusDemo = name.endsWith('projects/high-speed-rail/demo/index.html');
   const expectedOgImage = isEngineerPlusDemo ? `${siteBaseUrl}assets/images/engineerplus-overview.webp` : defaultOgUrl;
   const expectedOgSize = isEngineerPlusDemo ? ['1440', '900'] : ['1200', '630'];
   if (ogImage !== expectedOgImage) addIssue('metadata', `${name}: unexpected Open Graph image URL`);
@@ -542,6 +558,39 @@ function checkProfileLinks(pageFiles, htmlByName) {
   }
 }
 
+function checkBilingualPages(htmlByName) {
+  const chinesePages = [...htmlByName].filter(([name]) => name.startsWith('zh/'));
+  if (chinesePages.length !== sitemapRoutes.length) {
+    addIssue('i18n', `Expected ${sitemapRoutes.length} Chinese pages, found ${chinesePages.length}`);
+  }
+
+  const forbiddenChineseUi = [
+    'Back to case study', 'Reset demo', 'Open module', 'Return home', 'Primary navigation',
+    'The simplified output remains above the demonstration review threshold.',
+  ];
+  for (const [name, html] of chinesePages) {
+    const text = visibleText(html);
+    for (const phrase of forbiddenChineseUi) {
+      if (text.includes(phrase)) addIssue('i18n', `${name}: untranslated interface phrase: ${phrase}`);
+    }
+    const choices = (html.match(/data-language-choice=["'](?:en|zh-CN)["']/g) ?? []);
+    if (choices.length !== 2) addIssue('i18n', `${name}: language selector must expose exactly EN and zh-CN choices`);
+  }
+
+  for (const title of [sourceRecords.connected.title, sourceRecords.cubic.title, sourceRecords.hypergraph.title]) {
+    const escaped = title.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    for (const [name, html] of chinesePages.filter(([page]) => page.includes('/research/'))) {
+      if (html.includes(title) && !new RegExp(`<(?:h1|h2|strong|a)[^>]*lang=["']en["'][^>]*>${escaped}<`, 'i').test(html)) {
+        addIssue('i18n', `${name}: formal paper title must retain English language markup`);
+      }
+    }
+  }
+
+  if (zhTranslations.locale !== 'zh-CN' || zhTranslations.brandName !== '宁琬正 / Wanzheng Ning') {
+    addIssue('i18n', 'Chinese translation resource has an invalid locale or brand name');
+  }
+}
+
 function valueAt(record, field) {
   return field.split('.').reduce((value, key) => value?.[key], record);
 }
@@ -599,9 +648,8 @@ function checkFactGovernance(pageFiles, htmlByName) {
   ].filter(Boolean).sort();
   const latestDate = reviewDates.at(-1);
   const formattedDate = new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' }).format(new Date(`${latestDate}T00:00:00Z`));
-  const expectedFooter = `Facts last reviewed ${formattedDate}.`;
   for (const [name, html] of htmlByName) {
-    if (/class=["'][^"']*site-footer/i.test(html) && !visibleText(html).includes(expectedFooter)) {
+    if (/class=["'][^"']*site-footer/i.test(html) && !new RegExp(`data-last-reviewed=["']${latestDate}["']`, 'i').test(html)) {
       addIssue('governance', `${name}: footer review date does not match latest verified public fact/link date`);
     }
   }
@@ -614,7 +662,7 @@ async function checkSeoFiles(fileSet) {
 
   const sitemap = await readFile(path.join(distRoot, 'sitemap.xml'), 'utf8');
   const locations = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1]);
-  const expectedLocations = sitemapRoutes.map((route) => `${siteConfig.canonicalOrigin}${siteConfig.basePath.replace(/\/$/, '')}${route}`);
+  const expectedLocations = bilingualSitemapRoutes.map((route) => `${siteConfig.canonicalOrigin}${siteConfig.basePath.replace(/\/$/, '')}${route}`);
   if (locations.length !== expectedLocations.length || expectedLocations.some((url) => !locations.includes(url))) {
     addIssue('seo', 'sitemap.xml does not exactly cover the generated canonical routes');
   }
@@ -689,6 +737,13 @@ async function main() {
     else pageFiles.set(label, found);
   }
 
+  for (const [label, candidates] of requiredPages) {
+    if (label === '404') continue;
+    const source = candidates[0];
+    const localized = source === 'index.html' ? 'zh/index.html' : `zh/${source}`;
+    if (!fileSet.has(localized)) addIssue('i18n', `${label}: missing Chinese counterpart ${localized}`);
+  }
+
   for (const [label, candidates] of requiredAssets) {
     if (!firstExisting(candidates, fileSet)) {
       addIssue('assets', `Missing required asset: ${label} (${candidates.join(' or ')})`);
@@ -732,6 +787,7 @@ async function main() {
 
   checkResearchAndProjectFacts(pageFiles, htmlByName);
   checkProfileLinks(pageFiles, htmlByName);
+  checkBilingualPages(htmlByName);
   checkFactGovernance(pageFiles, htmlByName);
   await checkSeoFiles(fileSet);
   await checkTrackedRepository();

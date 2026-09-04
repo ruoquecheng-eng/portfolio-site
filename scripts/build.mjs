@@ -8,9 +8,10 @@ const factsRoot = path.join(root, "content", "facts");
 
 const readJson = async (...segments) => JSON.parse(await readFile(path.join(root, ...segments), "utf8"));
 
-const [config, publicClaimsData, profile, education, netsage, battery, rail, scenic, connected, cubic, hypergraph] = await Promise.all([
+const [config, publicClaimsData, zhTranslations, profile, education, netsage, battery, rail, scenic, connected, cubic, hypergraph] = await Promise.all([
   readJson("site.config.json"),
   readJson("content", "public-claims.json"),
+  readJson("content", "i18n", "zh-CN.json"),
   readJson("content", "facts", "profile.json"),
   readJson("content", "facts", "education.json"),
   readJson("content", "facts", "projects", "netsage.json"),
@@ -51,6 +52,7 @@ const reviewDates = [
 ].filter(Boolean);
 const latestReviewDate = reviewDates.sort().at(-1);
 const formattedReviewDate = new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" }).format(new Date(`${latestReviewDate}T00:00:00Z`));
+const formattedReviewDateZh = new Intl.DateTimeFormat("zh-CN", { year: "numeric", month: "long", day: "numeric", timeZone: "UTC" }).format(new Date(`${latestReviewDate}T00:00:00Z`));
 const prefix = (depth) => "../".repeat(depth);
 const local = (depth, target = "") => `${prefix(depth)}${target}`;
 const canonical = (route) => `${config.canonicalOrigin}${config.basePath.replace(/\/$/, "")}${route}`;
@@ -164,11 +166,112 @@ const page = ({ title, description, route, depth, active, body, schema, bodyClas
       <a href="${local(depth, "resume/")}">Resume</a>
       ${publicLinks.map((link) => `<a href="${escapeHtml(link.url)}" rel="me noopener">GitHub · ${escapeHtml(link.label)}</a>`).join("")}
     </div>
-    <p class="footer-note">Facts last reviewed ${escapeHtml(formattedReviewDate)}. Maintained as a verified static portfolio.</p>
+    <p class="footer-note" data-last-reviewed="${escapeHtml(latestReviewDate)}">Facts last reviewed ${escapeHtml(formattedReviewDate)}. Maintained as a verified static portfolio.</p>
   </footer>
   <script src="${local(depth, "scripts/main.js")}" defer></script>
 </body>
 </html>`;
+};
+
+const decodeHtml = (value = "") => String(value)
+  .replaceAll("&amp;", "&")
+  .replaceAll("&quot;", '"')
+  .replaceAll("&#39;", "'")
+  .replaceAll("&lt;", "<")
+  .replaceAll("&gt;", ">");
+
+const translateString = (value) => zhTranslations.strings[value] ?? value;
+
+const translateMarkup = (markup) => {
+  const protectedBlocks = [];
+  const masked = markup.replace(/<(script|style)\b[\s\S]*?<\/\1>/gi, (block) => {
+    const marker = `__I18N_BLOCK_${protectedBlocks.length}__`;
+    protectedBlocks.push(block);
+    return marker;
+  });
+  const translatedNodes = masked.replace(/>([^<>]+)</g, (match, rawText) => {
+    const leading = rawText.match(/^\s*/)?.[0] ?? "";
+    const trailing = rawText.match(/\s*$/)?.[0] ?? "";
+    const core = rawText.slice(leading.length, rawText.length - trailing.length);
+    if (!core) return match;
+    const translated = translateString(decodeHtml(core));
+    return `>${leading}${translated === decodeHtml(core) ? core : escapeHtml(translated)}${trailing}<`;
+  });
+  const translatedAttributes = translatedNodes.replace(/\b(alt|aria-label|title|placeholder|content)="([^"]*)"/gi, (match, name, rawValue) => {
+    const decoded = decodeHtml(rawValue);
+    const translated = translateString(decoded);
+    return translated === decoded ? match : `${name}="${escapeHtml(translated)}"`;
+  });
+  return translatedAttributes.replace(/__I18N_BLOCK_(\d+)__/g, (_, index) => protectedBlocks[Number(index)]);
+};
+
+const markFormalPaperTitles = (markup) => [connected.title, cubic.title, hypergraph.title].reduce((html, title) => {
+  const encodedTitle = escapeHtml(title).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  return html.replace(new RegExp(`<((?:title|h1|h2|strong|a))([^>]*)>(${encodedTitle})(<\\/\\1>)`, "gi"), (match, tag, attributes, text, closing) =>
+    `<${tag}${/\blang=/i.test(attributes) ? attributes : `${attributes} lang="en"`}>${text}${closing}`);
+}, markup);
+
+const localizedRoute = (route, locale) => locale === "zh-CN"
+  ? (route === "/" ? "/zh/" : `/zh${route}`)
+  : route;
+
+const publicPath = (route) => `${config.basePath.replace(/\/$/, "")}${route}`;
+
+const languageSwitcher = (route, locale, demo = false) => {
+  const englishHref = publicPath(localizedRoute(route, "en"));
+  const chineseHref = publicPath(localizedRoute(route, "zh-CN"));
+  const label = locale === "zh-CN" ? "语言选择" : "Language selection";
+  const className = demo ? "demo-language-switcher" : "language-switcher";
+  return `<div class="${className}" role="group" aria-label="${label}">
+    <a href="${englishHref}" lang="en" data-language-choice="en"${locale === "en" ? ' aria-current="page"' : ""}>EN</a>
+    <a href="${chineseHref}" lang="zh-CN" data-language-choice="zh-CN"${locale === "zh-CN" ? ' aria-current="page"' : ""}>中文</a>
+  </div>`;
+};
+
+const localizeSchemaBlock = (html, locale, route) => html.replace(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/i, (match, source) => {
+  try {
+    const data = JSON.parse(source);
+    data.inLanguage = locale;
+    if (data.url) data.url = canonical(localizedRoute(route, locale));
+    if (locale === "zh-CN") {
+      if (data.description) data.description = translateString(data.description);
+      if (data["@type"] === "Person") data.alternateName = "宁琬正";
+    }
+    return `<script type="application/ld+json">${JSON.stringify(data).replaceAll("<", "\\u003c")}</script>`;
+  } catch {
+    return match;
+  }
+});
+
+const rewriteChineseInternalLinks = (html, englishRoute, routeSet) => {
+  const englishUrl = canonical(englishRoute);
+  const basePrefix = config.basePath.replace(/\/$/, "");
+  return html.replace(/\b(href|src)="([^"]*)"/gi, (match, attributeName, value) => {
+    if (/^(?:#|https?:|mailto:|tel:|data:)/i.test(value)) return match;
+    const resolved = new URL(decodeHtml(value), englishUrl);
+    if (resolved.origin !== config.canonicalOrigin || !resolved.pathname.startsWith(`${basePrefix}/`)) return match;
+    const relativeRoute = resolved.pathname.slice(basePrefix.length) || "/";
+    if (routeSet.has(relativeRoute)) resolved.pathname = `${basePrefix}${localizedRoute(relativeRoute, "zh-CN")}`;
+    return `${attributeName}="${resolved.pathname}${resolved.search}${resolved.hash}"`;
+  });
+};
+
+const decorateDocument = (html, route, locale, routeSet, { demo = false } = {}) => {
+  const translated = locale === "zh-CN" ? markFormalPaperTitles(translateMarkup(html)) : html;
+  const languageControl = languageSwitcher(route, locale, demo);
+  let output = translated
+    .replace(/<html lang="[^"]+">/i, `<html lang="${locale}">`)
+    .replace(/<link rel="canonical" href="[^"]+">/i, `<link rel="canonical" href="${canonical(localizedRoute(route, locale))}">`)
+    .replace(/<meta property="og:url" content="[^"]+">/i, `<meta property="og:url" content="${canonical(localizedRoute(route, locale))}">`)
+    .replace("</head>", `  <link rel="alternate" hreflang="en" href="${canonical(localizedRoute(route, "en"))}">\n  <link rel="alternate" hreflang="zh-CN" href="${canonical(localizedRoute(route, "zh-CN"))}">\n  <link rel="alternate" hreflang="x-default" href="${canonical(localizedRoute(route, "en"))}">\n  <meta property="og:locale" content="${locale === "zh-CN" ? "zh_CN" : "en_US"}">\n</head>`);
+  if (locale === "zh-CN") output = rewriteChineseInternalLinks(output, route, routeSet);
+  output = demo
+    ? output.replace('<div class="demo-header-actions">', `<div class="demo-header-actions">${languageControl}`)
+    : output.replace('<button class="theme-toggle"', `${languageControl}<button class="theme-toggle"`);
+  if (route === "/" && locale === "en") {
+    output = output.replace("</head>", `  <script>try{if(localStorage.getItem("portfolio-language")==="zh-CN")location.replace("${publicPath("/zh/")}"+location.hash)}catch{}</script>\n</head>`);
+  }
+  return localizeSchemaBlock(output, locale, route);
 };
 
 const projectRow = ({ depth, href, index, type, title, summary, meta, visual }) => `
@@ -228,7 +331,7 @@ const homeBody = `
       type: `${battery.type} · ${batteryDataBoundary}`,
       title: battery.title,
       summary: batterySummary,
-      meta: "${batteryCompetitionResult} · Change-point regression · Weibull AFT · compatibility graph · MILP",
+      meta: `${batteryCompetitionResult} · Change-point regression · Weibull AFT · compatibility graph · MILP`,
       visual: `<div class="project-visual project-visual-battery"><img src="assets/visuals/battery-workflow.svg" width="1240" height="650" alt="Conceptual four-stage battery modeling workflow" loading="lazy"></div>`
     })}
     <article class="project-row research-preview">
@@ -793,7 +896,7 @@ const resumeBody = `
     </section>
   </article>`;
 
-const routes = [
+const baseRoutes = [
   {
     file: "index.html",
     route: "/",
@@ -860,7 +963,7 @@ const routes = [
   }
 ];
 
-const notFound = page({
+const baseNotFound = page({
   title: "Page not found",
   description: "The requested portfolio page could not be found.",
   route: "/404.html",
@@ -868,6 +971,51 @@ const notFound = page({
   active: "",
   body: `<section class="not-found"><p class="hero-kicker">404</p><h1>Signal not found.</h1><p>The requested route is outside this portfolio build.</p><a class="button" href="./">Return home</a></section>`
 });
+
+const baseRouteSet = new Set(baseRoutes.map(({ route }) => route));
+const englishRoutes = baseRoutes.map((entry) => ({
+  ...entry,
+  html: decorateDocument(entry.html, entry.route, "en", baseRouteSet, { demo: entry.route === "/projects/high-speed-rail/demo/" })
+}));
+const chineseRoutes = baseRoutes.map((entry) => ({
+  file: path.posix.join("zh", entry.file),
+  route: localizedRoute(entry.route, "zh-CN"),
+  html: decorateDocument(entry.html, entry.route, "zh-CN", baseRouteSet, { demo: entry.route === "/projects/high-speed-rail/demo/" })
+}));
+const routes = [...englishRoutes, ...chineseRoutes];
+
+const absolutizeNotFoundLinks = (html) => html.replace(/\b(href|src)="([^"]*)"/gi, (match, attributeName, value) => {
+  if (/^(?:#|https?:|mailto:|tel:|data:)/i.test(value)) return match;
+  const resolved = new URL(value || "./", canonical("/"));
+  return `${attributeName}="${resolved.pathname}${resolved.search}${resolved.hash}"`;
+});
+
+const bilingualNotFound = () => {
+  const english = absolutizeNotFoundLinks(decorateDocument(baseNotFound, "/404.html", "en", baseRouteSet))
+    .replaceAll(publicPath("/zh/404.html"), publicPath("/zh/"))
+    .replace('<section class="not-found">', '<section class="not-found" data-404-language="en">');
+  const chinesePanel = `<section class="not-found" data-404-language="zh-CN" lang="zh-CN" hidden><p class="hero-kicker">404</p><h1>未找到信号。</h1><p>请求的路径不在此作品集构建范围内。</p><a class="button" href="${publicPath("/zh/")}">返回首页</a></section>`;
+  return english
+    .replace("</main>", `${chinesePanel}</main>`)
+    .replace("</body>", `<script>
+      (()=>{try{
+        const zh=location.pathname.includes("/zh/")||(!location.pathname.includes("/projects/")&&!location.pathname.includes("/research/")&&!location.pathname.includes("/resume/")&&localStorage.getItem("portfolio-language")==="zh-CN");
+        document.documentElement.lang=zh?"zh-CN":"en";
+        document.title=zh?"页面未找到 | 宁琬正 / Wanzheng Ning":"Page not found | Wanzheng Ning";
+        document.querySelectorAll("[data-404-language]").forEach((panel)=>panel.hidden=panel.dataset["404Language"]!==(zh?"zh-CN":"en"));
+        if(zh){
+          const copy=[[".skip-link","跳到主要内容"],[".brand-text","宁琬正 / Wanzheng Ning"],[".nav-toggle","菜单"],[".site-footer strong","宁琬正 / Wanzheng Ning"],[".site-footer div:first-child p","通信工程、网络诊断、数学建模与数学研究。"],[".footer-note","公开事实最近核验于 ${formattedReviewDateZh}。本网站作为经核验的静态作品集维护。"]];
+          copy.forEach(([selector,value])=>{const element=document.querySelector(selector);if(element)element.textContent=value});
+          const nav=[["项目","${publicPath("/zh/projects/")}"],["研究","${publicPath("/zh/research/")}"],["简历","${publicPath("/zh/resume/")}"],["GitHub 账号","${publicPath("/zh/resume/#github-accounts")}"]];document.querySelectorAll(".site-nav>a").forEach((link,index)=>{if(nav[index]){link.textContent=nav[index][0];link.href=nav[index][1]}});
+          const footer=[["项目","${publicPath("/zh/projects/")}"],["研究","${publicPath("/zh/research/")}"],["简历","${publicPath("/zh/resume/")}"]];document.querySelectorAll(".site-footer div:nth-child(2)>a").forEach((link,index)=>{if(footer[index]){link.textContent=footer[index][0];link.href=footer[index][1]}});
+          const theme=document.querySelector(".theme-toggle");if(theme){theme.setAttribute("aria-label","切换颜色主题");theme.setAttribute("title","切换颜色主题")}
+          const group=document.querySelector(".language-switcher");if(group)group.setAttribute("aria-label","语言选择");
+          document.querySelector('[data-language-choice="en"]')?.removeAttribute("aria-current");document.querySelector('[data-language-choice="zh-CN"]')?.setAttribute("aria-current","page");
+        }
+      }catch{}})();
+    </script></body>`);
+};
+const notFound = bilingualNotFound();
 
 const assertSourceFacts = () => {
   if (claimBindings.size !== publicClaimsData.claims.length) {
@@ -922,7 +1070,11 @@ await Promise.all([
 
 await writeFile(path.join(dist, "404.html"), notFound, "utf8");
 await writeFile(path.join(dist, "robots.txt"), `User-agent: *\nAllow: /\nSitemap: ${canonical("/sitemap.xml")}\n`, "utf8");
-await writeFile(path.join(dist, "sitemap.xml"), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${routes.map(({ route }) => `  <url><loc>${escapeHtml(canonical(route))}</loc></url>`).join("\n")}\n</urlset>\n`, "utf8");
+const sitemapEntries = baseRoutes.flatMap(({ route }) => ["en", "zh-CN"].map((locale) => {
+  const localized = localizedRoute(route, locale);
+  return `  <url>\n    <loc>${escapeHtml(canonical(localized))}</loc>\n    <xhtml:link rel="alternate" hreflang="en" href="${escapeHtml(canonical(localizedRoute(route, "en")))}"/>\n    <xhtml:link rel="alternate" hreflang="zh-CN" href="${escapeHtml(canonical(localizedRoute(route, "zh-CN")))}"/>\n    <xhtml:link rel="alternate" hreflang="x-default" href="${escapeHtml(canonical(localizedRoute(route, "en")))}"/>\n  </url>`;
+}));
+await writeFile(path.join(dist, "sitemap.xml"), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n${sitemapEntries.join("\n")}\n</urlset>\n`, "utf8");
 await writeFile(path.join(dist, "manifest.webmanifest"), JSON.stringify({name: config.title, short_name: "WN Portfolio", start_url: config.basePath, display: "standalone", background_color: "#ffffff", theme_color: "#14243a", icons: []}, null, 2), "utf8");
 
 console.log(`Built ${routes.length} pages plus 404 into ${path.relative(root, dist)}.`);
