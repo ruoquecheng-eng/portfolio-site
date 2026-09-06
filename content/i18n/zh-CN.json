@@ -537,7 +537,7 @@
     "View successful Windows build": "查看成功的 Windows 构建",
     "Running CommLab OFDM link laboratory with local controls, BER, EVM, and a received constellation": "正在运行的 CommLab OFDM 链路实验，展示本地控制、BER、EVM 与接收星座图",
     "Evidence boundary": "证据边界",
-    "CommLab is a local simulation and research platform. Its numerical outputs use explicit synthetic models and assumptions; they are not measurements from a calibrated radio, standards-compliance certification, or live base-station deployment.": "CommLab 是一个本地运行的通信仿真与研究平台。页面中的数值来自明确的合成模型和假设，不是校准无线设备的实测数据，也不代表标准合规认证或真实基站部署。",
+    "CommLab is a local simulation and research platform. Its numerical outputs use explicit synthetic models and assumptions; they are not measurements from a calibrated radio, standards-compliance certification, or live base-station deployment.": "CommLab 是一个本地运行的通信仿真与研究平台。页面中的数值来自明确的合成模型和假设，而非校准真实无线设备的实测数据，也并未得到标准合规认证或在真实基站部署。",
     "System purpose": "系统用途",
     "One workbench across the communication stack": "覆盖通信链路到策略决策的实验工作台",
     "The project connects waveform and receiver experiments to scheduling, edge inference, resilient control, and offline policy evaluation. The aim is to study cross-layer trade-offs without requiring a cloud account, rented server, real base station, or GPU.": "项目把波形和接收机实验延伸到调度、边缘推理、可靠性控制和离线策略评估，用于观察跨层取舍。全部可以本地运行，不需要云账户、租用服务器、真实基站或 GPU。",
