@@ -2224,6 +2224,60 @@ button.button-secondary:hover {
   margin-bottom: 0;
 }
 
+.academic-metrics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.5rem;
+  margin: 0.75rem 0 0;
+}
+
+.academic-metrics > div {
+  display: flex;
+  gap: 0.4rem;
+  align-items: baseline;
+}
+
+.academic-metrics dt {
+  color: var(--ink-faint);
+  font-size: 0.76rem;
+}
+
+.academic-metrics dd {
+  margin: 0;
+  font-weight: 700;
+}
+
+.academic-evidence {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.academic-evidence figure {
+  margin: 0;
+}
+
+.academic-evidence a {
+  display: block;
+}
+
+.academic-evidence img {
+  display: block;
+  width: 100%;
+  height: 18rem;
+  object-fit: contain;
+  object-position: center top;
+  border: 1px solid var(--line);
+  background: var(--surface-soft);
+}
+
+.academic-evidence figcaption {
+  margin-top: 0.4rem;
+  color: var(--ink-faint);
+  font-size: 0.72rem;
+}
+
 .site-footer {
   padding:
     var(--space-section-tight)
@@ -2513,6 +2567,15 @@ button.button-secondary:hover {
     grid-template-columns: 1fr;
   }
 
+  .academic-evidence {
+    grid-template-columns: 1fr;
+  }
+
+  .academic-evidence img {
+    height: auto;
+    max-height: 32rem;
+  }
+
   .page-hero {
     min-height: 25rem;
     grid-template-columns: 1fr;
@@ -2728,6 +2791,31 @@ button.button-secondary:hover {
 
   .resume-entry p {
     margin: 0.35mm 0 0;
+  }
+
+  .academic-metrics {
+    gap: 4mm;
+    margin-top: 0.75mm;
+  }
+
+  .academic-metrics dt {
+    font-size: 7pt;
+  }
+
+  .academic-evidence {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 3mm;
+    margin-top: 1.5mm;
+    break-inside: avoid;
+  }
+
+  .academic-evidence img {
+    height: 28mm;
+  }
+
+  .academic-evidence figcaption {
+    margin-top: 0.5mm;
+    font-size: 6.5pt;
   }
 
   .resume .skills-context > div {

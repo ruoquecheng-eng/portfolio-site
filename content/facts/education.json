@@ -14,7 +14,23 @@
       "publicText": "Undergraduate student in Communication Engineering",
       "status": "verified",
       "sourceType": "user_record",
-      "lastVerified": "2026-08-22",
+      "lastVerified": "2026-09-06",
+      "public": true
+    },
+    {
+      "id": "education.gpa",
+      "publicText": "3.7129",
+      "status": "verified",
+      "sourceType": "user_record",
+      "lastVerified": "2026-09-06",
+      "public": true
+    },
+    {
+      "id": "education.rank",
+      "publicText": "19/118",
+      "status": "verified",
+      "sourceType": "user_record",
+      "lastVerified": "2026-09-06",
       "public": true
     },
     {
