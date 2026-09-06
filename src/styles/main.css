@@ -2116,7 +2116,7 @@ button.button-secondary:hover {
 
 .resume-entry span {
   color: var(--ink-faint);
-  font-size: 0.82rem;
+  font-size: 0.72rem;
 }
 
 .resume-contact .account-list > div {
@@ -2753,10 +2753,14 @@ button.button-secondary:hover {
   }
 
   .resume h1 {
-    font-size: 21pt;
+    font-size: 18pt;
   }
 
   .resume h2 {
-    font-size: 10.5pt;
+    font-size: 9.5pt;
+  }
+
+  .resume-entry span {
+    font-size: 7pt;
   }
 }
