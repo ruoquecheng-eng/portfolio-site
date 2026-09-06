@@ -18,7 +18,7 @@
     "Clean-package reproduction and final validation checks"
   ],
   "limitations": [
-    "All numerical results come from fully simulated data generated with semi-empirical assumptions; no row is measured experimental data.",
+    "All numerical results come from fully simulated data generated with semi-empirical assumptions.",
     "REU is a relative economic unit, not a currency estimate.",
     "Proxy safety gates do not replace thermal, electrical, mechanical, or regulatory testing.",
     "The audit covers 599 configured candidate columns within the stated candidate-generation rules."
@@ -44,7 +44,7 @@
     },
     {
       "id": "battery.data.scale",
-      "publicText": "418,430 generated cycle records across 360 simulated battery trajectories; no row is measured experimental data",
+      "publicText": "418,430 generated cycle records across 360 simulated battery trajectories",
       "status": "verified",
       "sourceType": "dataset_metadata",
       "lastVerified": "2026-08-22",
@@ -93,4 +93,3 @@
   ],
   "competitionResult": "University-level Second Prize in the Mathematical Modeling Competition"
 }
-

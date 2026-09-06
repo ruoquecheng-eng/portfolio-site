@@ -564,7 +564,7 @@ const batteryBody = `
       <img class="case-wide-visual" src="${local(2, "assets/visuals/battery-workflow.svg")}" width="1240" height="650" alt="Conceptual workflow connecting Q1 degradation analysis, Q2 prediction, Q3 grouping, and Q4 robust stress testing">
     </header>
     <section class="section notice-section" aria-label="Data boundary">
-      <strong>Data boundary</strong><p>Every numerical result on this page comes from fully simulated data generated with semi-empirical assumptions. No row is measured experimental data. The project does not claim an experimental battery platform, industrial validation, or real-world deployment.</p>
+      <strong>Data boundary</strong><p>Every numerical result on this page comes from fully simulated data generated with semi-empirical assumptions. The project does not claim an experimental battery platform, industrial validation, or real-world deployment.</p>
     </section>
     ${batteryPaperFeature}
     <section class="section" id="problem">
