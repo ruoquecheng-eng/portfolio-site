@@ -2119,6 +2119,20 @@ button.button-secondary:hover {
   font-size: 0.82rem;
 }
 
+.resume-contact .account-list > div {
+  display: block;
+}
+
+.resume-contact .account-list dd {
+  margin-top: 0.2rem;
+  font-size: 0.76rem;
+}
+
+.resume-contact .account-url {
+  color: var(--ink-faint);
+  overflow-wrap: anywhere;
+}
+
 .skills-context {
   border-top: 0;
 }
@@ -2729,7 +2743,9 @@ button.button-secondary:hover {
   }
 
   .resume-contact .account-list dd {
-    display: none;
+    display: block;
+    margin-top: 0.25mm;
+    font-size: 7pt;
   }
 
   .resume a[href^="http"]::after {

@@ -960,7 +960,7 @@ const resumeBody = `
     <section class="resume-section resume-contact" id="github-accounts">
       <h2>GitHub accounts</h2>
       <dl class="skills-context account-list">
-        ${publicLinks.map((link) => `<div><dt><a href="${escapeHtml(link.url)}" rel="me noopener">${escapeHtml(link.label)}</a></dt><dd>${escapeHtml(link.purpose)}</dd></div>`).join("")}
+        ${publicLinks.map((link) => `<div><dt><a href="${escapeHtml(link.url)}" rel="me noopener">${escapeHtml(link.label)}</a></dt><dd><a class="account-url" href="${escapeHtml(link.url)}" rel="me noopener">${escapeHtml(link.url)}</a><br>${escapeHtml(link.purpose)}</dd></div>`).join("")}
       </dl>
     </section>
   </article>`;
