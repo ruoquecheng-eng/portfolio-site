@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "slug": "hypergraph-tensor",
   "title": "Beyond Vertex Profiles: Edge-Local Spectral Information and Size-Dependent Scaling in Nonuniform Hypergraph Tensors",
-  "statusText": "Submitted to Linear and Multilinear Algebra",
+  "statusText": "Under review",
   "summary": "Vertex edge-size profiles determine every slice row sum in the support-exact edge-total-mass tensor, but they do not determine spectral radius even when the complete labelled 2-edge layer is fixed. The manuscript proves a five-vertex minimal separation valid for every positive choice of 2- and 3-edge masses, develops an explicit edge-local Collatz–Wielandt bound with equality and defect theory, and derives size-dependent loose-star growth laws.",
   "objects": [
     "Nonuniform hypergraphs",
@@ -38,7 +38,7 @@
     },
     {
       "id": "hypergraph.status",
-      "publicText": "Submitted to Linear and Multilinear Algebra",
+      "publicText": "Under review",
       "status": "verified",
       "sourceType": "user_confirmation",
       "lastVerified": "2026-08-29",

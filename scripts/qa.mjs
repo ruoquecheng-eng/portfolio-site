@@ -384,14 +384,10 @@ function checkResearchAndProjectFacts(pageFiles, htmlByName) {
   const homeHtml = htmlByName.get(pageFiles.get('Home')) ?? '';
   const homeResearchSummaryMatch = homeHtml.match(/<p\s+class=["']research-status-summary["'][^>]*>([\s\S]*?)<\/p>/i);
   const homeResearchSummary = visibleText(homeResearchSummaryMatch?.[1] ?? '');
-  const submittedVenue = (statusText) => statusText.match(/^Submitted to\s+(.+)$/i)?.[1] ?? null;
-  const hypergraphVenue = submittedVenue(sourceRecords.hypergraph.statusText);
-  const expectedHomeResearchSummary = `Two single-author manuscripts are under review. The hypergraph-tensor collaboration is ${hypergraphVenue ? `submitted to ${hypergraphVenue}` : sourceRecords.hypergraph.statusText}.`;
+  const hypergraphVenue = sourceRecords.hypergraph.facts.find((fact) => fact.id === 'hypergraph.venue')?.publicText ?? '';
+  const expectedHomeResearchSummary = `All three manuscripts are under review. The hypergraph-tensor collaboration is under review at ${hypergraphVenue}.`;
   if (homeResearchSummary !== expectedHomeResearchSummary) {
     addIssue('truthfulness', 'Home research status summary is not synchronized with verified research statuses');
-  }
-  if (/^Submitted\b/i.test(sourceRecords.hypergraph.statusText) && /hypergraph[\s\S]{0,180}in preparation|in preparation[\s\S]{0,180}hypergraph/i.test(visibleText(homeHtml))) {
-    addIssue('truthfulness', 'Home still describes the submitted Hypergraph manuscript as in preparation');
   }
 
   const battery = htmlByName.get(pageFiles.get('Battery RUL case study'));
@@ -540,10 +536,11 @@ function checkResearchAndProjectFacts(pageFiles, htmlByName) {
 
   const hypergraphHtml = htmlByName.get(pageFiles.get('Hypergraph Tensor research')) ?? '';
   const hypergraphText = visibleText(hypergraphHtml);
-  if (!/Submitted to Linear and Multilinear Algebra/i.test(hypergraphText)) {
-    addIssue('truthfulness', 'Hypergraph Tensor page must use the verified status: Submitted to Linear and Multilinear Algebra');
+  const hypergraphJournal = sourceRecords.hypergraph.facts.find((fact) => fact.id === 'hypergraph.venue')?.publicText ?? '';
+  if (!/Under review/i.test(hypergraphText) || !hypergraphText.includes(hypergraphJournal)) {
+    addIssue('truthfulness', 'Hypergraph Tensor page must expose the verified Under review status and journal');
   }
-  if (/\b(?:under review|accepted|published)\b/i.test(hypergraphText)) {
+  if (/\b(?:accepted|published)\b/i.test(hypergraphText)) {
     addIssue('truthfulness', 'Hypergraph Tensor page exposes an unsupported publication status');
   }
   if (!hypergraphText.includes(sourceRecords.hypergraph.authorshipText)) {

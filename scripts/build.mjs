@@ -95,9 +95,8 @@ const cubicSummary = publicClaim("cubic", "summary");
 const cubicAccess = publicClaim("cubic", "accessText");
 const hypergraphStatus = publicClaim("hypergraph", "statusText");
 const hypergraphSummary = publicClaim("hypergraph", "summary");
-const submittedVenue = (statusText) => statusText.match(/^Submitted to\s+(.+)$/i)?.[1] ?? null;
-const hypergraphVenue = submittedVenue(hypergraphStatus);
-const homeResearchStatusSummary = `Two single-author manuscripts are under review. The hypergraph-tensor collaboration is ${hypergraphVenue ? `submitted to ${hypergraphVenue}` : hypergraphStatus}.`;
+const hypergraphVenue = publicFacts(hypergraph).find((fact) => fact.id === "hypergraph.venue")?.publicText ?? "";
+const homeResearchStatusSummary = `All three manuscripts are under review. The hypergraph-tensor collaboration is under review at ${hypergraphVenue}.`;
 const defaultOgUrl = `${config.canonicalOrigin}${config.basePath}assets/images/og-portfolio.png`;
 
 const figure = ({ depth, src, width, height, alt, caption, eager = false, className = "figure" }) => `
@@ -935,7 +934,7 @@ const reviewedResearchDetailBody = (record) => {
 
 const hypergraphDetailBody = (record) => `
   <article class="research-paper">
-    <header class="paper-hero"><div>${status(hypergraphStatus)}<p class="project-type">${escapeHtml(researchAuthorshipFor(record))}</p><h1>${escapeHtml(record.title)}</h1><p>${escapeHtml(researchBylineFor(record))}</p></div></header>
+    <header class="paper-hero"><div>${status(hypergraphStatus)}<p class="project-type">${escapeHtml(researchAuthorshipFor(record))}</p><h1>${escapeHtml(record.title)}</h1><p>${escapeHtml(researchBylineFor(record))}</p><p class="paper-venue">${escapeHtml(hypergraphVenue)}</p></div></header>
     ${manuscriptFeature(record)}
     <section class="section paper-question"><div class="section-heading"><p>Research question</p><h2>Do complete vertex edge-size profiles determine spectral behavior, or does edge-local arrangement add information?</h2></div><div class="formula" role="img" aria-label="Neighbor profile spectral bound"><span>ρ(A<sup>η</sup>(H)) ≤ B<sub>np</sub><sup>η</sup>(H) ≤ max<sub>i</sub> R<sub>i</sub><sup>η</sup></span><strong>vertex profiles → edge-local arrangement → spectral information</strong></div></section>
     <section class="section split-section"><div><h2>Non-specialist summary</h2><p>${escapeHtml(hypergraphSummary)}</p></div><div><h2>Current contribution</h2><p>The submitted manuscript proves robust spectral non-determination beyond complete labelled vertex profiles, including a five-vertex minimality result and separation for every positive choice of 2- and 3-edge masses. It then develops the edge-local bound, exact equality and defect theory, comparisons with classical uniform bounds, quotient reductions, and size-dependent loose-star scaling laws.</p></div></section>
@@ -1027,7 +1026,7 @@ const baseRoutes = [
   {
     file: "research/hypergraph-tensor/index.html",
     route: "/research/hypergraph-tensor/",
-    html: page({title: "Edge-Local Spectra of Nonuniform Hypergraph Tensors", description: "Research summary for a manuscript submitted to Linear and Multilinear Algebra on edge-local spectral information and size-dependent scaling.", route: "/research/hypergraph-tensor/", depth: 2, active: "research", body: hypergraphDetailBody(hypergraph), schema: {"@context": "https://schema.org", "@type": "ScholarlyArticle", headline: hypergraph.title, author: hypergraph.authors.map((name) => ({"@type": "Person", name})), keywords: hypergraph.keywords.join(", "), description: hypergraphSummary}})
+    html: page({title: "Edge-Local Spectra of Nonuniform Hypergraph Tensors", description: "Research summary for a manuscript under review at Linear and Multilinear Algebra on edge-local spectral information and size-dependent scaling.", route: "/research/hypergraph-tensor/", depth: 2, active: "research", body: hypergraphDetailBody(hypergraph), schema: {"@context": "https://schema.org", "@type": "ScholarlyArticle", headline: hypergraph.title, author: hypergraph.authors.map((name) => ({"@type": "Person", name})), keywords: hypergraph.keywords.join(", "), description: hypergraphSummary}})
   },
   {
     file: "resume/index.html",
