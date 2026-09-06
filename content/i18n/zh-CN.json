@@ -78,7 +78,7 @@
     "Ranks up to three hypotheses using evidence strength, matched and conflicting evidence, and suggested actions": "依据证据强度、匹配与冲突证据及建议操作，对最多三个诊断假设排序",
     "Real Android build": "真实 Android 构建",
     "Eleven verified screens across the primary workflow": "覆盖主要工作流的 11 张已核验截图",
-    "All eleven screens were captured from the running NetSage 0.2.0 Android build on an Android 36.1 emulator on 4 September 2026. Together they document local log analysis, bundled offline examples, direct on-device checks, explainable results, retained sessions, and field-reference tools.": "全部 11 张截图均于 2026 年 9 月 4 日从 Android 36.1 模拟器中正在运行的 NetSage 0.2.0 构建采集，覆盖本地日志分析、内置离线样例、设备端主动检测、可解释结果、会话留存和现场参考工具。",
+    "All eleven screens document the running NetSage 0.2.0 Android build on an Android 36.1 emulator. Together they cover local log analysis, bundled offline examples, direct on-device checks, explainable results, retained sessions, and field-reference tools.": "全部 11 张截图来自 Android 36.1 模拟器中正在运行的 NetSage 0.2.0 构建，覆盖本地日志分析、内置离线样例、设备端主动检测、可解释结果、会话留存和现场参考工具。",
     "v0.2 dashboard. Local log analysis, diagnostic sessions, privacy boundaries, and access to the expanded workflow.": "v0.2 仪表盘：集中展示本地日志分析、诊断会话、隐私边界和扩展工作流入口。",
     "Log diagnosis. Paste a log or fault description, load a bundled sample, or choose a local text file through Android's system picker.": "日志诊断：粘贴日志或故障描述、载入内置样例，或通过 Android 系统选择器读取本地文本文件。",
     "Sample center. Fourteen bundled, offline examples support walkthroughs and repeatable rule-engine checks.": "样例中心：14 个内置离线样例支持功能演示和可重复的规则引擎检查。",

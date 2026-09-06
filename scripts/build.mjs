@@ -473,7 +473,7 @@ const netsageBody = `
     </section>
     <section class="section netsage-screens" id="app-walkthrough">
       <div class="section-heading"><p>Real Android build</p><h2>Eleven verified screens across the primary workflow</h2></div>
-      <p class="section-lead">All eleven screens were captured from the running NetSage 0.2.0 Android build on an Android 36.1 emulator on 4 September 2026. Together they document local log analysis, bundled offline examples, direct on-device checks, explainable results, retained sessions, and field-reference tools.</p>
+      <p class="section-lead">All eleven screens document the running NetSage 0.2.0 Android build on an Android 36.1 emulator. Together they cover local log analysis, bundled offline examples, direct on-device checks, explainable results, retained sessions, and field-reference tools.</p>
       <div class="netsage-screen-grid">
         ${figure({depth: 2, src: "images/netsage-app-v020-home.webp", width: 1080, height: 2400, alt: "NetSage 0.2.0 Android dashboard describing its local-first and serverless diagnostic boundary", caption: "v0.2 dashboard. Local log analysis, diagnostic sessions, privacy boundaries, and access to the expanded workflow.", className: "netsage-screen"})}
         ${figure({depth: 2, src: "images/netsage-app-input.webp", width: 1080, height: 2400, alt: "NetSage log diagnosis workspace with text input, input quality guidance, a sample shortcut, and local file import", caption: "Log diagnosis. Paste a log or fault description, load a bundled sample, or choose a local text file through Android's system picker.", className: "netsage-screen"})}
