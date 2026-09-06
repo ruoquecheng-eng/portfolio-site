@@ -440,7 +440,7 @@ const commlabBody = `
       </div>
     </section>
     <section class="section split-section" id="architecture">
-      <div><p class="project-type">Architecture</p><h2>Local code, reproducible experiments, recorded results</h2><p><code>app/dashboard.py</code> is the interactive entry point; reusable simulation modules live under <code>src/commlab</code>; experiment scripts and recorded CSV/PNG outputs remain available for reproduction and audit. Desktop packaging wraps this same Dashboard rather than creating a second implementation.</p></div>
+      <div><p class="project-type">Architecture</p><h2>Local code, reproducible experiments, recorded results</h2><p><code>app/dashboard.py</code> is the interactive entry point; reusable simulation modules live under <code>src/commlab</code>; experiment scripts and recorded CSV/PNG outputs remain available for reproduction and audit.</p></div>
       <div><p class="project-type">Decision integrity</p><h2>No hidden genie in adaptive policies</h2><p>Adaptive decisions use forecasts, pre-transmission observations, delayed feedback, or explicitly available telemetry. Realized packet outcomes and component failures are reserved for evaluation and are not exposed to the policy before it acts.</p></div>
     </section>
     <section class="section limitations">

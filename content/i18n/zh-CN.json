@@ -578,7 +578,7 @@
     "Architecture": "架构",
     "Local code, reproducible experiments, recorded results": "本地代码、可复现实验和留存结果",
     "is the interactive entry point; reusable simulation modules live under": "是交互入口；可复用仿真模块位于",
-    "; experiment scripts and recorded CSV/PNG outputs remain available for reproduction and audit. Desktop packaging wraps this same Dashboard rather than creating a second implementation.": "；实验脚本及留存的 CSV/PNG 输出继续用于复现和审计。桌面打包复用同一个仪表盘，而不是创建第二套实现。",
+    "; experiment scripts and recorded CSV/PNG outputs remain available for reproduction and audit.": "；实验脚本及留存的 CSV/PNG 输出继续用于复现和审计。",
     "Decision integrity": "决策完整性",
     "No hidden genie in adaptive policies": "自适应策略不会提前看到结果",
     "Adaptive decisions use forecasts, pre-transmission observations, delayed feedback, or explicitly available telemetry. Realized packet outcomes and component failures are reserved for evaluation and are not exposed to the policy before it acts.": "自适应决策只使用预测、传输前观测、延迟反馈或明确可用的遥测。真实的数据包结果和组件故障只用于事后评估，不会在策略做决定前提供给它。",
