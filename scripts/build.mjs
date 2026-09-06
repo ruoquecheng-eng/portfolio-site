@@ -8,12 +8,13 @@ const factsRoot = path.join(root, "content", "facts");
 
 const readJson = async (...segments) => JSON.parse(await readFile(path.join(root, ...segments), "utf8"));
 
-const [config, publicClaimsData, zhTranslations, profile, education, netsage, commlab, battery, rail, scenic, connected, cubic, hypergraph] = await Promise.all([
+const [config, publicClaimsData, zhTranslations, profile, education, internship, netsage, commlab, battery, rail, scenic, connected, cubic, hypergraph] = await Promise.all([
   readJson("site.config.json"),
   readJson("content", "public-claims.json"),
   readJson("content", "i18n", "zh-CN.json"),
   readJson("content", "facts", "profile.json"),
   readJson("content", "facts", "education.json"),
+  readJson("content", "facts", "internship.json"),
   readJson("content", "facts", "projects", "netsage.json"),
   readJson("content", "facts", "projects", "commlab.json"),
   readJson("content", "facts", "projects", "battery-rul.json"),
@@ -31,7 +32,7 @@ const escapeHtml = (value = "") => String(value)
   .replaceAll('"', "&quot;")
   .replaceAll("'", "&#39;");
 
-const recordsByKey = { profile, education, netsage, commlab, battery, rail, scenic, connected, cubic, hypergraph };
+const recordsByKey = { profile, education, internship, netsage, commlab, battery, rail, scenic, connected, cubic, hypergraph };
 const publicFacts = (record) => (record.facts || []).filter((fact) => fact.public === true && fact.status === "verified" && fact.publicText);
 const displayFacts = (record) => publicFacts(record).filter((fact) => fact.display !== false);
 const publicLinks = (profile.links || []).filter((link) => link.public === true && link.status === "verified" && link.label && link.url);
@@ -87,6 +88,11 @@ const engineerPlusRole = publicClaim("rail", "components.engineerPlus.role");
 const engineerPlusSummary = publicClaim("rail", "components.engineerPlus.summary");
 const scenicSummary = publicClaim("scenic", "summary");
 const scenicSourceDisclosure = publicClaim("scenic", "download.disclosure");
+const internshipTitle = publicClaim("internship", "title");
+const internshipOrganization = publicClaim("internship", "organization");
+const internshipDateRange = publicClaim("internship", "dateRange");
+const internshipSummary = publicClaim("internship", "summary");
+const internshipCertificateCaption = publicClaim("internship", "certificate.caption");
 const connectedStatus = publicClaim("connected", "statusText");
 const connectedSummary = publicClaim("connected", "summary");
 const connectedAccess = publicClaim("connected", "accessText");
@@ -380,6 +386,13 @@ const projectsBody = `
     ${projectRow({depth: 1, href: "projects/netsage/", index: "01", type: netsage.type, title: netsage.title, summary: netsageSummary, meta: "Primary engineering case study", visual: `<div class="project-visual project-visual-netsage"><img src="${local(1, "assets/images/netsage-icon.webp")}" width="216" height="216" alt="NetSage application icon" loading="lazy"></div>`})}
     ${projectRow({depth: 1, href: "projects/commlab/", index: "02", type: commlab.type, title: commlab.title, summary: commlabSummary, meta: "Primary communications systems case study", visual: `<div class="project-visual project-visual-commlab"><img src="${local(1, "assets/images/commlab-isac.webp")}" width="1440" height="1000" alt="Running CommLab ISAC laboratory with local controls, metrics, and a range-Doppler result" loading="lazy"></div>`})}
     ${projectRow({depth: 1, href: "projects/battery-rul/", index: "03", type: `${battery.type} · ${batteryDataBoundary}`, title: battery.title, summary: batterySummary, meta: "Primary modeling case study", visual: `<div class="project-visual"><img src="${local(1, "assets/visuals/battery-workflow.svg")}" width="1240" height="650" alt="Conceptual Q1 to Q4 battery modeling workflow" loading="lazy"></div>`})}
+  </section>
+  <section class="section experience-section" id="experience">
+    <div class="section-heading"><p>Experience</p><h2>Software development in an operating team.</h2></div>
+    <article class="experience-feature">
+      <figure class="experience-certificate"><a href="${local(1, `assets/${internship.certificate.file}`)}" target="_blank" rel="noopener"><img src="${local(1, `assets/${internship.certificate.preview}`)}" width="994" height="1404" alt="${escapeHtml(internshipCertificateCaption)}" loading="lazy" decoding="async"></a><figcaption>${escapeHtml(internshipCertificateCaption)}</figcaption></figure>
+      <div class="experience-copy"><p class="project-type"><span>Verified internship</span><span>${escapeHtml(internshipDateRange)}</span></p><h2>${escapeHtml(internshipTitle)}</h2><p class="experience-organization">${escapeHtml(internshipOrganization)}</p><p>${escapeHtml(internshipSummary)}</p><a class="button-secondary" href="${local(1, `assets/${internship.certificate.file}`)}" target="_blank" rel="noopener">${escapeHtml(internship.certificate.label)}</a></div>
+    </article>
   </section>
   <section class="section supporting-projects">
     <div class="section-heading"><p>Supporting work</p><h2>Engineering design and competition software</h2></div>
@@ -952,6 +965,7 @@ const resumeBody = `
       <button class="button print-button" type="button" onclick="window.print()">Print or save as PDF</button>
     </header>
     <section class="resume-section"><h2>Education</h2><div class="resume-entry"><div><strong>${escapeHtml(publicFacts(education).find((fact) => fact.id === "education.institution")?.publicText || "")}</strong></div><p>${escapeHtml(publicFacts(education).find((fact) => fact.id === "education.program")?.publicText || "")}</p><dl class="academic-metrics"><div><dt>Current GPA</dt><dd>${escapeHtml(publicFacts(education).find((fact) => fact.id === "education.gpa")?.publicText || "")}</dd></div><div><dt>Rank</dt><dd>${escapeHtml(publicFacts(education).find((fact) => fact.id === "education.rank")?.publicText || "")}</dd></div></dl></div><div class="academic-evidence" aria-label="Academic record evidence"><figure><a href="${local(1, "assets/images/academic-record-gpa.png")}" target="_blank" rel="noopener"><img src="${local(1, "assets/images/academic-record-gpa.png")}" width="1388" height="1124" alt="Course results and cumulative GPA" loading="lazy" decoding="async"></a><figcaption>Course results and cumulative GPA</figcaption></figure><figure><a href="${local(1, "assets/images/chsi-enrollment-status.jpg")}" target="_blank" rel="noopener"><img src="${local(1, "assets/images/chsi-enrollment-status.jpg")}" width="1205" height="2048" alt="CHSI enrollment status" loading="lazy" decoding="async"></a><figcaption>CHSI enrollment status</figcaption></figure></div></section>
+    <section class="resume-section resume-experience"><h2>Experience</h2><div class="resume-entry"><div><strong>${escapeHtml(internshipTitle)}</strong><span>${escapeHtml(internshipDateRange)}</span></div><p class="experience-organization">${escapeHtml(internshipOrganization)}</p><p>${escapeHtml(internshipSummary)}</p><a class="text-link internship-certificate-link" href="${local(1, `assets/${internship.certificate.file}`)}" target="_blank" rel="noopener">${escapeHtml(internship.certificate.label)}</a></div><figure class="resume-internship-proof no-print"><a href="${local(1, `assets/${internship.certificate.file}`)}" target="_blank" rel="noopener"><img src="${local(1, `assets/${internship.certificate.preview}`)}" width="994" height="1404" alt="${escapeHtml(internshipCertificateCaption)}" loading="lazy" decoding="async"></a><figcaption>${escapeHtml(internshipCertificateCaption)}</figcaption></figure></section>
     <section class="resume-section"><h2>Research</h2><div class="resume-entry"><div><strong>${escapeHtml(connected.title)}</strong><span>${escapeHtml(connectedStatus)} · ${escapeHtml(connected.journal)}</span></div><p>Single-author work on connected-diagram expansions, all-excess summation, and critical zero asymptotics.</p></div><div class="resume-entry"><div><strong>${escapeHtml(cubic.title)}</strong><span>${escapeHtml(cubicStatus)} · ${escapeHtml(cubic.journal)}</span></div><p>Single-author work on the critical cubic crossover from Hermite universality in Riemann-xi Jensen polynomials.</p></div><div class="resume-entry"><div><strong>${escapeHtml(hypergraph.title)}</strong><span>${escapeHtml(hypergraphStatus)} · ${escapeHtml(hypergraphVenue)}</span></div><p>First- and corresponding-author work with Qianzhi Ao as second author and four shared third authors, covering robust profile non-determination, edge-local tensor bounds, quotient reduction, and loose-star asymptotics.</p></div></section>
     <section class="resume-section"><h2>Projects</h2><div class="resume-entry"><div><strong>NetSage</strong></div><p>Built a serverless Android network-diagnostics workbench combining local log rules with active probes, explainable evidence, retesting, session history, and Markdown/JSON export.</p></div><div class="resume-entry"><div><strong>CommLab</strong></div><p>Built a local-first research platform with 130 interactive laboratory modes spanning physical-layer communications, ISAC, distributed learning, resilient edge inference, networked control, and robust offline policy evaluation.</p></div><div class="resume-entry"><div><strong>Battery RUL and cascade utilization modeling</strong></div><p>Q1 to Q4 workflow on fully simulated data generated with semi-empirical assumptions, covering degradation stages, SOH/RUL, compatibility graphs, MILP grouping, and robust stress testing.</p></div><div class="resume-entry"><div><strong>Australian high-speed rail design and management concept</strong></div><p>Contributed to a lightweight composite carriage concept and independently developed a five-page front-end prototype for capital pooling, risk simulation, compliance workflow, and impact reporting using illustrative data.</p></div></section>
     <section class="resume-section"><h2>Competitions</h2><div class="resume-entry"><div><strong>Mathematical modeling project</strong></div><p>Four-part battery reliability and utilization workflow on fully simulated data generated with semi-empirical assumptions; received the stated university-level second prize.</p></div><div class="resume-entry"><div><strong>Scenic Guide Digital Human</strong></div><p>Tourism guide prototype to which I contributed, with conversational and voice interaction, route guidance, narration, and knowledge management.</p></div></section>

@@ -1,0 +1,61 @@
+{
+  "schemaVersion": 1,
+  "slug": "software-development-internship",
+  "title": "Software Development Internship",
+  "organization": "Sichuan Jixinghai Software Technology Co., Ltd.",
+  "dateRange": "17 January - 27 February 2026",
+  "summary": "Assisted with requirements coordination and feature development for livestock digital-management and agricultural information systems; contributed PHP/Java modules, API integration, unit testing, database table design, SQL optimization, technical documentation, release testing, deployment support, online issue resolution, and livestock-asset monitoring feature delivery.",
+  "certificate": {
+    "file": "documents/northeastern-university-internship-certificate.pdf",
+    "preview": "images/internship-certificate.jpg",
+    "label": "View certificate",
+    "caption": "Issued internship certificate"
+  },
+  "facts": [
+    {
+      "id": "internship.title",
+      "publicText": "Software Development Internship",
+      "status": "verified",
+      "sourceType": "user_record_and_certificate",
+      "lastVerified": "2026-09-06",
+      "public": true,
+      "display": false
+    },
+    {
+      "id": "internship.organization",
+      "publicText": "Sichuan Jixinghai Software Technology Co., Ltd.",
+      "status": "verified",
+      "sourceType": "user_record_and_certificate",
+      "lastVerified": "2026-09-06",
+      "public": true,
+      "display": false
+    },
+    {
+      "id": "internship.date-range",
+      "publicText": "17 January - 27 February 2026",
+      "status": "verified",
+      "sourceType": "user_record_and_certificate",
+      "lastVerified": "2026-09-06",
+      "public": true,
+      "display": false
+    },
+    {
+      "id": "internship.summary",
+      "publicText": "Assisted with requirements coordination and feature development for livestock digital-management and agricultural information systems; contributed PHP/Java modules, API integration, unit testing, database table design, SQL optimization, technical documentation, release testing, deployment support, online issue resolution, and livestock-asset monitoring feature delivery.",
+      "status": "verified",
+      "sourceType": "user_record_and_certificate",
+      "lastVerified": "2026-09-06",
+      "public": true,
+      "display": false
+    },
+    {
+      "id": "internship.certificate-caption",
+      "publicText": "Issued internship certificate",
+      "status": "verified",
+      "sourceType": "user_record_and_certificate",
+      "lastVerified": "2026-09-06",
+      "public": true,
+      "display": false
+    }
+  ]
+}

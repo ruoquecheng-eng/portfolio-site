@@ -12,6 +12,7 @@ const issues = [];
 const sourceFiles = {
   profile: 'content/facts/profile.json',
   education: 'content/facts/education.json',
+  internship: 'content/facts/internship.json',
   netsage: 'content/facts/projects/netsage.json',
   commlab: 'content/facts/projects/commlab.json',
   battery: 'content/facts/projects/battery-rul.json',
@@ -32,6 +33,7 @@ const defaultOgUrl = `${siteBaseUrl}assets/images/og-portfolio.png`;
 const allowedPublicPdfs = new Set([
   'assets/documents/lithium-ion-battery-rul-cascade-utilization-modeling.pdf',
   'assets/documents/beyond-vertex-profiles-nonuniform-hypergraph-tensors.pdf',
+  'assets/documents/northeastern-university-internship-certificate.pdf',
 ]);
 
 const requiredPages = new Map([
@@ -74,6 +76,8 @@ const requiredAssets = new Map([
   ['battery strategy figure', ['assets/images/battery-strategy-comparison.webp']],
   ['battery modeling paper cover', ['assets/images/battery-modeling-paper-cover.webp']],
   ['battery modeling paper', ['assets/documents/lithium-ion-battery-rul-cascade-utilization-modeling.pdf']],
+  ['internship certificate preview', ['assets/images/internship-certificate.jpg']],
+  ['internship certificate', ['assets/documents/northeastern-university-internship-certificate.pdf']],
   ['high-speed rail image', ['assets/images/high-speed-carriage.webp']],
   ['EngineerPlus overview', ['assets/images/engineerplus-overview.webp']],
   ['EngineerPlus capital pooling module', ['assets/images/engineerplus-capital-pooling.webp']],
@@ -591,6 +595,7 @@ function checkBilingualPages(htmlByName) {
 
   const forbiddenChineseUi = [
     'Back to case study', 'Reset demo', 'Open module', 'Return home', 'Primary navigation',
+    'Facts last reviewed',
     'The simplified output remains above the demonstration review threshold.',
   ];
   for (const [name, html] of chinesePages) {
@@ -616,6 +621,35 @@ function checkBilingualPages(htmlByName) {
   }
 }
 
+function checkInternship(pageFiles, htmlByName) {
+  const englishPages = [
+    ['Projects', htmlByName.get(pageFiles.get('Projects')) ?? ''],
+    ['Resume', htmlByName.get(pageFiles.get('Resume')) ?? ''],
+  ];
+  const chinesePages = [
+    ['Chinese projects', htmlByName.get(`zh/${pageFiles.get('Projects')}`) ?? ''],
+    ['Chinese resume', htmlByName.get(`zh/${pageFiles.get('Resume')}`) ?? ''],
+  ];
+  const certificate = 'northeastern-university-internship-certificate.pdf';
+
+  for (const [label, html] of englishPages) {
+    const text = visibleText(html);
+    for (const required of ['Software Development Internship', 'Sichuan Jixinghai Software Technology Co., Ltd.', '17 January - 27 February 2026']) {
+      if (!text.includes(required)) addIssue('internship', `${label} is missing: ${required}`);
+    }
+    if (!html.includes(certificate)) addIssue('internship', `${label} is missing the certificate link`);
+  }
+
+  for (const [label, html] of chinesePages) {
+    const text = visibleText(html);
+    for (const required of ['软件开发实习', '四川吉星海软件技术有限公司', '2026 年 1 月 17 日至 2 月 27 日', '协助', '参与']) {
+      if (!text.includes(required)) addIssue('internship', `${label} is missing: ${required}`);
+    }
+    if (text.includes('主导')) addIssue('internship', `${label} overstates the internship contribution`);
+    if (!html.includes(certificate)) addIssue('internship', `${label} is missing the certificate link`);
+  }
+}
+
 function valueAt(record, field) {
   return field.split('.').reduce((value, key) => value?.[key], record);
 }
@@ -628,6 +662,7 @@ function checkFactGovernance(pageFiles, htmlByName) {
     'rail.components.engineerPlus.summary', 'scenic.summary', 'connected.statusText', 'connected.summary', 'connected.accessText',
     'cubic.statusText', 'cubic.summary', 'cubic.accessText',
     'hypergraph.statusText', 'hypergraph.summary', 'hypergraph.title', 'hypergraph.authorshipText',
+    'internship.title', 'internship.organization', 'internship.dateRange', 'internship.summary', 'internship.certificate.caption',
   ]);
   const seenBindings = new Set();
 
@@ -813,6 +848,7 @@ async function main() {
   checkResearchAndProjectFacts(pageFiles, htmlByName);
   checkProfileLinks(pageFiles, htmlByName);
   checkBilingualPages(htmlByName);
+  checkInternship(pageFiles, htmlByName);
   checkFactGovernance(pageFiles, htmlByName);
   await checkSeoFiles(fileSet);
   await checkTrackedRepository();

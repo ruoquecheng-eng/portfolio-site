@@ -135,6 +135,31 @@
       "record": "battery",
       "field": "competitionResult",
       "factId": "battery.competition.result"
+    },
+    {
+      "record": "internship",
+      "field": "title",
+      "factId": "internship.title"
+    },
+    {
+      "record": "internship",
+      "field": "organization",
+      "factId": "internship.organization"
+    },
+    {
+      "record": "internship",
+      "field": "dateRange",
+      "factId": "internship.date-range"
+    },
+    {
+      "record": "internship",
+      "field": "summary",
+      "factId": "internship.summary"
+    },
+    {
+      "record": "internship",
+      "field": "certificate.caption",
+      "factId": "internship.certificate-caption"
     }
   ]
 }
