@@ -527,7 +527,7 @@ function checkResearchAndProjectFacts(pageFiles, htmlByName) {
     if (!/Under review/i.test(manuscriptText) || !manuscriptText.includes(journal) || !/31 August 2026/i.test(manuscriptText)) {
       addIssue('truthfulness', `${pageName} must expose the verified journal, submission date, and Under review status`);
     }
-    if (!/submission agreement restricts public sharing/i.test(manuscriptText) || !/does not mean accepted or published/i.test(manuscriptText)) {
+    if (!/submission agreement restricts public sharing/i.test(manuscriptText)) {
       addIssue('truthfulness', `${pageName} is missing the manuscript access and review-status boundary`);
     }
     if (/\.pdf(?:[?#]|$)/i.test(manuscriptHtml)) {

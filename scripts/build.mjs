@@ -884,7 +884,7 @@ const researchBody = `
     ${researchItem({depth: 1, href: "research/critical-cubic-crossover/", record: cubic, question: "What changes at the critical cubic crossover from Hermite universality in Riemann-xi Jensen polynomials?"})}
     ${researchItem({depth: 1, href: "research/hypergraph-tensor/", record: hypergraph, question: "What spectral information is carried by the arrangement of vertex profiles inside nonuniform hyperedges?"})}
   </section>
-  <section class="section research-policy"><div class="section-heading"><p>Publication policy</p><h2>Status and authorship are stated at the lowest verified level.</h2></div><p>Under review does not mean accepted or published. The two reviewed manuscripts and their private submission materials are unavailable because the current submission agreements restrict public sharing. The separately submitted hypergraph manuscript remains publicly available with its complete verified author order.</p></section>`;
+  <section class="section research-policy"><div class="section-heading"><p>Publication policy</p><h2>Status and authorship are stated at the lowest verified level.</h2></div><p>The two reviewed manuscripts and their private submission materials are unavailable because the current submission agreements restrict public sharing. The separately submitted hypergraph manuscript remains publicly available with its complete verified author order.</p></section>`;
 
 const manuscriptFeature = (record) => {
   const manuscript = record.manuscript;
@@ -929,7 +929,7 @@ const reviewedResearchDetailBody = (record) => {
       <header class="paper-hero"><div>${status(claims.status)}<p class="project-type">${escapeHtml(claims.authorship)}</p><h1>${escapeHtml(record.title)}</h1><p>${escapeHtml(claims.byline)}</p></div></header>
       <section class="section split-section"><div><p class="project-type">Journal</p><h2>${escapeHtml(record.journal)}</h2><p>Submitted ${escapeHtml(record.submittedDate)}</p></div><div><p class="project-type">Verified research record</p><h2>Current status</h2><p>${escapeHtml(claims.summary)}</p></div></section>
       <section class="section keyword-section"><h2>Keywords</h2><ul class="keyword-list">${record.keywords.map((keyword) => `<li>${escapeHtml(keyword)}</li>`).join("")}</ul></section>
-      <section class="section limitations paper-access"><div><h2>Access and status boundary</h2><p>${escapeHtml(claims.access)} Under review does not mean accepted or published.</p></div><a class="button-secondary" href="${local(2, "research/")}">Back to research</a></section>
+      <section class="section limitations paper-access"><div><h2>Access and status boundary</h2><p>${escapeHtml(claims.access)}</p></div><a class="button-secondary" href="${local(2, "research/")}">Back to research</a></section>
     </article>`;
 };
 
