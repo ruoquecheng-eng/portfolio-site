@@ -183,7 +183,6 @@
     "Probability compatibility, six stress scenarios, and CVaR-based comparisons test whether a nominal grouping remains useful when prediction error and shared stress propagate to the group level.": "通过概率兼容性、六种压力场景和基于 CVaR 的比较，检验当预测误差与共同压力传播到组层面时，名义分组是否仍然有效。",
     "Simulation is not field validation": "模拟不等于现场验证",
     "Proxy safety gates do not replace thermal, electrical, mechanical, or regulatory testing.": "代理安全门槛不能替代热、电、机械或法规测试。",
-    "REU is a relative economic unit, not a currency estimate.": "REU 是相对经济单位，不是货币估值。",
     "The audit covers 599 configured candidate columns within the stated candidate-generation rules.": "审计覆盖既定候选生成规则内配置的 599 个候选列。",
     "The source package records deterministic seeds, frozen outputs, figure generation, LaTeX assembly, and clean-package verification. The full simulated dataset is not published from this portfolio; the complete modeling paper is available above.": "源码包记录确定性随机种子、冻结输出、图表生成、LaTeX 组装和清洁包验证。完整模拟数据集未通过本作品集公开，但上方提供完整建模论文。",
 
