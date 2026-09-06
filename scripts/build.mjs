@@ -941,7 +941,7 @@ const hypergraphDetailBody = (record) => `
     <section class="section split-section"><div><h2>Non-specialist summary</h2><p>${escapeHtml(hypergraphSummary)}</p></div><div><h2>Current contribution</h2><p>The submitted manuscript proves robust spectral non-determination beyond complete labelled vertex profiles, including a five-vertex minimality result and separation for every positive choice of 2- and 3-edge masses. It then develops the edge-local bound, exact equality and defect theory, comparisons with classical uniform bounds, quotient reductions, and size-dependent loose-star scaling laws.</p></div></section>
     <section class="section"><div class="two-column-lists"><div><h2>Mathematical objects</h2>${textList(record.objects)}</div><div><h2>Core techniques</h2>${textList(record.techniques)}</div></div></section>
     <section class="section keyword-section"><h2>Keywords</h2><ul class="keyword-list">${record.keywords.map((keyword) => `<li>${escapeHtml(keyword)}</li>`).join("")}</ul></section>
-    <section class="section limitations paper-access"><div><h2>Access and status boundary</h2><p>The submitted manuscript is available above with the complete verified author order. Its public availability does not imply acceptance or publication.</p></div><a class="button-secondary" href="${local(2, "research/")}">Back to research</a></section>
+    <section class="section paper-access-actions"><a class="button-secondary" href="${local(2, "research/")}">Back to research</a></section>
   </article>`;
 
 const resumeBody = `
