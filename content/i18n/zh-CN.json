@@ -147,7 +147,7 @@
     "University-level Second Prize in the Mathematical Modeling Competition": "数学建模竞赛校级二等奖",
     "A staged modeling and audit sequence": "分阶段建模与审计流程",
     "Information boundaries are part of the model": "信息边界也是模型的一部分",
-    "Every numerical result on this page comes from fully simulated data generated with semi-empirical assumptions. No row is measured experimental data. The project does not claim an experimental battery platform, industrial validation, or real-world deployment.": "本页所有数值结果都来自依据半经验假设生成的全模拟数据，没有任何一行是实测实验数据。本项目不声称拥有电池实验平台、工业验证或真实部署。",
+    "Every numerical result on this page comes from fully simulated data generated with semi-empirical assumptions. No row is measured experimental data. The project does not claim an experimental battery platform, industrial validation, or real-world deployment.": "本页所有数值结果都来自依据半经验假设生成的全模拟数据，并无实测实验数据。本项目并无拥有电池实验平台、工业验证或真实部署。",
     "Data boundary": "数据边界",
     "All numerical results come from fully simulated data generated with semi-empirical assumptions; no row is measured experimental data.": "所有数值结果均来自依据半经验假设生成的全模拟数据，没有任何一行是实测实验数据。",
     "Competition modeling paper": "竞赛建模论文",
