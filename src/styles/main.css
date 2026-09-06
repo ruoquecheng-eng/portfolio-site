@@ -2141,6 +2141,10 @@ button.button-secondary:hover {
   padding-top: 0;
 }
 
+.resume .skills-context > div:last-child {
+  border-bottom: 0;
+}
+
 .not-found {
   min-height: calc(100svh - var(--header-height));
   display: grid;
