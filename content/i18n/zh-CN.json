@@ -101,7 +101,7 @@
     "Network boundary": "网络边界",
     "Jetpack Compose screens handle symptom input, diagnosis results, scenario browsing, saved reports, history, and settings.": "Jetpack Compose 界面负责症状输入、诊断结果、场景浏览、保存报告、历史记录和设置。",
     "A structured parser and versioned local rules combine log observations with DNS, TCP, TLS, HTTP, and network-snapshot evidence.": "结构化解析器和版本化本地规则把日志观察与 DNS、TCP、TLS、HTTP 及网络快照证据结合起来。",
-    "Local stores retain bounded diagnostic sessions, history, favorites, reports, and settings; the Storage Access Framework handles explicit import and export.": "本地存储保留有上限的诊断会话、历史、收藏、报告和设置；Storage Access Framework 负责用户明确触发的导入导出。",
+    "Local stores retain bounded diagnostic sessions, history, favorites, reports, and settings; the Storage Access Framework handles explicit import and export.": "本地存储保留有上限的诊断会话、历史、收藏、报告和设置；Storage Access Framework 负责用户触发的导入导出。",
     "The v0.2 Android runtime has no NetSage backend. Active checks connect directly to the target confirmed by the user; logs and results remain local.": "v0.2 Android 运行时没有 NetSage 后端。主动检测直接连接用户确认的目标，日志和结果留在本地。",
     "Explainability": "可解释性",
     "A diagnosis is presented as a set of hypotheses rather than a single opaque answer. Each hypothesis carries evidence strength, matched and conflicting evidence, and repair actions.": "诊断以一组假设呈现，而不是单一且不透明的答案。每个假设都包含证据强度、匹配与冲突证据以及修复操作。",
