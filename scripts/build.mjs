@@ -431,7 +431,7 @@ const commlabBody = `
     </section>
     <section class="section" id="running-interface">
       <div class="section-heading"><p>Running interface</p><h2>Four views from the current local Dashboard</h2></div>
-      <p class="section-lead">These screenshots were captured from a locally running v3.7.1 Dashboard on 4 September 2026. Values are reproducible simulation outputs for the displayed seed and controls, not field-performance claims.</p>
+      <p class="section-lead">These screenshots come from a locally running v3.7.1 Dashboard. Values are reproducible simulation outputs for the displayed seed and controls, not field-performance claims.</p>
       <div class="commlab-gallery">
         ${figure({depth: 2, src: "images/commlab-ofdm-link.webp", width: 1440, height: 1000, alt: "Running CommLab OFDM link laboratory with local controls, BER, EVM, and a received constellation", caption: "OFDM link. QPSK symbols, channel impairment controls, BER, RMS EVM, and the received constellation are shown in one local experiment.", className: "commlab-figure"})}
         ${figure({depth: 2, src: "images/commlab-isac.webp", width: 1440, height: 1000, alt: "Running CommLab ISAC laboratory with local controls, metrics, and a range-Doppler result", caption: "OFDM sensing / ISAC. The range-Doppler view and CFAR detections come from a normalized monostatic simulation, not calibrated radar hardware.", className: "commlab-figure"})}

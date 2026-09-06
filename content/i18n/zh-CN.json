@@ -568,7 +568,7 @@
     "Unified resilience budgets, confounding stress tests and robust off-policy evaluation": "统一韧性预算、混杂压力测试与稳健离线策略评估",
     "Running interface": "运行界面",
     "Four views from the current local Dashboard": "当前本地仪表盘的四个视图",
-    "These screenshots were captured from a locally running v3.7.1 Dashboard on 4 September 2026. Values are reproducible simulation outputs for the displayed seed and controls, not field-performance claims.": "这些截图于 2026 年 9 月 4 日从本地运行的 v3.7.1 仪表盘采集。图中数值可由所示随机种子和控件设置复现，不代表现场性能。",
+    "These screenshots come from a locally running v3.7.1 Dashboard. Values are reproducible simulation outputs for the displayed seed and controls, not field-performance claims.": "这些截图来自本地运行的 v3.7.1 仪表盘。图中数值可由所示随机种子和控件设置复现，不代表现场性能。",
     "OFDM link. QPSK symbols, channel impairment controls, BER, RMS EVM, and the received constellation are shown in one local experiment.": "OFDM 链路：在一个本地实验中展示 QPSK 符号、信道损伤控制、BER、RMS EVM 与接收星座图。",
     "OFDM sensing / ISAC. The range-Doppler view and CFAR detections come from a normalized monostatic simulation, not calibrated radar hardware.": "OFDM 感知 / ISAC：距离-多普勒视图与 CFAR 检测来自归一化单基地仿真，而非经校准雷达硬件。",
     "Running CommLab unified resilience-budget laboratory showing cross-layer controls and deadline metrics": "正在运行的 CommLab 统一韧性预算实验，展示跨层控制与时限指标",
