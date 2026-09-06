@@ -2103,6 +2103,10 @@ button.button-secondary:hover {
   padding: var(--space-section-normal) var(--gutter);
 }
 
+.resume-page {
+  font-size: 0.94rem;
+}
+
 .resume-entry > div:first-child {
   display: flex;
   flex-wrap: wrap;
@@ -2112,7 +2116,7 @@ button.button-secondary:hover {
 
 .resume-entry span {
   color: var(--ink-faint);
-  font-size: 0.88rem;
+  font-size: 0.82rem;
 }
 
 .skills-context {
@@ -2164,21 +2168,21 @@ button.button-secondary:hover {
 }
 
 .resume-header h1 {
-  font-size: clamp(2.5rem, 4.5vw, 4rem);
+  font-size: clamp(2rem, 3.4vw, 3rem);
   letter-spacing: -0.02em;
 }
 
 .resume section {
   display: grid;
   grid-template-columns: minmax(9rem, 0.28fr) minmax(18rem, 1fr);
-  gap: clamp(1.25rem, 5vw, 4rem);
-  padding-block: 2rem;
+  gap: clamp(1.25rem, 4vw, 2.75rem);
+  padding-block: 1.35rem;
   border-bottom: 1px solid var(--line);
 }
 
 .resume section > h2 {
   margin: 0;
-  font-size: 1.1rem;
+  font-size: 1rem;
   letter-spacing: 0;
 }
 
@@ -2188,7 +2192,7 @@ button.button-secondary:hover {
 }
 
 .resume-entry + .resume-entry {
-  margin-top: 1.6rem;
+  margin-top: 1.05rem;
 }
 
 .resume-entry h3 {
