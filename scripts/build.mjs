@@ -468,7 +468,7 @@ const netsageBody = `
       ${factList(netsage)}
     </section>
     <section class="section split-section" id="problem">
-      <div><h2>Problem</h2><p>Network failures often arrive as partial logs, ambiguous browser errors, DNS symptoms, TLS failures, or intermittent packet loss. A useful diagnostic tool has to turn that fragmented evidence into a bounded set of hypotheses without pretending certainty.</p></div>
+      <div><h2>Problem</h2></div>
       <div><h2>Diagnosis philosophy</h2><p>The engine uses explicit rules and evidence matching. Evidence strength is a deterministic ranking aid, not a probability produced by a trained machine-learning model.</p></div>
     </section>
     <section class="section netsage-screens" id="app-walkthrough">
