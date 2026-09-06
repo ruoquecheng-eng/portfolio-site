@@ -68,7 +68,7 @@
     "Problem": "问题",
     "Diagnosis philosophy": "诊断原则",
     "NetSage organizes common network symptoms into an explainable diagnostic sequence. Instead of hiding a conclusion behind a model score, it exposes the matched evidence, ranked causes, and actions that a user can attempt and retest.": "NetSage 会把常见网络故障整理成可追溯的排查过程：给出匹配到的证据、可能原因的排序，以及用户可以执行和复测的操作。",
-    "The engine uses explicit rules and evidence matching. Evidence strength is a deterministic ranking aid, not a probability produced by a trained machine-learning model.": "诊断引擎使用明确规则匹配证据。证据强度只用来决定排序，不是训练出来的机器学习概率。",
+    "The engine uses explicit rules and evidence matching. Evidence strength is a deterministic ranking aid, not a probability produced by a trained machine-learning model.": "诊断引擎使用明确规则匹配证据。证据强度只用来决定排序，而并非训练后的机器学习概率。",
     "Rule-based, not machine learning": "基于规则，并非机器学习",
     "Android · local-first": "Android · 本地优先",
     "Verified commit a920026": "已核验提交 a920026",
