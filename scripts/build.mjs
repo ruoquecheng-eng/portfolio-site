@@ -905,7 +905,7 @@ const manuscriptFeature = (record) => {
   const label = `${isSubmitted ? "Submitted" : "Current"} manuscript · ${manuscript.date}`;
   const heading = isSubmitted ? "Read the submitted manuscript." : "Read the current manuscript.";
   const note = isSubmitted
-    ? `This ${manuscript.pages}-page file documents the work as submitted. Making it available here does not indicate peer-review acceptance or publication.`
+    ? `This ${manuscript.pages}-page file documents the work as submitted.`
     : `This ${manuscript.pages}-page file is available for public reading. Public availability does not indicate journal submission, acceptance, or publication.`;
   return `
       <section class="section manuscript-feature" aria-labelledby="manuscript-heading">
