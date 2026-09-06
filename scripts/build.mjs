@@ -269,6 +269,7 @@ const decorateDocument = (html, route, locale, routeSet, { demo = false } = {}) 
   output = demo
     ? output.replace('<div class="demo-header-actions">', `<div class="demo-header-actions">${languageControl}`)
     : output.replace('<button class="theme-toggle"', `${languageControl}<button class="theme-toggle"`);
+  if (locale === "zh-CN" && route === "/resume/") output = output.replace(/(<h1 class="resume-name">)[\s\S]*?(<\/h1>)/i, "$1宁琬正$2");
   if (route === "/" && locale === "en") {
     output = output.replace("</head>", `  <script>try{if(localStorage.getItem("portfolio-language")==="zh-CN")location.replace("${publicPath("/zh/")}"+location.hash)}catch{}</script>\n</head>`);
   }
@@ -947,7 +948,7 @@ const hypergraphDetailBody = (record) => `
 const resumeBody = `
   <article class="resume">
     <header class="resume-header">
-      <div><p class="hero-kicker">HTML resume</p><h1>${escapeHtml(profileName)}</h1><p>Communication Engineering · Network Diagnostics · Mathematical Modeling · Mathematical Research</p></div>
+      <div><p class="hero-kicker">HTML resume</p><h1 class="resume-name">${escapeHtml(profileName)}</h1><p>Communication Engineering · Network Diagnostics · Mathematical Modeling · Mathematical Research</p></div>
       <button class="button print-button" type="button" onclick="window.print()">Print or save as PDF</button>
     </header>
     <section class="resume-section"><h2>Education</h2><div class="resume-entry"><div><strong>${escapeHtml(publicFacts(education).find((fact) => fact.id === "education.institution")?.publicText || "")}</strong></div><p>${escapeHtml(publicFacts(education).find((fact) => fact.id === "education.program")?.publicText || "")}</p></div></section>
