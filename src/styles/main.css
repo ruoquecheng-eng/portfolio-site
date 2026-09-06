@@ -2734,6 +2734,10 @@ button.button-secondary:hover {
     padding-block: 0.6mm;
   }
 
+  .resume .skills-context > div:last-child {
+    border-bottom: 0 !important;
+  }
+
   .resume-contact .account-list {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
