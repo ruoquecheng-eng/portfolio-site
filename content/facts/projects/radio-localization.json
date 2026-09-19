@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "slug": "radio-localization",
+  "title": "Radio Interference Localization and Clearance",
+  "type": "2026 CUMCM · Problem B",
+  "summary": "A competition modeling study combining bounded-error geometry, robust active sensing, and rolling route planning to locate and clear radio interference sources.",
+  "paper": "documents/radio-interference-localization-cumcm-2026.pdf",
+  "support": "downloads/radio-localization-support-public.zip",
+  "paperPages": 299,
+  "bodyPages": 20,
+  "formal": [
+    {"question": "Q3", "runs": [
+      {"sources": 12, "virtualSeconds": 3262.740749},
+      {"sources": 14, "virtualSeconds": 3204.232643},
+      {"sources": 16, "virtualSeconds": 3504.794625}
+    ]},
+    {"question": "Q4", "runs": [
+      {"sources": 10, "virtualSeconds": 5873.712267},
+      {"sources": 14, "virtualSeconds": 5736.186786},
+      {"sources": 11, "virtualSeconds": 5708.100437}
+    ]}
+  ],
+  "offline": [
+    {"question": "Q3", "cases": 120, "complete": 120, "baselineSecondsPerSource": 299.68, "finalSecondsPerSource": 255.96},
+    {"question": "Q4", "cases": 100, "complete": 100, "baselineSecondsPerSource": 514.57, "finalSecondsPerSource": 472.26}
+  ],
+  "sources": {
+    "methods": "Supplied final paper, pp. 1-20; source-code appendix, pp. 21-299",
+    "formal": "Supplied support: 数据与结果/paper_tables/table_q3_formal.csv and table_q4_formal.csv; paper p. 18",
+    "offline": "Supplied support: 数据与结果/generated_tables/table_q3_ablation.csv and table_q4_ablation.csv; paper pp. 12, 15",
+    "geometry": "Supplied support: 数据与结果/q1_validation.json; paper p. 7",
+    "privacy": "Public ZIP omits six .jlog files whose headers contain the team identifier. PUBLIC-MANIFEST.json records retained file hashes."
+  },
+  "facts": [
+    {"id": "radio.title", "publicText": "Radio Interference Localization and Clearance", "status": "verified", "sourceType": "supplied_paper", "lastVerified": "2026-09-19", "public": true, "display": false},
+    {"id": "radio.type", "publicText": "2026 CUMCM · Problem B", "status": "verified", "sourceType": "supplied_paper_reference_1", "lastVerified": "2026-09-19", "public": true, "display": false},
+    {"id": "radio.summary", "publicText": "A competition modeling study combining bounded-error geometry, robust active sensing, and rolling route planning to locate and clear radio interference sources.", "status": "verified", "sourceType": "supplied_paper_and_support", "lastVerified": "2026-09-19", "public": true, "display": false}
+  ]
+}

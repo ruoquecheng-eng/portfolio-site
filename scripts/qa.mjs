@@ -16,6 +16,7 @@ const sourceFiles = {
   netsage: 'content/facts/projects/netsage.json',
   commlab: 'content/facts/projects/commlab.json',
   battery: 'content/facts/projects/battery-rul.json',
+  radio: 'content/facts/projects/radio-localization.json',
   rail: 'content/facts/projects/high-speed-rail.json',
   scenic: 'content/facts/projects/scenic-guide.json',
   connected: 'content/facts/research/connected-diagram-expansions.json',
@@ -31,12 +32,14 @@ const [siteConfig, publicClaimsData, zhTranslations, sourceRecords] = await Prom
 const siteBaseUrl = `${siteConfig.canonicalOrigin}${siteConfig.basePath}`;
 const defaultOgUrl = `${siteBaseUrl}assets/images/og-portfolio.png`;
 const allowedPublicPdfs = new Set([
+  'assets/documents/radio-interference-localization-cumcm-2026.pdf',
   'assets/documents/lithium-ion-battery-rul-cascade-utilization-modeling.pdf',
   'assets/documents/beyond-vertex-profiles-nonuniform-hypergraph-tensors.pdf',
   'assets/documents/northeastern-university-internship-certificate.pdf',
 ]);
 
 const requiredPages = new Map([
+  ['Radio localization case study', ['projects/radio-localization/index.html']],
   ['Home', ['index.html']],
   ['Projects', ['projects/index.html', 'projects.html']],
   ['NetSage case study', ['projects/netsage/index.html', 'projects/netsage.html']],
@@ -53,6 +56,12 @@ const requiredPages = new Map([
 ]);
 
 const requiredAssets = new Map([
+  ['Radio modeling paper', ['assets/documents/radio-interference-localization-cumcm-2026.pdf']],
+  ['Radio public support package', ['assets/downloads/radio-localization-support-public.zip']],
+  ['Radio method overview', ['assets/images/radio-overview.webp']],
+  ['Radio controller figure', ['assets/images/radio-controller.webp']],
+  ['Radio results figure', ['assets/images/radio-results.webp']],
+  ['Radio paper cover', ['assets/images/radio-paper-cover.webp']],
   ['robots.txt', ['robots.txt']],
   ['sitemap.xml', ['sitemap.xml']],
   ['favicon', ['favicon.svg', 'favicon.png', 'favicon.ico', 'assets/favicon.svg', 'assets/favicon.png', 'assets/favicon.ico']],
@@ -97,6 +106,7 @@ const sitemapRoutes = [
   '/projects/netsage/',
   '/projects/commlab/',
   '/projects/battery-rul/',
+  '/projects/radio-localization/',
   '/projects/high-speed-rail/',
   '/projects/high-speed-rail/demo/',
   '/research/',
@@ -650,6 +660,23 @@ function checkInternship(pageFiles, htmlByName) {
   }
 }
 
+function checkRadioModeling(htmlByName) {
+  for (const name of ['projects/radio-localization/index.html', 'zh/projects/radio-localization/index.html']) {
+    const html = htmlByName.get(name) ?? '';
+    const text = visibleText(html);
+    for (const metric of ['237.423', '494.800', '255.96', '472.26', '120 / 120', '100 / 100']) {
+      if (!text.includes(metric)) addIssue('radio', `${name}: missing result ${metric}`);
+    }
+    for (const asset of [sourceRecords.radio.paper, sourceRecords.radio.support]) {
+      if (!html.includes(asset)) addIssue('radio', `${name}: missing material ${asset}`);
+    }
+    if (/\.jlog(?:["'#?]|<)/i.test(html)) addIssue('radio', `${name}: private log reference`);
+    if (name.startsWith('zh/') && ['Explore the results', 'Matched offline comparisons', 'Paper and code'].some(s => text.includes(s))) {
+      addIssue('radio', `${name}: untranslated radio interface`);
+    }
+  }
+}
+
 function valueAt(record, field) {
   return field.split('.').reduce((value, key) => value?.[key], record);
 }
@@ -849,6 +876,7 @@ async function main() {
   checkProfileLinks(pageFiles, htmlByName);
   checkBilingualPages(htmlByName);
   checkInternship(pageFiles, htmlByName);
+  checkRadioModeling(htmlByName);
   checkFactGovernance(pageFiles, htmlByName);
   await checkSeoFiles(fileSet);
   await checkTrackedRepository();

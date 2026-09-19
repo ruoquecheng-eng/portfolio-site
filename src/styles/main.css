@@ -1523,6 +1523,80 @@ button.button-secondary:hover {
   color: var(--system-ink);
 }
 
+.radio-case .radio-hero {
+  display: block;
+  min-height: auto;
+  padding-block: clamp(3rem, 6vw, 5.5rem);
+}
+
+.radio-hero .case-title { max-width: 64rem; }
+.radio-hero .case-title h1 {
+  max-width: 23ch;
+  font-size: clamp(2rem, 4vw, 3.7rem);
+  line-height: 1.2;
+  text-wrap: balance;
+}
+html[lang="zh-CN"] .radio-hero .case-title h1 {
+  max-width: 18em;
+  font-size: clamp(1.8rem, 3.4vw, 3rem);
+  line-height: 1.4;
+}
+.radio-hero .manuscript-actions { margin-top: 1.8rem; }
+.radio-section-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem 2rem;
+  padding: .85rem max(var(--gutter), calc((100vw - var(--content)) / 2 + var(--gutter)));
+  border-bottom: 1px solid var(--line);
+  background: var(--surface);
+  font-size: .9rem;
+}
+.radio-section-nav a { padding-block: .5rem; }
+.radio-intro { max-width: 70ch; margin-bottom: 2rem; }
+.radio-case .section-heading h2 { font-size: clamp(1.6rem, 2.6vw, 2.4rem); }
+.radio-case .figure { max-width: 66rem; margin-inline: auto; }
+.radio-case .figure img { width: 100%; background: white; border: 1px solid var(--line); }
+.radio-methods { list-style: none; margin: 2.5rem 0; padding: 0; }
+.radio-methods li {
+  display: grid;
+  grid-template-columns: 3rem minmax(0, 1fr);
+  gap: 1.5rem;
+  padding-block: 1.5rem;
+  border-top: 1px solid var(--line);
+}
+.radio-methods li > span { color: var(--signal); font-family: var(--font-mono); font-weight: 700; }
+.radio-methods h3 { margin: 0 0 .45rem; font-size: 1.15rem; }
+.radio-methods p { max-width: 85ch; margin: 0; color: var(--ink-soft); }
+.radio-results > h3 { margin-top: 2.2rem; font-size: 1.2rem; }
+.radio-table-scroll { overflow-x: auto; margin-bottom: 1rem; }
+.radio-table { width: 100%; min-width: 33rem; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+.radio-table caption { text-align: left; padding-block: .35rem 1rem; color: var(--ink-soft); font-size: .85rem; }
+.radio-table th, .radio-table td { padding: 1rem .8rem; border-bottom: 1px solid var(--line); text-align: right; }
+.radio-table th:first-child { text-align: left; padding-left: 0; }
+.radio-table thead th { color: var(--ink-soft); font-size: .82rem; font-weight: 500; }
+.radio-table tbody td:last-child { font-weight: 700; color: var(--signal); }
+.radio-cell-label { display: none; }
+.radio-note { color: var(--ink-soft); font-size: .88rem; line-height: 1.7; }
+.radio-results .figure { margin-block: 2.5rem; }
+.radio-details { border-block: 1px solid var(--line); padding-block: 1.2rem; }
+.radio-details summary { cursor: pointer; font-weight: 600; }
+.radio-details p { max-width: 85ch; color: var(--ink-soft); }
+.radio-materials .manuscript-copy h2 { font-size: clamp(1.4rem, 2.3vw, 2rem); line-height: 1.5; }
+.radio-index-visual img { padding: .5rem; background: white; }
+@media (max-width: 40rem) {
+  .radio-methods li { gap: .65rem; grid-template-columns: 2.5rem minmax(0, 1fr); }
+  .radio-section-nav { gap: .35rem 1.4rem; }
+  .radio-case .section-heading { gap: .65rem; margin-bottom: 1.5rem; }
+  .radio-table { min-width: 0; }
+  .radio-table thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+  .radio-table tbody { display: block; }
+  .radio-table tbody tr { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); padding-block: .8rem; border-top: 1px solid var(--line); }
+  .radio-table tbody th { grid-column: 1 / -1; }
+  .radio-table th, .radio-table td { display: block; padding: .45rem .55rem .6rem 0; border: 0; text-align: left; }
+  .radio-table td:nth-child(4):last-child { grid-column: 1 / -1; }
+  .radio-cell-label { display: block; margin-bottom: .15rem; color: var(--ink-soft); font-size: .75rem; font-weight: 400; }
+}
+
 .case-icon {
   width: min(100%, 15rem);
   justify-self: center;

@@ -1,6 +1,9 @@
 {
   "schemaVersion": 1,
   "claims": [
+    {"record": "radio", "field": "title", "factId": "radio.title"},
+    {"record": "radio", "field": "type", "factId": "radio.type"},
+    {"record": "radio", "field": "summary", "factId": "radio.summary"},
     {
       "record": "profile",
       "field": "hero.name",

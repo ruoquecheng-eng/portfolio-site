@@ -1,6 +1,7 @@
 import { cp, mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { radioCase } from "./radio-case.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const dist = path.join(root, "dist");
@@ -8,7 +9,7 @@ const factsRoot = path.join(root, "content", "facts");
 
 const readJson = async (...segments) => JSON.parse(await readFile(path.join(root, ...segments), "utf8"));
 
-const [config, publicClaimsData, zhTranslations, profile, education, internship, netsage, commlab, battery, rail, scenic, connected, cubic, hypergraph] = await Promise.all([
+const [config, publicClaimsData, zhTranslations, profile, education, internship, netsage, commlab, battery, rail, scenic, connected, cubic, hypergraph, radio] = await Promise.all([
   readJson("site.config.json"),
   readJson("content", "public-claims.json"),
   readJson("content", "i18n", "zh-CN.json"),
@@ -22,7 +23,8 @@ const [config, publicClaimsData, zhTranslations, profile, education, internship,
   readJson("content", "facts", "projects", "scenic-guide.json"),
   readJson("content", "facts", "research", "connected-diagram-expansions.json"),
   readJson("content", "facts", "research", "critical-cubic-crossover.json"),
-  readJson("content", "facts", "research", "hypergraph-tensor.json")
+  readJson("content", "facts", "research", "hypergraph-tensor.json"),
+  readJson("content", "facts", "projects", "radio-localization.json")
 ]);
 
 const escapeHtml = (value = "") => String(value)
@@ -32,7 +34,7 @@ const escapeHtml = (value = "") => String(value)
   .replaceAll('"', "&quot;")
   .replaceAll("'", "&#39;");
 
-const recordsByKey = { profile, education, internship, netsage, commlab, battery, rail, scenic, connected, cubic, hypergraph };
+const recordsByKey = { profile, education, internship, netsage, commlab, battery, rail, scenic, connected, cubic, hypergraph, radio };
 const publicFacts = (record) => (record.facts || []).filter((fact) => fact.public === true && fact.status === "verified" && fact.publicText);
 const displayFacts = (record) => publicFacts(record).filter((fact) => fact.display !== false);
 const publicLinks = (profile.links || []).filter((link) => link.public === true && link.status === "verified" && link.label && link.url);
@@ -78,6 +80,7 @@ const commlabSummary = publicClaim("commlab", "summary");
 const batteryDataBoundary = publicClaim("battery", "dataBoundary");
 const batterySummary = publicClaim("battery", "summary");
 const batteryCompetitionResult = publicClaim("battery", "competitionResult");
+const radioSummary = publicClaim("radio", "summary");
 const railSummary = publicClaim("rail", "summary");
 const railRole = publicClaim("rail", "role");
 const railEngineeringContext = publicClaim("rail", "components.engineeringDesign.context");
@@ -380,12 +383,13 @@ const homeBody = `
 
 const projectsBody = `
   <section class="page-hero page-hero-dark">
-    <div><p class="hero-kicker">Engineering and modeling</p><h1>Projects</h1><p>Three primary case studies, followed by concise evidence-safe summaries of supporting work.</p></div>
+    <div><p class="hero-kicker">Engineering and modeling</p><h1>Projects</h1><p>Four case studies in engineering and modeling, with internship experience and supporting projects.</p></div>
   </section>
   <section class="section project-index-page">
     ${projectRow({depth: 1, href: "projects/netsage/", index: "01", type: netsage.type, title: netsage.title, summary: netsageSummary, meta: "Primary engineering case study", visual: `<div class="project-visual project-visual-netsage"><img src="${local(1, "assets/images/netsage-icon.webp")}" width="216" height="216" alt="NetSage application icon" loading="lazy"></div>`})}
     ${projectRow({depth: 1, href: "projects/commlab/", index: "02", type: commlab.type, title: commlab.title, summary: commlabSummary, meta: "Primary communications systems case study", visual: `<div class="project-visual project-visual-commlab"><img src="${local(1, "assets/images/commlab-isac.webp")}" width="1440" height="1000" alt="Running CommLab ISAC laboratory with local controls, metrics, and a range-Doppler result" loading="lazy"></div>`})}
     ${projectRow({depth: 1, href: "projects/battery-rul/", index: "03", type: `${battery.type} · ${batteryDataBoundary}`, title: battery.title, summary: batterySummary, meta: "Primary modeling case study", visual: `<div class="project-visual"><img src="${local(1, "assets/visuals/battery-workflow.svg")}" width="1240" height="650" alt="Conceptual Q1 to Q4 battery modeling workflow" loading="lazy"></div>`})}
+    ${projectRow({depth: 1, href: "projects/radio-localization/", index: "04", type: radio.type, title: radio.title, summary: radioSummary, meta: "Final competition paper", visual: `<div class="project-visual radio-index-visual"><img src="${local(1, "assets/images/radio-overview.webp")}" width="1143" height="570" alt="Original paper figure connecting Q1 set geometry, Q2 robust sensing, Q3 omnidirectional clearance, and Q4 directional-source scheduling" loading="lazy"></div>`})}
   </section>
   <section class="section experience-section" id="experience">
     <div class="section-heading"><p>Experience</p><h2>Software development in an operating team.</h2></div>
@@ -1013,6 +1017,11 @@ const baseRoutes = [
     file: "projects/battery-rul/index.html",
     route: "/projects/battery-rul/",
     html: page({title: "Battery RUL Modeling", description: "A fully simulated competition modeling case study for battery RUL prediction, compatibility graphs, and robust utilization screening.", route: "/projects/battery-rul/", depth: 2, active: "projects", body: batteryBody, schema: {"@context": "https://schema.org", "@type": "CreativeWork", name: battery.title, description: batterySummary, keywords: ["battery RUL", "survival modeling", "compatibility graph", "robust optimization"]}})
+  },
+  {
+    file: "projects/radio-localization/index.html",
+    route: "/projects/radio-localization/",
+    html: page({title: radio.title, description: radioSummary, route: "/projects/radio-localization/", depth: 2, active: "projects", body: radioCase({radio, summary: radioSummary, local, escapeHtml, figure}), schema: {"@context": "https://schema.org", "@type": "CreativeWork", name: radio.title, description: radioSummary, keywords: ["bounded-error localization", "active sensing", "rolling route planning", "CUMCM 2026"]}})
   },
   {
     file: "projects/high-speed-rail/index.html",
