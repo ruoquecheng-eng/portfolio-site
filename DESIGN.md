@@ -46,6 +46,17 @@ The palette is committed in the hero and restrained in reading surfaces. The see
 
 ## Typography
 
+### Screen refinement, September 2026
+
+The shared `refinement.css` is loaded with `media="screen"` to keep the one-page
+resume print layout independent. Screen titles use a smaller scale (about
+30–54 px for hero text, 24–34 px for section headings, and 22–30 px for long
+project/research titles). Chinese headings have wider measures and 1.35–1.4
+line height. Project indexes reserve only a narrow column for sequence numbers.
+Section labels sit above their headings; mobile result tables and resume
+sections stack. Project figures open in a keyboard-accessible native dialog,
+with localized controls and focus returned to the trigger on close.
+
 **Display Font:** Bahnschrift with Aptos Display and Segoe UI fallbacks  
 **Body Font:** Aptos with Segoe UI Variable and Segoe UI fallbacks  
 **Label/Mono Font:** Cascadia Mono with ui-monospace fallbacks
@@ -114,4 +125,3 @@ The signature component is an ordered flow of labeled stages connected by a sing
 - **Don't** use fake terminals, code rain, hacker aesthetics, neon overload, custom cursors, heavy parallax, particle fields, glassmorphism, glowing borders, or meaningless animation.
 - **Don't** use gradient text, repeated section eyebrows, decorative numbered sections, side-stripe callouts, or oversized rounded cards.
 - **Don't** place unconfirmed facts, private paths, sensitive files, or internal TODO markers in public output.
-

@@ -160,6 +160,7 @@ const page = ({ title, description, route, depth, active, body, schema, bodyClas
   <meta name="twitter:image" content="${escapeHtml(defaultOgUrl)}">
   <link rel="icon" href="${local(depth, "assets/favicon.svg")}" type="image/svg+xml">
   <link rel="stylesheet" href="${local(depth, "styles/main.css")}">
+  <link rel="stylesheet" href="${local(depth, "styles/refinement.css")}?v=20260920" media="screen">
   <script>try{const t=localStorage.getItem("portfolio-theme");if(t)document.documentElement.dataset.theme=t}catch{}</script>
   ${jsonLd(schema)}
 </head>

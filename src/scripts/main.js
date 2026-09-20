@@ -12,6 +12,39 @@
   const isChinese = root.lang.toLowerCase() === "zh-cn";
   const themeChoices = ["system", "light", "dark"];
 
+  // Enlarge existing project figures without fetching additional media.
+  let mediaViewer;
+  let mediaTrigger;
+  document.querySelectorAll('.case-study .figure > img, .commlab-figure > img, .netsage-screen > img, .flow-figure > img').forEach((img) => {
+    if (img.closest('a, button')) return;
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'media-zoom';
+    button.dataset.zoomLabel = isChinese ? '查看大图 ↗' : 'Enlarge ↗';
+    button.setAttribute('aria-haspopup', 'dialog');
+    button.setAttribute('aria-label', `${isChinese ? '放大图片' : 'Enlarge image'}: ${img.alt}`);
+    img.replaceWith(button);
+    button.append(img);
+    button.addEventListener('click', () => {
+      if (!mediaViewer) {
+        mediaViewer = document.createElement('dialog');
+        mediaViewer.className = 'media-viewer';
+        mediaViewer.setAttribute('aria-labelledby', 'media-viewer-title');
+        mediaViewer.innerHTML = `<div class="media-viewer-bar"><strong id="media-viewer-title">${isChinese ? '查看原图' : 'Image preview'}</strong><button type="button" class="media-viewer-close" aria-label="${isChinese ? '关闭图片' : 'Close image'}">×</button></div><img alt=""><p></p>`;
+        document.body.append(mediaViewer);
+        mediaViewer.querySelector('button').addEventListener('click', () => mediaViewer.close());
+        mediaViewer.addEventListener('click', (event) => { if (event.target === mediaViewer) mediaViewer.close(); });
+        mediaViewer.addEventListener('close', () => mediaTrigger?.focus({ preventScroll: true }));
+      }
+      mediaTrigger = button;
+      const preview = mediaViewer.querySelector('img');
+      preview.src = img.currentSrc || img.src;
+      preview.alt = img.alt;
+      mediaViewer.querySelector('p').textContent = img.closest('figure')?.querySelector('figcaption')?.textContent || img.alt;
+      mediaViewer.showModal();
+    });
+  });
+
   const safeStorage = {
     get(key) {
       try {

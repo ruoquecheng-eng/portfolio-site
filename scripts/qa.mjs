@@ -56,6 +56,7 @@ const requiredPages = new Map([
 ]);
 
 const requiredAssets = new Map([
+  ['Shared screen refinements', ['styles/refinement.css']],
   ['Radio modeling paper', ['assets/documents/radio-interference-localization-cumcm-2026.pdf']],
   ['Radio public support package', ['assets/downloads/radio-localization-support-public.zip']],
   ['Radio method overview', ['assets/images/radio-overview.webp']],

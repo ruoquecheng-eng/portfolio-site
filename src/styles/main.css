@@ -2804,6 +2804,8 @@ html[lang="zh-CN"] .radio-hero .case-title h1 {
 }
 
 @media print {
+  .media-viewer { display: none !important; }
+  .media-zoom { display: contents; }
   :root,
   :root[data-theme="dark"] {
     color-scheme: light;
