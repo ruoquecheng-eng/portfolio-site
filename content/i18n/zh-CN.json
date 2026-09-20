@@ -2,6 +2,8 @@
   "locale": "zh-CN",
   "brandName": "宁琬正 / Wanzheng Ning",
   "strings": {
+    "2026 CUMCM · Problem B — Radio Interference Localization and Clearance": "2026 全国大学生数学建模竞赛 · B 题——无线电干扰源定位与清除",
+    "Competition modeling of interference-source localization and clearance using bounded-error geometry, robust active sensing, and rolling route planning; all sources cleared in six official simulator runs.": "围绕干扰源定位与清除，结合有界误差集合几何、鲁棒主动测向与滚动路径调度；六次官方模拟器正式测试均完成全部源清除。",
     "Radio Interference Localization and Clearance": "无线电干扰源定位与清除",
     "Radio Interference Localization and Clearance | Wanzheng Ning": "无线电干扰源定位与清除 | 宁琬正",
     "2026 CUMCM · Problem B": "2026 高教社杯全国大学生数学建模竞赛 · B 题",

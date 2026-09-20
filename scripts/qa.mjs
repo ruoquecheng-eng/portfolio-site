@@ -662,6 +662,17 @@ function checkInternship(pageFiles, htmlByName) {
 }
 
 function checkRadioModeling(htmlByName) {
+  for (const name of ['resume/index.html', 'zh/resume/index.html']) {
+    const html = htmlByName.get(name) ?? '';
+    if (!html.includes('resume-radio') || !html.includes('projects/radio-localization/')) {
+      addIssue('radio', `${name}: missing competition entry or case-study link`);
+    }
+    const expected = name.startsWith('zh/') ? '六次官方模拟器正式测试' : 'six official simulator runs';
+    if (!visibleText(html).includes(expected)) addIssue('radio', `${name}: missing localized competition summary`);
+    if (name.startsWith('zh/') && !visibleText(html).includes('2026 全国大学生数学建模竞赛')) {
+      addIssue('radio', `${name}: untranslated competition title`);
+    }
+  }
   for (const name of ['projects/radio-localization/index.html', 'zh/projects/radio-localization/index.html']) {
     const html = htmlByName.get(name) ?? '';
     const text = visibleText(html);

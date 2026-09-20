@@ -2927,6 +2927,14 @@ html[lang="zh-CN"] .radio-hero .case-title h1 {
     padding-block: 0.95mm;
   }
 
+  html[lang="en"] .resume section {
+    padding-block: 0.5mm;
+  }
+
+  html[lang="en"] .resume .academic-evidence img {
+    height: 20mm;
+  }
+
   .resume section > :not(h2) {
     grid-column: auto;
   }
