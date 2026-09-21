@@ -108,6 +108,22 @@ html[lang="zh-CN"] .hero-copy h1 { max-width: 12em; font-size: clamp(1.85rem, 3.
 .resume-entry span { font-size: .8rem; line-height: 1.5; }
 .resume-entry + .resume-entry { margin-top: 1.35rem; }
 .resume-contact .account-list dd { font-size: .85rem; }
+.resume { background: var(--surface-raised); line-height: 1.7; }
+.resume-header .hero-kicker { color: var(--ink-soft); font-size: .75rem; letter-spacing: .06em; }
+.resume-header .print-button { flex-shrink: 0; }
+.resume section > h2 { color: var(--signal); font-weight: 650; }
+.resume section:not(.resume-experience) .resume-entry > div:first-child { display: block; }
+.resume section:not(.resume-experience) .resume-entry > div:first-child > span { display: block; margin-top: .3rem; color: var(--ink-soft); }
+.resume-entry strong { line-height: 1.5; }
+.resume-entry p { margin-top: .45rem; }
+.resume-entry strong a { color: var(--ink); text-decoration-thickness: 1px; text-decoration-color: var(--line-strong); text-underline-offset: .2em; }
+.resume-entry strong a:hover { color: var(--signal); text-decoration-color: currentColor; }
+.resume .academic-metrics { gap: 1rem 2rem; margin-top: .75rem; font-variant-numeric: tabular-nums; }
+.resume .academic-metrics dd { font-size: 1.1rem; }
+.resume .academic-evidence { gap: 1rem; }
+.resume .academic-evidence img { background: #fff; border: 1px solid var(--line); border-radius: .35rem; object-fit: contain; }
+.resume .skills-context dt { font-weight: 600; color: var(--ink); }
+.resume .account-url { color: var(--ink-soft); text-underline-offset: .2em; }
 .site-footer { padding-block: 2.5rem; gap: 1.5rem 3rem; font-size: .9rem; }
 .site-footer > div:nth-child(2) { gap: .65rem 1.25rem; }
 .site-footer a { display: inline-flex; min-height: 36px; align-items: center; text-decoration: none; }

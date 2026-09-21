@@ -2923,6 +2923,24 @@ html[lang="zh-CN"] .radio-hero .case-title h1 {
     margin: 1mm 0 0;
   }
 
+  .resume-header h1 {
+    margin: 0 0 1mm;
+  }
+
+  .resume section:not(.resume-experience) .resume-entry > div:first-child {
+    display: block;
+  }
+
+  .resume section:not(.resume-experience) .resume-entry > div:first-child > span {
+    display: block;
+    margin-top: 0.3mm;
+  }
+
+  .resume-entry strong a {
+    color: black;
+    text-decoration: none;
+  }
+
   .resume section {
     display: block;
     padding-block: 0.95mm;
