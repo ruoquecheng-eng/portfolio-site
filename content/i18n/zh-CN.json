@@ -2,6 +2,7 @@
   "locale": "zh-CN",
   "brandName": "宁琬正 / Wanzheng Ning",
   "strings": {
+    "Q1 to Q4 workflow on fully simulated data generated with semi-empirical assumptions, covering degradation stages, SOH/RUL, compatibility graphs, MILP grouping, and robust stress testing; awarded a university-level second prize.": "在依据半经验假设生成的全模拟数据上完成 Q1 至 Q4 流程，覆盖退化阶段、SOH/RUL、兼容图、MILP 分组和鲁棒压力测试；获校级二等奖。",
     "Breadcrumb": "页面路径",
     "Home": "首页",
     "2026 CUMCM · Problem B — Radio Interference Localization and Clearance": "2026 全国大学生数学建模竞赛 · B 题——无线电干扰源定位与清除",

@@ -667,6 +667,12 @@ function checkRadioModeling(htmlByName) {
     if (!html.includes('resume-radio') || !html.includes('projects/radio-localization/')) {
       addIssue('radio', `${name}: missing competition entry or case-study link`);
     }
+    const resumeText = visibleText(html);
+    const batteryTitle = name.startsWith('zh/') ? '电池 RUL 与梯次利用建模' : 'Battery RUL and cascade utilization modeling';
+    const batteryAward = name.startsWith('zh/') ? '获校级二等奖' : 'awarded a university-level second prize';
+    if (resumeText.split(batteryTitle).length !== 2 || !resumeText.includes(batteryAward) || /Mathematical modeling project|数学建模项目/.test(resumeText)) {
+      addIssue('resume', `${name}: battery project must appear once and retain its award`);
+    }
     const expected = name.startsWith('zh/') ? '六次官方模拟器正式测试' : 'six official simulator runs';
     if (!visibleText(html).includes(expected)) addIssue('radio', `${name}: missing localized competition summary`);
     if (name.startsWith('zh/') && !visibleText(html).includes('2026 全国大学生数学建模竞赛')) {
