@@ -874,6 +874,16 @@ async function main() {
     const file = path.resolve(distRoot, ...name.split('/'));
     checkMetadata(file, html);
     checkLinks(file, html, fileSet, htmlByName);
+    if (html.includes('class="site-header"')) {
+      for (const asset of ['styles/main.css', 'styles/refinement.css', 'scripts/main.js']) {
+        if (!new RegExp(`${asset.replaceAll('.', '\\.')}\\?v=[a-f0-9]{12}`).test(html)) {
+          addIssue('assets', `${name}: missing content version for ${asset}`);
+        }
+      }
+      if (/^(zh\/)?(projects|research)\/[^/]+\/index\.html$/.test(name) && !html.includes('class="breadcrumbs"')) {
+        addIssue('navigation', `${name}: missing parent navigation`);
+      }
+    }
     for (const reference of extractReferences(html)) {
       if (/\.pdf(?:[?#]|$)/i.test(reference.value)) {
         const resolved = targetCandidates(file, reference.value);

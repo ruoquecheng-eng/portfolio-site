@@ -12,6 +12,36 @@
   const isChinese = root.lang.toLowerCase() === "zh-cn";
   const themeChoices = ["system", "light", "dark"];
 
+  // A compact contents menu for long case studies and research articles.
+  const article = document.querySelector('.case-study, .research-paper');
+  const headings = article ? [...article.querySelectorAll('section h2')].filter(h => !h.closest('figure')) : [];
+  if (headings.length >= 3 && !article.querySelector('nav')) {
+    const contents = document.createElement('details');
+    contents.className = 'page-contents';
+    const summary = document.createElement('summary');
+    summary.textContent = isChinese ? '本页目录' : 'On this page';
+    const nav = document.createElement('nav');
+    nav.setAttribute('aria-label', summary.textContent);
+    headings.forEach((heading, index) => {
+      if (!heading.id) {
+        let id = `page-section-${index + 1}`;
+        while (document.getElementById(id)) id += '-section';
+        heading.id = id;
+      }
+      const link = document.createElement('a');
+      link.href = `#${heading.id}`;
+      link.textContent = (heading.closest('.section-heading')?.querySelector('p')?.textContent || heading.textContent).trim();
+      link.addEventListener('click', () => {
+        contents.open = false;
+        heading.tabIndex = -1;
+        heading.focus({preventScroll: true});
+      });
+      nav.append(link);
+    });
+    contents.append(summary, nav);
+    article.querySelector('header')?.after(contents);
+  }
+
   // Enlarge existing project figures without fetching additional media.
   let mediaViewer;
   let mediaTrigger;
@@ -30,15 +60,19 @@
         mediaViewer = document.createElement('dialog');
         mediaViewer.className = 'media-viewer';
         mediaViewer.setAttribute('aria-labelledby', 'media-viewer-title');
-        mediaViewer.innerHTML = `<div class="media-viewer-bar"><strong id="media-viewer-title">${isChinese ? '查看原图' : 'Image preview'}</strong><button type="button" class="media-viewer-close" aria-label="${isChinese ? '关闭图片' : 'Close image'}">×</button></div><img alt=""><p></p>`;
+        mediaViewer.innerHTML = `<div class="media-viewer-bar"><strong id="media-viewer-title">${isChinese ? '图片预览' : 'Image preview'}</strong><a class="media-original" target="_blank" rel="noopener">${isChinese ? '打开原图 ↗' : 'Open original ↗'}</a><button type="button" class="media-viewer-close" aria-label="${isChinese ? '关闭图片' : 'Close image'}">×</button></div><img alt=""><p></p>`;
         document.body.append(mediaViewer);
         mediaViewer.querySelector('button').addEventListener('click', () => mediaViewer.close());
-        mediaViewer.addEventListener('click', (event) => { if (event.target === mediaViewer) mediaViewer.close(); });
+        mediaViewer.addEventListener('click', (event) => {
+          const rect = mediaViewer.getBoundingClientRect();
+          if (event.target === mediaViewer && (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom)) mediaViewer.close();
+        });
         mediaViewer.addEventListener('close', () => mediaTrigger?.focus({ preventScroll: true }));
       }
       mediaTrigger = button;
       const preview = mediaViewer.querySelector('img');
       preview.src = img.currentSrc || img.src;
+      mediaViewer.querySelector('.media-original').href = preview.src;
       preview.alt = img.alt;
       mediaViewer.querySelector('p').textContent = img.closest('figure')?.querySelector('figcaption')?.textContent || img.alt;
       mediaViewer.showModal();

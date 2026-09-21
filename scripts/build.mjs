@@ -1,10 +1,15 @@
 import { cp, mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
+import { createHash } from "node:crypto";
 import { fileURLToPath } from "node:url";
 import { radioCase } from "./radio-case.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const dist = path.join(root, "dist");
+const sharedAssets = ['styles/main.css', 'styles/refinement.css', 'scripts/main.js'];
+const assetVersions = Object.fromEntries(await Promise.all(sharedAssets.map(async (asset) => [
+  asset, createHash('sha256').update(await readFile(path.join(root, 'src', asset))).digest('hex').slice(0, 12)
+])));
 const factsRoot = path.join(root, "content", "facts");
 
 const readJson = async (...segments) => JSON.parse(await readFile(path.join(root, ...segments), "utf8"));
@@ -138,6 +143,8 @@ const jsonLd = (value) => value ? `<script type="application/ld+json">${JSON.str
 const page = ({ title, description, route, depth, active, body, schema, bodyClass = "" }) => {
   const fullTitle = title === config.title ? title : `${title} | Wanzheng Ning`;
   const url = canonical(route);
+  const breadcrumb = /^\/(projects|research)\/[^/]+\/$/.test(route)
+    ? `<nav class="breadcrumbs" aria-label="Breadcrumb"><a href="${local(depth)}">Home</a><span aria-hidden="true">/</span><a href="${local(depth, `${active}/`)}">${active === 'projects' ? 'Projects' : 'Research'}</a></nav>` : '';
   return `<!doctype html>
 <html lang="${config.language}">
 <head>
@@ -159,16 +166,16 @@ const page = ({ title, description, route, depth, active, body, schema, bodyClas
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:image" content="${escapeHtml(defaultOgUrl)}">
   <link rel="icon" href="${local(depth, "assets/favicon.svg")}" type="image/svg+xml">
-  <link rel="stylesheet" href="${local(depth, "styles/main.css")}">
-  <link rel="stylesheet" href="${local(depth, "styles/refinement.css")}?v=20260920" media="screen">
-  <script>try{const t=localStorage.getItem("portfolio-theme");if(t)document.documentElement.dataset.theme=t}catch{}</script>
+  <script>try{const r=document.documentElement,s=localStorage.getItem("portfolio-theme"),t=["light","dark"].includes(s)?s:"system";r.dataset.themePreference=t;r.dataset.theme=t==="system"?(matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"):t}catch{}</script>
+  <link rel="stylesheet" href="${local(depth, "styles/main.css")}?v=${assetVersions['styles/main.css']}">
+  <link rel="stylesheet" href="${local(depth, "styles/refinement.css")}?v=${assetVersions['styles/refinement.css']}" media="screen">
   ${jsonLd(schema)}
 </head>
 <body class="${bodyClass}">
   <a class="skip-link" href="#main">Skip to content</a>
   <div class="reading-progress" aria-hidden="true"><span></span></div>
   <header class="site-header"><div class="header-inner">${nav(depth, active)}</div></header>
-  <main id="main">${body}</main>
+  <main id="main">${breadcrumb}${body}</main>
   <footer class="site-footer">
     <div><strong>${escapeHtml(profileName)}</strong><p>Communication engineering, network diagnostics, modeling, and research.</p></div>
     <div>
@@ -179,7 +186,7 @@ const page = ({ title, description, route, depth, active, body, schema, bodyClas
     </div>
     <p class="footer-note" data-last-reviewed="${escapeHtml(latestReviewDate)}">Facts last reviewed ${escapeHtml(formattedReviewDate)}. Maintained as a verified static portfolio.</p>
   </footer>
-  <script src="${local(depth, "scripts/main.js")}" defer></script>
+  <script src="${local(depth, "scripts/main.js")}?v=${assetVersions['scripts/main.js']}" defer></script>
 </body>
 </html>`;
 };
