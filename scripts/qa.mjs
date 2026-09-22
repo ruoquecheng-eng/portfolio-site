@@ -32,6 +32,8 @@ const [siteConfig, publicClaimsData, zhTranslations, sourceRecords] = await Prom
 const siteBaseUrl = `${siteConfig.canonicalOrigin}${siteConfig.basePath}`;
 const defaultOgUrl = `${siteBaseUrl}assets/images/og-portfolio.png`;
 const allowedPublicPdfs = new Set([
+  'assets/documents/resume-en.pdf',
+  'assets/documents/resume-zh.pdf',
   'assets/documents/radio-interference-localization-cumcm-2026.pdf',
   'assets/documents/lithium-ion-battery-rul-cascade-utilization-modeling.pdf',
   'assets/documents/beyond-vertex-profiles-nonuniform-hypergraph-tensors.pdf',
@@ -39,6 +41,7 @@ const allowedPublicPdfs = new Set([
 ]);
 
 const requiredPages = new Map([
+  ['Search', ['search/index.html']],
   ['Radio localization case study', ['projects/radio-localization/index.html']],
   ['Home', ['index.html']],
   ['Projects', ['projects/index.html', 'projects.html']],
@@ -56,6 +59,10 @@ const requiredPages = new Map([
 ]);
 
 const requiredAssets = new Map([
+  ['English resume PDF', ['assets/documents/resume-en.pdf']],
+  ['Chinese resume PDF', ['assets/documents/resume-zh.pdf']],
+  ['English search index', ['search-index-en.json']],
+  ['Chinese search index', ['search-index-zh-CN.json']],
   ['Shared screen refinements', ['styles/refinement.css']],
   ['Radio modeling paper', ['assets/documents/radio-interference-localization-cumcm-2026.pdf']],
   ['Radio public support package', ['assets/downloads/radio-localization-support-public.zip']],
@@ -102,6 +109,7 @@ const requiredAssets = new Map([
 ]);
 
 const sitemapRoutes = [
+  '/search/',
   '/',
   '/projects/',
   '/projects/netsage/',

@@ -17,7 +17,7 @@ concurrency:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -25,13 +25,24 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
+
+      - name: Install pinned browser and PDF tools
+        run: |
+          npm ci
+          npx playwright install --with-deps chromium
+          sudo apt-get update
+          sudo apt-get install -y fonts-noto-cjk poppler-utils
 
       - name: Build static site
         run: npm run build
 
       - name: Run portfolio QA
-        run: npm run qa
+        run: |
+          npm run pdf
+          npm test
+          npm run qa
+          npm run test:browser
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5

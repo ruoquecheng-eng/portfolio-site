@@ -1,127 +1,56 @@
-<!-- SEED: re-run $impeccable document once there is rendered code to capture the final tokens and components. -->
----
-name: Wanzheng Ning Portfolio
-description: An evidence-led technical and academic portfolio shaped by networks, signals, and mathematical structure.
----
+# Design system: light editorial portfolio
 
-# Design System: Wanzheng Ning Portfolio
+The portfolio helps admissions readers and recruiters understand direction,
+contribution, research status, and supporting evidence. English and Chinese
+share the same structure. Formal paper titles are not translated.
 
-## Overview
+## Visual system
 
-**Creative North Star: "Calibrated Signal Console"**
+- White reading surfaces, pale gray sections, navy text and blue interactive
+  accents. Light mode has no large navy hero panel.
+- Maximum content width: 1160px. Body text: 16px with generous line spacing.
+- Homepage heading: 36–48px desktop, 28–34px mobile. Long research titles use
+  a smaller scale and wrap naturally without truncation.
+- Flat sections, restrained borders and small corner radii. Real screenshots,
+  charts and paper previews carry the visual identity.
+- `src/styles/refinement.css` owns shared screen presentation, organized by
+  component and breakpoint. Base structural and print rules remain in
+  `main.css`; the demo uses a compatible token-based stylesheet.
+- Dark mode preserves readable surfaces and the saved theme. Reduced-motion
+  users retain complete functionality.
 
-The site should feel like a carefully calibrated network instrument viewed beside a clean diagnostic report. Deep navy surfaces establish system context; high-contrast light surfaces carry long-form evidence. Fine signal traces, nodes, and measured grid lines support the content without becoming a hacker costume.
+## Structure and components
 
-The interface rejects cyberpunk developer templates, university marketing pages, dream-school lists, generic startup landing pages, and skill-logo walls. Motion is responsive and restrained. The site remains complete when animation is disabled.
+Home: name and direction → NetSage, CommLab, radio localization, battery
+modeling → research overview → resume. Internship stays on projects/resume.
 
-**Key Characteristics:**
+Projects use single-choice category filters with a visible result count.
+Internship is outside the filter. Without JavaScript all projects stay visible.
+Research separates the complete title, journal, review status and authorship.
+Case studies retain problem, method, contribution, results and evidence.
 
-- Deep system panels paired with pale evidence sheets
-- One cobalt-cyan signal family, used with restraint
-- Strong typographic hierarchy and compact technical labels
-- Cardless editorial flow for major work, bounded cards only for project summaries
-- Real figures and explicit evidence captions
+Material links share clear labels and actual file format/size. Only approved,
+existing documents are linked; restricted manuscripts have no download button.
+Figure enlargement uses a native dialog, Escape dismissal and focus return.
+Long articles retain a contents menu separate from material links.
 
-## Colors
+Search is local to the browser and current language. Static indexes include
+public text and bilingual keyword aliases, never PDF contents or certificate
+identifiers. Every term must match; titles outrank keywords, summaries and body.
+The query persists in `q`. Initial, loading, empty and retry states are explicit.
 
-The palette is committed in the hero and restrained in reading surfaces. The seed hue is cobalt at 230 degrees in OKLCH.
+## Resume and print
 
-### Primary
+Screen resumes share the editorial system. Print remains independent, black
+and white, A4, one page; proof thumbnails are hidden. HTML and downloadable
+PDFs share content. Pinned Playwright Chromium renders both languages in CI
+with CJK fonts. PDF page count and key text are release gates. Battery modeling
+remains one entry; existing verified claims and awards must not change.
 
-- **Signal Cobalt:** anchors links, active navigation, nodes, and diagnostic states.
-- **Instrument Navy:** carries the hero and selected system sections.
+## Verification
 
-### Secondary
-
-- **Trace Cyan:** marks flow, focus, and selected evidence without becoming neon.
-
-### Neutral
-
-- **Diagnostic White:** primary light reading surface.
-- **Cool Sheet:** secondary light section surface.
-- **Graphite Ink:** body text and dark marks.
-- **Slate Reading Text:** secondary information with accessible contrast.
-
-**The Signal Budget Rule.** Bright cyan is a state and flow color, not a background texture. It should occupy less than ten percent of a reading screen.
-
-## Typography
-
-### Screen refinement, September 2026
-
-The shared `refinement.css` is loaded with `media="screen"` to keep the one-page
-resume print layout independent. Screen titles use a smaller scale (about
-30–54 px for hero text, 24–34 px for section headings, and 22–30 px for long
-project/research titles). Chinese headings have wider measures and 1.35–1.4
-line height. Project indexes reserve only a narrow column for sequence numbers.
-Section labels sit above their headings; mobile result tables and resume
-sections stack. Project figures open in a keyboard-accessible native dialog,
-with localized controls and focus returned to the trigger on close.
-
-**Display Font:** Bahnschrift with Aptos Display and Segoe UI fallbacks  
-**Body Font:** Aptos with Segoe UI Variable and Segoe UI fallbacks  
-**Label/Mono Font:** Cascadia Mono with ui-monospace fallbacks
-
-**Character:** The display face reads like instrument labeling, while the body face remains quiet enough for admissions review and mathematical summaries.
-
-### Hierarchy
-
-- **Display** (650, fluid up to 5.5rem, 0.98): hero statement only.
-- **Headline** (650, fluid up to 3.5rem, 1.05): page and major section headings.
-- **Title** (650, fluid up to 1.5rem, 1.2): project and research titles.
-- **Body** (400, 1rem to 1.125rem, 1.7): prose capped near 70 characters.
-- **Label** (600, 0.75rem, 0.05em): short statuses, versions, and figure identifiers.
-
-**The One Instrument Label Rule.** Monospace appears only for code, versions, formulas, and compact technical metadata. It never replaces body typography.
-
-## Elevation
-
-The system is flat by default. Depth comes from tonal layering, section boundaries, and media contrast. A small shadow may appear on an interactive project summary at hover, but major sections do not float as cards.
-
-**The Flat Evidence Rule.** Evidence is aligned and bordered, not placed in decorative glass panels.
-
-## Components
-
-### Buttons
-
-- **Shape:** compact rounded rectangle, 8 px radius.
-- **Primary:** Signal Cobalt fill with near-white text and 12 px by 18 px padding.
-- **Hover / Focus:** small vertical shift on hover; 3 px high-contrast focus ring on keyboard focus.
-- **Secondary:** transparent surface with a single structural border.
-
-### Chips
-
-- **Style:** small status labels with text plus shape or border distinction.
-- **State:** status is always written in full; color is never the only signal.
-
-### Cards / Containers
-
-- **Corner Style:** 12 px maximum.
-- **Background:** tonal surface change, no glass blur.
-- **Shadow Strategy:** none at rest; small state shadow only when interactive.
-- **Border:** one subtle structural border when a boundary is necessary.
-- **Internal Padding:** fluid 20 px to 32 px.
-
-### Navigation
-
-The desktop navigation is a slim system bar with clear active state. Mobile navigation uses a native button and a compact disclosure panel. Theme control has an explicit accessible label.
-
-### Diagnostic Flow
-
-The signature component is an ordered flow of labeled stages connected by a single signal trace. It is explicitly captioned as a conceptual diagnostic flow and never presented as a measured network topology.
-
-## Do's and Don'ts
-
-### Do:
-
-- **Do** keep body copy at or above 4.5:1 contrast and graphical evidence at or above 3:1 where required.
-- **Do** use real result figures with captions that state simulated or internal holdout context.
-- **Do** keep headings below 6rem and display letter spacing no tighter than -0.04em.
-- **Do** provide visible focus, reduced motion, explicit dimensions, and print styles.
-- **Do** use High-Speed Rail and Scenic Guide as bounded project summaries in V2.
-
-### Don't:
-
-- **Don't** resemble a cyberpunk developer template, university marketing page, dream-school list, generic startup landing page, or skill-logo wall.
-- **Don't** use fake terminals, code rain, hacker aesthetics, neon overload, custom cursors, heavy parallax, particle fields, glassmorphism, glowing borders, or meaningless animation.
-- **Don't** use gradient text, repeated section eyebrows, decorative numbered sections, side-stripe callouts, or oversized rounded cards.
-- **Don't** place unconfirmed facts, private paths, sensitive files, or internal TODO markers in public output.
+Run build, PDF export, unit tests, static QA and browser QA before release.
+Check every localized route at 360, 768 and 1440px for overflow and broken
+images. Exercise filters, search/retry/history, no-JS fallback, dark mode,
+keyboard focus, figure dialogs and document links. Inspect both one-page PDFs.
+Only explicitly allowlisted public PDFs may enter the deployment artifact.

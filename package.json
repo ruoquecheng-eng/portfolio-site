@@ -6,10 +6,15 @@
   "scripts": {
     "build": "node scripts/build.mjs",
     "serve": "node scripts/serve.mjs",
-    "qa": "node scripts/qa.mjs"
+    "qa": "node scripts/qa.mjs",
+    "test": "node --test scripts/upgrade.test.mjs",
+    "pdf": "node scripts/export-resumes.mjs",
+    "test:browser": "node scripts/browser-qa.mjs"
   },
   "engines": {
     "node": ">=20"
+  },
+  "devDependencies": {
+    "playwright": "1.62.1"
   }
 }
-

@@ -3,10 +3,11 @@ import path from "node:path";
 import { createHash } from "node:crypto";
 import { fileURLToPath } from "node:url";
 import { radioCase } from "./radio-case.mjs";
+import {enrichBody, searchBody, annotateMaterials, makeSearchIndex} from './editorial.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const dist = path.join(root, "dist");
-const sharedAssets = ['styles/main.css', 'styles/refinement.css', 'scripts/main.js'];
+const sharedAssets = ['styles/main.css', 'styles/refinement.css', 'scripts/main.js', 'scripts/browse.js'];
 const assetVersions = Object.fromEntries(await Promise.all(sharedAssets.map(async (asset) => [
   asset, createHash('sha256').update(await readFile(path.join(root, 'src', asset))).digest('hex').slice(0, 12)
 ])));
@@ -124,6 +125,7 @@ const nav = (depth, active) => {
     ["projects", "Projects", "projects/"],
     ["research", "Research", "research/"],
     ["resume", "Resume", "resume/"]
+    , ["search", "Search", "search/"]
   ];
   return `
     <a class="brand" href="${local(depth)}" aria-label="Wanzheng Ning home">
@@ -141,6 +143,7 @@ const nav = (depth, active) => {
 const jsonLd = (value) => value ? `<script type="application/ld+json">${JSON.stringify(value).replaceAll("<", "\\u003c")}</script>` : "";
 
 const page = ({ title, description, route, depth, active, body, schema, bodyClass = "" }) => {
+  body = enrichBody(body, route, {local,depth,name:profileName,radioTitle:radio.title,radioSummary});
   const fullTitle = title === config.title ? title : `${title} | Wanzheng Ning`;
   const url = canonical(route);
   const breadcrumb = /^\/(projects|research)\/[^/]+\/$/.test(route)
@@ -187,6 +190,7 @@ const page = ({ title, description, route, depth, active, body, schema, bodyClas
     <p class="footer-note" data-last-reviewed="${escapeHtml(latestReviewDate)}">Facts last reviewed ${escapeHtml(formattedReviewDate)}. Maintained as a verified static portfolio.</p>
   </footer>
   <script src="${local(depth, "scripts/main.js")}?v=${assetVersions['scripts/main.js']}" defer></script>
+  <script type="module" src="${local(depth, 'scripts/browse.js')}?v=${assetVersions['scripts/browse.js']}"></script>
 </body>
 </html>`;
 };
@@ -287,6 +291,7 @@ const decorateDocument = (html, route, locale, routeSet, { demo = false } = {}) 
     ? output.replace('<div class="demo-header-actions">', `<div class="demo-header-actions">${languageControl}`)
     : output.replace('<button class="theme-toggle"', `${languageControl}<button class="theme-toggle"`);
   if (locale === "zh-CN" && route === "/resume/") output = output.replace(/(<h1 class="resume-name">)[\s\S]*?(<\/h1>)/i, "$1宁琬正$2");
+  if (locale === 'zh-CN') output = output.replaceAll('documents/resume-en.pdf','documents/resume-zh.pdf');
   if (route === "/" && locale === "en") {
     output = output.replace("</head>", `  <script>try{if(localStorage.getItem("portfolio-language")==="zh-CN")location.replace("${publicPath("/zh/")}"+location.hash)}catch{}</script>\n</head>`);
   }
@@ -898,7 +903,7 @@ const researchBylineFor = (record) => researchClaims.get(record)?.byline ?? "";
 
 const researchItem = ({ depth, href, record, question }) => `
   <article class="research-item">
-    <div>${status(`${researchStatusFor(record)} · ${researchVenueFor(record)}`)}<p class="project-type">${escapeHtml(researchAuthorshipFor(record))}</p></div>
+    <div>${status(researchStatusFor(record))}<p class="paper-venue">${escapeHtml(researchVenueFor(record))}</p><p class="project-type">${escapeHtml(researchAuthorshipFor(record))}</p></div>
     <div><h2><a href="${local(depth, href)}">${escapeHtml(record.title)}</a></h2><p>${escapeHtml(question)}</p><p>${escapeHtml(researchSummaryFor(record))}</p><a class="text-link" href="${local(depth, href)}">Read research summary <span aria-hidden="true">→</span></a></div>
   </article>`;
 
@@ -994,6 +999,7 @@ const resumeBody = `
   </article>`;
 
 const baseRoutes = [
+  {file:'search/index.html',route:'/search/',html:page({title:'Search',description:'Search projects, research, and experience in the portfolio.',route:'/search/',depth:1,active:'search',body:searchBody})},
   {
     file: "index.html",
     route: "/",
@@ -1090,6 +1096,7 @@ const chineseRoutes = baseRoutes.map((entry) => ({
   html: decorateDocument(entry.html, entry.route, "zh-CN", baseRouteSet, { demo: entry.route === "/projects/high-speed-rail/demo/" })
 }));
 const routes = [...englishRoutes, ...chineseRoutes];
+for (const entry of routes) entry.html = await annotateMaterials(entry.html, root);
 
 const absolutizeNotFoundLinks = (html) => html.replace(/\b(href|src)="([^"]*)"/gi, (match, attributeName, value) => {
   if (/^(?:#|https?:|mailto:|tel:|data:)/i.test(value)) return match;
@@ -1176,6 +1183,7 @@ await Promise.all([
 ]);
 
 await writeFile(path.join(dist, "404.html"), notFound, "utf8");
+for (const locale of ['en','zh-CN']) await writeFile(path.join(dist, `search-index-${locale}.json`), JSON.stringify(makeSearchIndex(routes,locale,config)), 'utf8');
 await writeFile(path.join(dist, "robots.txt"), `User-agent: *\nAllow: /\nSitemap: ${canonical("/sitemap.xml")}\n`, "utf8");
 const sitemapEntries = baseRoutes.flatMap(({ route }) => ["en", "zh-CN"].map((locale) => {
   const localized = localizedRoute(route, locale);

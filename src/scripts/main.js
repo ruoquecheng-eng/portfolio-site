@@ -15,7 +15,7 @@
   // A compact contents menu for long case studies and research articles.
   const article = document.querySelector('.case-study, .research-paper');
   const headings = article ? [...article.querySelectorAll('section h2')].filter(h => !h.closest('figure')) : [];
-  if (headings.length >= 3 && !article.querySelector('nav')) {
+  if (headings.length >= 3 && !article.querySelector('.radio-section-nav')) {
     const contents = document.createElement('details');
     contents.className = 'page-contents';
     const summary = document.createElement('summary');
