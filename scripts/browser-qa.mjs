@@ -37,6 +37,11 @@ try{
   for(const locale of ['','zh/']){
     const context=await browser.newContext({viewport:{width:360,height:900},reducedMotion:'reduce'}),page=await context.newPage();
     await page.goto(`${base}/${locale}projects/`);
+    await page.locator('input[value="modeling"]').check();
+    await page.reload();
+    assert.equal(await page.locator('input[value="modeling"]').isChecked(),true);flows++;
+    await page.locator('[data-project-category]:visible .text-link').first().click();await page.goBack();
+    assert.equal(await page.locator('input[value="modeling"]').isChecked(),true);flows++;
     for(const category of ['engineering','modeling','design','all']){
       await page.locator(`input[value="${category}"]`).check();
       assert.equal(await page.locator('[data-project-category]:visible').count(),category==='all'?6:2);
@@ -60,6 +65,7 @@ try{
     await page.locator('#search-query').fill('');await page.locator('#search-form button').click();
     assert.equal(new URL(page.url()).searchParams.has('q'),false);assert.equal(await page.locator('#search-results li').count(),0);flows++;
     await page.goto(`${base}/${locale}resume/`);
+    assert.ok(await page.locator('.print-button').evaluate(el=>el.getBoundingClientRect().width<300));flows++;
     const pdf=await page.locator('.resume-download').getAttribute('href');
     assert.equal((await page.request.get(new URL(pdf,page.url()).href)).status(),200);flows++;
     await context.close();
@@ -69,7 +75,13 @@ try{
   await p.locator('#search-retry').waitFor({state:'visible'});await p.unroute('**/search-index-en.json');await p.locator('#search-retry').click();
   await p.waitForFunction(()=>document.querySelector('#search-results li'));flows++;await offline.close();
   const nojs=await browser.newContext({javaScriptEnabled:false}),plain=await nojs.newPage();
-  await plain.goto(`${base}/projects/`);assert.equal(await plain.locator('[data-project-category]:visible').count(),6);assert.equal(await plain.locator('[data-project-filter]:visible').count(),0);flows++;await nojs.close();
+  await plain.setViewportSize({width:360,height:900});
+  await plain.goto(`${base}/projects/`);assert.equal(await plain.locator('[data-project-category]:visible').count(),6);assert.equal(await plain.locator('[data-project-filter]:visible').count(),0);flows++;
+  assert.ok(await plain.locator('.site-nav').isVisible());assert.equal(await plain.locator('.nav-toggle:visible').count(),0);flows++;await nojs.close();
+  const keyboard=await browser.newContext({viewport:{width:360,height:900}}),kp=await keyboard.newPage();
+  await kp.goto(`${base}/projects/`);await kp.locator('.nav-toggle').click();
+  await kp.locator('.site-nav a').first().focus();await kp.locator('input[value="all"]').focus();
+  await kp.waitForFunction(()=>document.querySelector('.nav-toggle').getAttribute('aria-expanded')==='false');flows++;await keyboard.close();
   const dark=await browser.newContext({colorScheme:'dark',reducedMotion:'reduce'}),dp=await dark.newPage();
   await dp.goto(`${base}/zh/projects/commlab/`);assert.equal(await dp.locator('html').getAttribute('data-theme'),'dark');
   assert.equal(await dp.locator('.page-contents').count(),1);flows++;

@@ -15,8 +15,16 @@ if(typeof document!=='undefined') {
   const filter=document.querySelector('[data-project-filter]');
   if(filter) {
     const items=[...document.querySelectorAll('[data-project-category]')];
+    const choices=[...filter.querySelectorAll('input[name="project-category"]')];
+    const restore=()=>{
+      const category=new URLSearchParams(location.search).get('category');
+      (choices.find(input=>input.value===category)||choices[0]).checked=true;
+    };
     const update=()=>{
       const category=filter.querySelector('input:checked').value;
+      const url=new URL(location.href);
+      category==='all'?url.searchParams.delete('category'):url.searchParams.set('category',category);
+      history.replaceState(null,'',url);
       items.forEach(item=>item.hidden=category!=='all'&&item.dataset.projectCategory!==category);
       filter.querySelector('[data-filter-count]').textContent=zh?`显示 ${items.filter(i=>!i.hidden).length} 个项目`:`Showing ${items.filter(i=>!i.hidden).length} projects`;
       for(const selector of ['.project-index-page','.supporting-projects']) {
@@ -24,7 +32,8 @@ if(typeof document!=='undefined') {
         if(section)section.hidden=![...section.querySelectorAll('[data-project-category]')].some(i=>!i.hidden);
       }
     };
-    filter.hidden=false;filter.addEventListener('change',update);update();
+    restore();filter.hidden=false;filter.addEventListener('change',update);update();
+    window.addEventListener('popstate',()=>{restore();update();});
   }
   const form=document.getElementById('search-form');
   if(form) {

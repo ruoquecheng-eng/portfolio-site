@@ -26,6 +26,10 @@ modeling → research overview → resume. Internship stays on projects/resume.
 
 Projects use single-choice category filters with a visible result count.
 Internship is outside the filter. Without JavaScript all projects stay visible.
+The selected category persists in the URL for reload and return navigation.
+Mobile navigation remains visible without JavaScript; enhanced menus close
+when keyboard focus leaves. Breadcrumbs, footer and article links have generous
+touch targets. Mobile metadata uses a minimum 14px reading size.
 Research separates the complete title, journal, review status and authorship.
 Case studies retain problem, method, contribution, results and evidence.
 
@@ -43,8 +47,9 @@ The query persists in `q`. Initial, loading, empty and retry states are explicit
 
 Screen resumes share the editorial system. Print remains independent, black
 and white, A4, one page; proof thumbnails are hidden. HTML and downloadable
-PDFs share content. Pinned Playwright Chromium renders both languages in CI
-with CJK fonts. PDF page count and key text are release gates. Battery modeling
+PDFs share content. The screen header groups compact primary-download and
+secondary-print actions. Pinned Playwright Chromium renders both languages in
+CI with CJK fonts. PDF page count and key text are release gates. Battery modeling
 remains one entry; existing verified claims and awards must not change.
 
 ## Verification

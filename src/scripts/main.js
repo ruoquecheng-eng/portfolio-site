@@ -178,6 +178,12 @@
       if (event.target.closest("a")) setNavOpen(false);
     });
 
+    siteNav.addEventListener("focusout", () => {
+      requestAnimationFrame(() => {
+        if (!siteNav.contains(document.activeElement) && document.activeElement !== navButton) setNavOpen(false);
+      });
+    });
+
     document.addEventListener("click", (event) => {
       if (
         navButton.getAttribute("aria-expanded") === "true" &&
@@ -197,6 +203,7 @@
     window.matchMedia("(min-width: 52.01rem)").addEventListener?.("change", (event) => {
       if (event.matches) setNavOpen(false);
     });
+    root.dataset.navReady = "true";
   }
 
   let progressFrame = 0;
