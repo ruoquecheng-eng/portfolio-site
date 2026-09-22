@@ -303,8 +303,10 @@ const projectRow = ({ depth, href, index, type, title, summary, meta, visual }) 
       <p class="project-meta">${escapeHtml(meta)}</p>
       <a class="text-link" href="${local(depth, href)}">Read case study <span aria-hidden="true">→</span></a>
     </div>
-    ${visual || ""}
+    ${visual ? `<a class="project-preview-link" href="${local(depth, href)}" aria-label="${escapeHtml(title)}">${visual}</a>` : ""}
   </article>`;
+
+const netsagePreview = (depth) => `<div class="project-visual project-visual-netsage screenshot-pair"><img src="${local(depth, 'assets/images/netsage-app-v020-home.webp')}" width="1080" height="2400" alt="NetSage 0.2.0 Android dashboard describing its local-first and serverless diagnostic boundary" loading="lazy" decoding="async"><img src="${local(depth, 'assets/images/netsage-app-input.webp')}" width="1080" height="2400" alt="NetSage log diagnosis workspace with text input, input quality guidance, a sample shortcut, and local file import" loading="lazy" decoding="async"></div>`;
 
 const homeBody = `
   <section class="hero hero-home">
@@ -341,7 +343,7 @@ const homeBody = `
       title: netsage.title,
       summary: netsageSummary,
       meta: "Kotlin · Jetpack Compose · rule engine · offline-first",
-      visual: `<div class="project-visual project-visual-netsage"><img src="assets/images/netsage-icon.webp" width="216" height="216" alt="NetSage application icon" loading="lazy"></div>`
+      visual: netsagePreview(0)
     })}
     ${projectRow({
       depth: 0,
@@ -394,7 +396,7 @@ const projectsBody = `
     <div><p class="hero-kicker">Engineering and modeling</p><h1>Projects</h1><p>Four case studies in engineering and modeling, with internship experience and supporting projects.</p></div>
   </section>
   <section class="section project-index-page">
-    ${projectRow({depth: 1, href: "projects/netsage/", index: "01", type: netsage.type, title: netsage.title, summary: netsageSummary, meta: "Primary engineering case study", visual: `<div class="project-visual project-visual-netsage"><img src="${local(1, "assets/images/netsage-icon.webp")}" width="216" height="216" alt="NetSage application icon" loading="lazy"></div>`})}
+    ${projectRow({depth: 1, href: "projects/netsage/", index: "01", type: netsage.type, title: netsage.title, summary: netsageSummary, meta: "Primary engineering case study", visual: netsagePreview(1)})}
     ${projectRow({depth: 1, href: "projects/commlab/", index: "02", type: commlab.type, title: commlab.title, summary: commlabSummary, meta: "Primary communications systems case study", visual: `<div class="project-visual project-visual-commlab"><img src="${local(1, "assets/images/commlab-isac.webp")}" width="1440" height="1000" alt="Running CommLab ISAC laboratory with local controls, metrics, and a range-Doppler result" loading="lazy"></div>`})}
     ${projectRow({depth: 1, href: "projects/battery-rul/", index: "03", type: `${battery.type} · ${batteryDataBoundary}`, title: battery.title, summary: batterySummary, meta: "Primary modeling case study", visual: `<div class="project-visual"><img src="${local(1, "assets/visuals/battery-workflow.svg")}" width="1240" height="650" alt="Conceptual Q1 to Q4 battery modeling workflow" loading="lazy"></div>`})}
     ${projectRow({depth: 1, href: "projects/radio-localization/", index: "04", type: radio.type, title: radio.title, summary: radioSummary, meta: "Final competition paper", visual: `<div class="project-visual radio-index-visual"><img src="${local(1, "assets/images/radio-overview.webp")}" width="1143" height="570" alt="Original paper figure connecting Q1 set geometry, Q2 robust sensing, Q3 omnidirectional clearance, and Q4 directional-source scheduling" loading="lazy"></div>`})}
