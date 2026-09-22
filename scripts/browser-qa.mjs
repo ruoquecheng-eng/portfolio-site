@@ -45,6 +45,8 @@ try{
     await page.goto(`${base}/${locale}search/?q=NetSage`);
     await page.waitForFunction(()=>document.querySelector('#search-results li'));
     assert.match(await page.locator('#search-results a').first().getAttribute('href'),/netsage/);flows++;
+    const alternate=page.locator('.language-switcher a:not([aria-current="page"])');
+    assert.equal(new URL(await alternate.getAttribute('href'),page.url()).searchParams.get('q'),'NetSage');flows++;
     for(const query of ['NETSAGE TLS',locale?'张量':'tensor','CUMCM']){
       await page.locator('#search-query').fill(query);await page.locator('#search-form button').click();
       await page.waitForFunction(()=>document.querySelector('#search-results li'));

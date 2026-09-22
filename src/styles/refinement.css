@@ -40,7 +40,7 @@ html[lang="zh-CN"] :is(h1,h2,h3,h4) { letter-spacing: -.015em; line-height: 1.45
 .hero-grid { grid-template-columns: minmax(0,1.15fr) minmax(0,.85fr); gap: 3rem; padding-block: clamp(2.5rem,5vw,4rem); }
 .hero-copy h1,html[lang="zh-CN"] .hero-copy h1 { font-size: clamp(2.25rem,3.4vw,3rem); line-height: 1.25; max-width: 22ch; }
 html[lang="zh-CN"] .hero-copy h1 { max-width: 15em; line-height: 1.4; }
-.hero-copy .home-name { font-size: 1.4rem; color: var(--ink); font-weight: 650; letter-spacing: 0; margin-bottom: 1rem; }
+.hero-copy .home-name { font-family: var(--font-display); font-size: 1.4rem; color: var(--ink); font-weight: 650; letter-spacing: 0; margin-bottom: 1rem; }
 .hero-copy p { font-size: 1rem; line-height: 1.85; }
 .hero-visual { max-width: 28rem; justify-self: end; }
 .hero-visual img { border: 1px solid var(--line); border-radius: .5rem; }
@@ -121,6 +121,7 @@ main :is(h2[id],section[id]) { scroll-margin-top: calc(var(--header-height) + 1.
 #search-form label { display: block; margin-bottom: .6rem; font-weight: 600; }
 .search-controls { display: flex; gap: .65rem; }
 #search-query { flex: 1; min-width: 0; padding: .8rem 1rem; border: 1px solid var(--line-strong); border-radius: .4rem; background: var(--surface); color: var(--ink); font: inherit; }
+#search-query::placeholder { color: var(--ink-soft); opacity: 1; }
 #search-status { margin-top: 1.25rem; color: var(--ink-soft); }
 #search-results { list-style: none; padding: 0; max-width: 52rem; }
 #search-results li { border-top: 1px solid var(--line); padding-block: 1.5rem; }
@@ -195,8 +196,9 @@ html:has(.media-viewer[open]) { overflow: hidden; }
   .hero-actions .button { width:auto; }
   .hero-foot { display:flex; flex-wrap:wrap; gap:0 1rem; }
   .hero-foot span { border:0; margin:0; padding:.6rem 0; }
-  .project-row { grid-template-columns:1.3rem minmax(0,1fr); gap:.6rem 1rem; padding-block:1.75rem; }
-  .project-row > :last-child { grid-column:2; margin-top:.8rem; }
+  .project-row { grid-template-columns:minmax(0,1fr); gap:.6rem; padding-block:1.75rem; }
+  .project-index { display:none; }
+  .project-row > :last-child { grid-column:auto; margin-top:.8rem; }
   .home-research .research-preview > :last-child { grid-column:auto; }
   .project-copy p { font-size:.95rem; }
   .project-visual.screenshot-pair { padding:.8rem; gap:.65rem; }

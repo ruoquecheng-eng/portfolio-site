@@ -35,6 +35,9 @@ if(typeof document!=='undefined') {
     async function render(updateUrl=true) {
       const current=++revision,query=input.value.trim().slice(0,160);
       if(updateUrl){const url=new URL(location.href);query?url.searchParams.set('q',query):url.searchParams.delete('q');history.replaceState(null,'',url);}
+      for(const link of document.querySelectorAll('.language-switcher a')){
+        const url=new URL(link.href);query?url.searchParams.set('q',query):url.searchParams.delete('q');link.href=url.href;
+      }
       results.replaceChildren();retry.hidden=true;
       if(!query){status.textContent=zh?'输入关键词，搜索当前语言版本的内容。':'Enter a keyword to search this language version.';return;}
       status.textContent=zh?'正在搜索…':'Searching…';

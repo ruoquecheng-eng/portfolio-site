@@ -45,7 +45,7 @@ export async function annotateMaterials(html,root) {
     const bytes=(await stat(path.join(root,'src/assets',m[2]))).size;
     sizes.set(m[1],`${path.extname(m[2]).slice(1).toUpperCase()} · ${bytes>=1048576?(bytes/1048576).toFixed(1)+' MB':Math.ceil(bytes/1024)+' KB'}`);
   }
-  return html.replace(/<a\b([^>]*href="([^"]+)"[^>]*)>([\s\S]*?)<\/a>/gi,(all,attrs,href,inner)=>sizes.has(href)&&!/<img\b|material-size/.test(inner)?`<a${attrs}>${inner}<small class="material-size">${sizes.get(href)}</small></a>`:all);
+  return html.replace(/<a\b([^>]*href="([^"]+)"[^>]*)>([\s\S]*?)<\/a>/gi,(all,attrs,href,inner)=>sizes.has(href)&&!/<img\b|material-size/.test(inner)?`<a${attrs}>${inner} <small class="material-size">${sizes.get(href)}</small></a>`:all);
 }
 
 const clean = html => html.replace(/<(script|style|nav|figure|form|button)\b[^>]*>[\s\S]*?<\/\1>/gi,' ').replace(/<[^>]+>/g,' ').replace(/&(?:amp|quot|#39|lt|gt|nbsp);/g,s=>({'&amp;':'&','&quot;':'"','&#39;':"'",'&lt;':'<','&gt;':'>','&nbsp;':' '})[s]).replace(/\s+/g,' ').trim();
