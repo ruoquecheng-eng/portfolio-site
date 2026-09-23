@@ -674,7 +674,7 @@ const highSpeedRailBody = `
         <p class="hero-kicker">Supporting interdisciplinary project</p>
         <h1>${escapeHtml(rail.title)}</h1>
         <p>${escapeHtml(railSummary)}</p>
-        <div class="case-meta">${status("Supporting work")}${status(`${railEngineeringContext} · ${railEngineeringRole}`)}${status(engineerPlusRole)}</div>
+        <div class="case-meta">${status("Supporting work")}${status(`Carriage paper · ${railEngineeringRole}`)}${status(engineerPlusRole)}</div>
         <div class="hero-actions"><a class="button" href="${local(2, "projects/high-speed-rail/demo/")}">Open interactive demo <span aria-hidden="true">→</span></a></div>
       </div>
       <figure class="rail-hero-figure">
@@ -684,16 +684,16 @@ const highSpeedRailBody = `
     </header>
     <section class="section notice-section rail-boundary" aria-label="Contribution boundary">
       <strong>Contribution boundary</strong>
-      <p>The lightweight carriage concept was completed within a five-person course team, where the report records my role as “Proposed Design.” I independently designed and implemented the five EngineerPlus front-end pages. These are separate contributions within one high-speed rail project narrative.</p>
+      <p>The course paper records my role as “Proposed Design.” I independently designed and implemented the five EngineerPlus front-end pages. These are separate contributions within one high-speed rail project narrative.</p>
     </section>
-    <section class="section rail-materials" aria-label="Course-team materials">
-      <div class="section-heading"><p>Project materials</p><h2>Course paper and team presentation</h2></div>
-      <p><strong>Course paper:</strong> <cite>Lightweight Recycled Carbon Fiber Carriage Design for High-Speed Rail Energy Saving and Carbon Reduction</cite>. This five-person team paper documents the carriage concept, design options, and scenario-based energy, cost, and emissions estimates. Its teamwork declaration records my contribution as “Proposed Design.”</p>
-      <p><strong>Team presentation:</strong> The accompanying slides summarize the design proposal, assumptions, calculations, risks, and next steps.</p>
-      <p>The team agreed to share both original files. The numerical estimates are conceptual, not measured rail performance or a validated engineering outcome.</p>
+    <section class="section rail-materials" aria-label="Paper and presentation">
+      <div class="section-heading"><p>Project materials</p><h2>Design paper and presentation</h2></div>
+      <p><strong>Design paper:</strong> <cite>Lightweight Recycled Carbon Fiber Carriage Design for High-Speed Rail Energy Saving and Carbon Reduction</cite>. The paper proposes recycled carbon-fiber materials for selected carriage components, considers integration with the existing frame, compares design options, and presents assumption-based energy, cost, and emissions estimates alongside implementation risks.</p>
+      <p><strong>Presentation:</strong> The accompanying slides condense the paper's design proposal, calculations, risks, and next steps.</p>
+      <p>The numerical estimates are conceptual, not measured rail performance or a validated engineering outcome.</p>
       <div class="material-actions">
-        <a class="button-secondary" href="${local(2, "assets/documents/australian-high-speed-rail-team-report.docx")}" download>Download course paper</a>
-        <a class="button-secondary" href="${local(2, "assets/documents/australian-high-speed-rail-team-presentation.pptx")}" download>Download team presentation</a>
+        <a class="button-secondary" href="${local(2, "assets/documents/australian-high-speed-rail-team-report.docx")}" download>Download design paper</a>
+        <a class="button-secondary" href="${local(2, "assets/documents/australian-high-speed-rail-team-presentation.pptx")}" download>Download presentation</a>
       </div>
     </section>
     <section class="section" id="engineerplus">
@@ -712,7 +712,7 @@ const highSpeedRailBody = `
     <section class="section rail-team-section" id="carriage-design">
       ${figure({depth: 2, src: "images/high-speed-carriage.webp", width: 1400, height: 900, alt: "Digital 3D prototype of the high-speed rail carriage concept", caption: "Real team project material: a digital carriage prototype.", className: "rail-carriage-figure"})}
       <div>
-        <p class="project-type">Team engineering component</p>
+        <p class="project-type">Paper: carriage design</p>
         <h2>${escapeHtml(railEngineering.title)}</h2>
         <p>${escapeHtml(railEngineeringSummary)}</p>
         <dl class="evidence-ledger compact-ledger">

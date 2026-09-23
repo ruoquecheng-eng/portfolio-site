@@ -529,8 +529,8 @@ function checkResearchAndProjectFacts(pageFiles, htmlByName) {
     for (const file of allowedPublicOfficeFiles) {
       if (!page.includes(file)) addIssue('projects', `${language || 'en/'} high-speed rail page is missing ${file}`);
     }
-    if (!page.includes(language ? '下载课程论文' : 'Download course paper') || !page.includes('Lightweight Recycled Carbon Fiber Carriage Design for High-Speed Rail Energy Saving and Carbon Reduction')) {
-      addIssue('projects', `${language || 'en/'} high-speed rail page must identify the course paper and its title`);
+    if (!page.includes(language ? '下载设计论文' : 'Download design paper') || !page.includes('Lightweight Recycled Carbon Fiber Carriage Design for High-Speed Rail Energy Saving and Carbon Reduction')) {
+      addIssue('projects', `${language || 'en/'} high-speed rail page must identify the design paper and its title`);
     }
   }
 

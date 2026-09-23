@@ -3,7 +3,7 @@
   "slug": "high-speed-rail",
   "title": "Australian High-Speed Rail Design and Management Concept",
   "type": "Supporting interdisciplinary engineering project",
-  "summary": "A course project combining a five-person lightweight carbody design concept with an independently developed five-page front-end prototype for high-speed rail finance, risk, compliance, and impact workflows.",
+  "summary": "A course design paper on lightweight recycled-carbon-fiber carriage components, paired with an independently developed five-page front-end prototype for high-speed rail finance, risk, compliance, and impact workflows.",
   "role": "Carbody: Proposed Design · EngineerPlus: independent front-end prototype",
   "components": {
     "engineeringDesign": {
@@ -34,7 +34,7 @@
   "facts": [
     {
       "id": "rail.summary",
-      "publicText": "A course project combining a five-person lightweight carbody design concept with an independently developed five-page front-end prototype for high-speed rail finance, risk, compliance, and impact workflows.",
+      "publicText": "A course design paper on lightweight recycled-carbon-fiber carriage components, paired with an independently developed five-page front-end prototype for high-speed rail finance, risk, compliance, and impact workflows.",
       "status": "verified",
       "sourceType": "team_report_and_source_files",
       "lastVerified": "2026-08-23",
