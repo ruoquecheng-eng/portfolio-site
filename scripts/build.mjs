@@ -687,10 +687,12 @@ const highSpeedRailBody = `
       <p>The lightweight carriage concept was completed within a five-person course team, where the report records my role as “Proposed Design.” I independently designed and implemented the five EngineerPlus front-end pages. These are separate contributions within one high-speed rail project narrative.</p>
     </section>
     <section class="section rail-materials" aria-label="Course-team materials">
-      <div class="section-heading"><p>Project materials</p><h2>Original course-team files</h2></div>
-      <p class="section-lead">The report and presentation are shared with the team's consent. Their energy, cost, and emissions figures are scenario estimates, not measured rail performance.</p>
+      <div class="section-heading"><p>Project materials</p><h2>Course paper and team presentation</h2></div>
+      <p><strong>Course paper:</strong> <cite>Lightweight Recycled Carbon Fiber Carriage Design for High-Speed Rail Energy Saving and Carbon Reduction</cite>. This five-person team paper documents the carriage concept, design options, and scenario-based energy, cost, and emissions estimates. Its teamwork declaration records my contribution as “Proposed Design.”</p>
+      <p><strong>Team presentation:</strong> The accompanying slides summarize the design proposal, assumptions, calculations, risks, and next steps.</p>
+      <p>The team agreed to share both original files. The numerical estimates are conceptual, not measured rail performance or a validated engineering outcome.</p>
       <div class="material-actions">
-        <a class="button-secondary" href="${local(2, "assets/documents/australian-high-speed-rail-team-report.docx")}" download>Download team report</a>
+        <a class="button-secondary" href="${local(2, "assets/documents/australian-high-speed-rail-team-report.docx")}" download>Download course paper</a>
         <a class="button-secondary" href="${local(2, "assets/documents/australian-high-speed-rail-team-presentation.pptx")}" download>Download team presentation</a>
       </div>
     </section>
