@@ -457,8 +457,11 @@ function checkResearchAndProjectFacts(pageFiles, htmlByName) {
   if (!commlabText.includes(sourceRecords.commlab.verifiedCommit.slice(0, 7))) {
     addIssue('truthfulness', 'CommLab page is missing its verified main commit');
   }
-  if (!/130 interactive laboratory modes/i.test(commlabText) || !/297 tests passed/i.test(commlabText) || !/628 recorded result artifacts/i.test(commlabText)) {
+  if (!/130 interactive laboratory modes/i.test(commlabText) || !/322 local tests passed/i.test(commlabText) || !/628 recorded result artifacts/i.test(commlabText)) {
     addIssue('truthfulness', 'CommLab page is missing its verified laboratory, test, or artifact evidence');
+  }
+  if (!commlab.includes(sourceRecords.commlab.windowsRelease) || !commlab.includes(sourceRecords.commlab.windowsBuild)) {
+    addIssue('truthfulness', 'CommLab page is missing its current release or successful Windows build link');
   }
   const commlabScreens = (commlab.match(/<img\b[^>]*>/gi) ?? [])
     .map((tag) => attribute(tag, 'src') ?? '')

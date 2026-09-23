@@ -435,7 +435,7 @@ const commlabBody = `
         <h1>${escapeHtml(commlab.title)}</h1>
         <p>${escapeHtml(commlabSummary)}</p>
         <div class="case-meta">${status(commlab.version)}${status("Local-first")}${status("130 interactive labs")}${status(`Verified commit ${commlab.verifiedCommit.slice(0, 7)}`)}</div>
-        <div class="hero-actions"><a class="button" href="${escapeHtml(commlab.repository)}" rel="noopener">View CommLab source <span aria-hidden="true">→</span></a><a class="button-secondary button-secondary-on-dark" href="${escapeHtml(commlab.windowsBuild)}" rel="noopener">View successful Windows build</a></div>
+        <div class="hero-actions"><a class="button" href="${escapeHtml(commlab.windowsRelease)}" rel="noopener">Download Windows v3.8.1 <span aria-hidden="true">→</span></a><a class="button-secondary button-secondary-on-dark" href="${escapeHtml(commlab.repository)}" rel="noopener">View CommLab source</a></div>
       </div>
       <img class="case-wide-visual" src="${local(2, "assets/images/commlab-ofdm-link.webp")}" width="1440" height="1000" alt="Running CommLab OFDM link laboratory with local controls, BER, EVM, and a received constellation">
     </header>
@@ -444,14 +444,14 @@ const commlabBody = `
     </section>
     <section class="section split-section" id="overview">
       <div><p class="project-type">System purpose</p><h2>One workbench across the communication stack</h2><p>The project connects waveform and receiver experiments to scheduling, edge inference, resilient control, and offline policy evaluation. The aim is to study cross-layer trade-offs without requiring a cloud account, rented server, real base station, or GPU.</p></div>
-      <div><p class="project-type">Current interface</p><h2>Local Streamlit Dashboard and Windows launcher</h2><p>The Dashboard exposes deterministic laboratory controls and result explanations. The Windows desktop launcher starts Streamlit on an available <code>127.0.0.1</code> port, checks local health, opens the browser, records startup diagnostics, and terminates the service when its control window closes.</p></div>
+      <div><p class="project-type">Current interface</p><h2>Local Streamlit Dashboard and Windows launcher</h2><p>The v3.8 workbench adds laboratory search, favorites, recent experiments, explicit parameter submission, local run history, exports, and same-metric comparison. The v3.8.1 Windows launcher starts Streamlit on an available <code>127.0.0.1</code> port, checks local health, opens the browser, writes a separate log for each launch, and terminates the service when its control window closes.</p></div>
     </section>
     <section class="section commlab-metrics" aria-label="Verified project evidence">
       <div class="metric-grid">
         <div><strong>130</strong><span>interactive laboratory modes in the current Dashboard</span></div>
-        <div><strong>297</strong><span>tests passed on the published v3.7.1 main baseline</span></div>
+        <div><strong>322</strong><span>local tests passed for v3.8.1; Python 3.10 and 3.12 CI passed</span></div>
         <div><strong>628</strong><span>CSV and PNG result artifacts verified by SHA-256 for v3.7.1</span></div>
-        <div><strong>Windows</strong><span>portable ZIP and installer built successfully in GitHub Actions</span></div>
+        <div><strong>Windows</strong><span>v3.8.1 portable ZIP and installer published on GitHub Releases</span></div>
       </div>
     </section>
     <section class="section section-dark" id="experiment-map">
@@ -479,7 +479,7 @@ const commlabBody = `
       <div><h2>Validation and limitations</h2>${factList(commlab, "fact-list compact")}</div>
       <p>The successful Windows artifact proves that the portable package and installer built on the GitHub Windows runner. It does not replace testing on a broader matrix of Windows versions, restricted accounts, antivirus products, and installation paths.</p>
     </section>
-    <section class="section final-link"><p>Inspect the current source, experiments, tests, release records, and Windows packaging workflow on GitHub.</p><a class="button" href="${escapeHtml(commlab.repository)}" rel="noopener">Open CommLab on GitHub</a></section>
+    <section class="section final-link"><p>Inspect the current source, experiments, tests, release records, and <a href="${escapeHtml(commlab.windowsBuild)}" rel="noopener">successful Windows build</a> on GitHub.</p><a class="button" href="${escapeHtml(commlab.repository)}" rel="noopener">Open CommLab on GitHub</a></section>
   </article>`;
 
 const netsageBody = `

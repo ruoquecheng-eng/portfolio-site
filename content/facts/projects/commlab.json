@@ -3,10 +3,11 @@
   "slug": "commlab",
   "title": "CommLab",
   "type": "Primary communications systems case study",
-  "version": "3.7.1 Desktop",
+  "version": "3.8.1 Desktop",
   "repository": "https://github.com/ruoquecheng-eng/CommLab",
-  "verifiedCommit": "1bcf1d8617d5c21c50fa789e94dc24bbb906bd66",
-  "windowsBuild": "https://github.com/ruoquecheng-eng/CommLab/actions/runs/33851381105",
+  "verifiedCommit": "29193ba5f2c490f57821b506d9bbfe31f9c342b8",
+  "windowsBuild": "https://github.com/ruoquecheng-eng/CommLab/actions/runs/35859114698",
+  "windowsRelease": "https://github.com/ruoquecheng-eng/CommLab/releases/tag/desktop-v3.8.1",
   "summary": "A local-first research platform spanning wireless physical layers, edge intelligence, reliability orchestration, networked control, and robust offline policy evaluation.",
   "facts": [
     {
@@ -14,7 +15,7 @@
       "publicText": "A local-first research platform spanning wireless physical layers, edge intelligence, reliability orchestration, networked control, and robust offline policy evaluation.",
       "status": "verified",
       "sourceType": "source_code_and_runtime",
-      "lastVerified": "2026-09-04",
+      "lastVerified": "2026-09-23",
       "public": true,
       "display": false
     },
@@ -23,15 +24,15 @@
       "publicText": "130 interactive laboratory modes in the current Dashboard",
       "status": "verified",
       "sourceType": "source_code_and_runtime",
-      "lastVerified": "2026-09-04",
+      "lastVerified": "2026-09-23",
       "public": true
     },
     {
       "id": "commlab.validation",
-      "publicText": "Published v3.7.1 main baseline: 297 tests passed",
+      "publicText": "CommLab v3.8.1: 322 local tests passed; Python 3.10 and 3.12 CI passed",
       "status": "verified",
       "sourceType": "repository_and_local_regression",
-      "lastVerified": "2026-09-04",
+      "lastVerified": "2026-09-23",
       "public": true
     },
     {
@@ -44,10 +45,10 @@
     },
     {
       "id": "commlab.desktop",
-      "publicText": "Windows portable package and installer completed successfully in GitHub Actions",
+      "publicText": "CommLab v3.8.1 Windows portable ZIP and installer published on GitHub Releases",
       "status": "verified",
       "sourceType": "github_actions",
-      "lastVerified": "2026-09-04",
+      "lastVerified": "2026-09-23",
       "public": true
     },
     {
