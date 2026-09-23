@@ -40,7 +40,7 @@ export const searchBody = `<section class="page-hero"><div><p class="hero-kicker
 
 export async function annotateMaterials(html,root) {
   const sizes=new Map();
-  for(const m of html.matchAll(/href="([^"]*assets\/([^"?#]+\.(?:pdf|zip)))(?:[?#][^"]*)?"/gi)) {
+  for(const m of html.matchAll(/href="([^"]*assets\/([^"?#]+\.(?:pdf|zip|docx|pptx)))(?:[?#][^"]*)?"/gi)) {
     if(/resume-(en|zh)\.pdf/.test(m[2]))continue;
     const bytes=(await stat(path.join(root,'src/assets',m[2]))).size;
     sizes.set(m[1],`${path.extname(m[2]).slice(1).toUpperCase()} · ${bytes>=1048576?(bytes/1048576).toFixed(1)+' MB':Math.ceil(bytes/1024)+' KB'}`);

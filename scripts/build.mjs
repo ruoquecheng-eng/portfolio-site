@@ -686,6 +686,14 @@ const highSpeedRailBody = `
       <strong>Contribution boundary</strong>
       <p>The lightweight carriage concept was completed within a five-person course team, where the report records my role as “Proposed Design.” I independently designed and implemented the five EngineerPlus front-end pages. These are separate contributions within one high-speed rail project narrative.</p>
     </section>
+    <section class="section rail-materials" aria-label="Course-team materials">
+      <div class="section-heading"><p>Project materials</p><h2>Original course-team files</h2></div>
+      <p class="section-lead">The report and presentation are shared with the team's consent. Their energy, cost, and emissions figures are scenario estimates, not measured rail performance.</p>
+      <div class="material-actions">
+        <a class="button-secondary" href="${local(2, "assets/documents/australian-high-speed-rail-team-report.docx")}" download>Download team report</a>
+        <a class="button-secondary" href="${local(2, "assets/documents/australian-high-speed-rail-team-presentation.pptx")}" download>Download team presentation</a>
+      </div>
+    </section>
     <section class="section" id="engineerplus">
       <div class="section-heading"><p>EngineerPlus</p><h2>A management-interface concept for four project workflows</h2></div>
       <p class="section-lead">The prototype connects four concerns that appeared in the wider engineering brief: capital organization, risk communication, approval workflow, and social or environmental reporting. Its purpose is to demonstrate information architecture and interaction, not to report operating results.</p>

@@ -39,6 +39,10 @@ const allowedPublicPdfs = new Set([
   'assets/documents/beyond-vertex-profiles-nonuniform-hypergraph-tensors.pdf',
   'assets/documents/northeastern-university-internship-certificate.pdf',
 ]);
+const allowedPublicOfficeFiles = new Set([
+  'assets/documents/australian-high-speed-rail-team-report.docx',
+  'assets/documents/australian-high-speed-rail-team-presentation.pptx',
+]);
 
 const requiredPages = new Map([
   ['Search', ['search/index.html']],
@@ -96,6 +100,8 @@ const requiredAssets = new Map([
   ['internship certificate preview', ['assets/images/internship-certificate.jpg']],
   ['internship certificate', ['assets/documents/northeastern-university-internship-certificate.pdf']],
   ['high-speed rail image', ['assets/images/high-speed-carriage.webp']],
+  ['high-speed rail team report', ['assets/documents/australian-high-speed-rail-team-report.docx']],
+  ['high-speed rail team presentation', ['assets/documents/australian-high-speed-rail-team-presentation.pptx']],
   ['EngineerPlus overview', ['assets/images/engineerplus-overview.webp']],
   ['EngineerPlus capital pooling module', ['assets/images/engineerplus-capital-pooling.webp']],
   ['EngineerPlus risk simulator module', ['assets/images/engineerplus-risk-simulator.webp']],
@@ -518,6 +524,12 @@ function checkResearchAndProjectFacts(pageFiles, htmlByName) {
   if (railDemoLinks.length < 9 || !railDemoLinks.some((href) => href.endsWith('/demo/'))) {
     addIssue('projects', 'High-speed rail page must provide the primary demo action and two deep links for each module');
   }
+  for (const language of ['', 'zh/']) {
+    const page = htmlByName.get(`${language}projects/high-speed-rail/index.html`) ?? '';
+    for (const file of allowedPublicOfficeFiles) {
+      if (!page.includes(file)) addIssue('projects', `${language || 'en/'} high-speed rail page is missing ${file}`);
+    }
+  }
 
   const demoHtml = htmlByName.get(pageFiles.get('EngineerPlus interactive demo')) ?? '';
   const demoText = visibleText(demoHtml);
@@ -875,6 +887,9 @@ async function main() {
     if (/\.pdf$/i.test(name) && !allowedPublicPdfs.has(name)) {
       addIssue('privacy', `Unapproved PDF in dist: ${name}`);
     }
+    if (/\.(?:docx|pptx)$/i.test(name) && !allowedPublicOfficeFiles.has(name)) {
+      addIssue('privacy', `Unapproved Office file in dist: ${name}`);
+    }
   }
 
   const readableExtensions = new Set(['.css', '.html', '.js', '.json', '.mjs', '.svg', '.txt', '.webmanifest', '.xml']);
@@ -902,10 +917,10 @@ async function main() {
       }
     }
     for (const reference of extractReferences(html)) {
-      if (/\.pdf(?:[?#]|$)/i.test(reference.value)) {
+      if (/\.(?:pdf|docx|pptx)(?:[?#]|$)/i.test(reference.value)) {
         const resolved = targetCandidates(file, reference.value);
-        if (!resolved.candidates.some((candidate) => allowedPublicPdfs.has(candidate))) {
-          addIssue('privacy', `${name}: unapproved public PDF link: ${reference.value}`);
+        if (!resolved.candidates.some((candidate) => allowedPublicPdfs.has(candidate) || allowedPublicOfficeFiles.has(candidate))) {
+          addIssue('privacy', `${name}: unapproved public document link: ${reference.value}`);
         }
       }
     }
