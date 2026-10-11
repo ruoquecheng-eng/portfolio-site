@@ -2971,6 +2971,33 @@ html[lang="zh-CN"] .radio-hero .case-title h1 {
     margin: 0.35mm 0 0;
   }
 
+  .resume-award-heading {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 1mm 3mm;
+    font-size: 9pt;
+    line-height: 1.15;
+  }
+
+  .resume-award-prize {
+    padding: 0.3mm 1.2mm;
+    border: 0.3mm solid black;
+    color: black;
+    background: transparent;
+    font-size: 10pt;
+    font-weight: 800;
+    white-space: nowrap;
+  }
+
+  .resume-competition-project {
+    display: block;
+    margin-top: 0.6mm;
+    color: black;
+    font-size: 7.5pt;
+    text-decoration: none;
+  }
+
   .academic-metrics {
     gap: 4mm;
     margin-top: 0.75mm;

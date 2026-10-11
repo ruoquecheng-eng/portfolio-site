@@ -707,7 +707,10 @@ function checkRadioModeling(htmlByName) {
     }
     const expected = name.startsWith('zh/') ? '六次官方模拟器正式测试' : 'six official simulator runs';
     if (!visibleText(html).includes(expected)) addIssue('radio', `${name}: missing localized competition summary`);
-    if (name.startsWith('zh/') && !visibleText(html).includes('2026 全国大学生数学建模竞赛')) {
+    if (!html.includes('resume-award-heading') || !html.includes('resume-award-prize')) {
+      addIssue('radio', `${name}: provincial award must be emphasized in the competition heading`);
+    }
+    if (name.startsWith('zh/') && !visibleText(html).includes(zhTranslations.strings[sourceRecords.radio.type])) {
       addIssue('radio', `${name}: untranslated competition title`);
     }
   }
