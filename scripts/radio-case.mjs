@@ -1,4 +1,4 @@
-export function radioCase({ radio, summary, local, escapeHtml, figure }) {
+export function radioCase({ radio, summary, competitionResult, local, escapeHtml, figure }) {
   const pdf = local(2, `assets/${radio.paper}`);
   const support = local(2, `assets/${radio.support}`);
   const formalRows = radio.formal.map(({ question, runs }) => {
@@ -13,6 +13,7 @@ export function radioCase({ radio, summary, local, escapeHtml, figure }) {
       <div class="case-title">
         <p class="hero-kicker">${escapeHtml(radio.type)}</p>
         <h1>${escapeHtml(radio.title)}</h1>
+        <div class="case-meta"><span class="status">${escapeHtml(competitionResult)}</span></div>
         <p>${escapeHtml(summary)}</p>
         <div class="manuscript-actions"><a class="button" href="#results">Explore the results</a><a class="button-secondary" href="${pdf}" target="_blank" rel="noopener">View full paper <span aria-hidden="true">↗</span></a></div>
       </div>

@@ -3,6 +3,7 @@
   "slug": "radio-localization",
   "title": "Radio Interference Localization and Clearance",
   "type": "2026 CUMCM · Problem B",
+  "competitionResult": "Provincial Second Prize",
   "summary": "A competition modeling study combining bounded-error geometry, robust active sensing, and rolling route planning to locate and clear radio interference sources.",
   "paper": "documents/radio-interference-localization-cumcm-2026.pdf",
   "support": "downloads/radio-localization-support-public.zip",
@@ -34,6 +35,7 @@
   "facts": [
     {"id": "radio.title", "publicText": "Radio Interference Localization and Clearance", "status": "verified", "sourceType": "supplied_paper", "lastVerified": "2026-09-19", "public": true, "display": false},
     {"id": "radio.type", "publicText": "2026 CUMCM · Problem B", "status": "verified", "sourceType": "supplied_paper_reference_1", "lastVerified": "2026-09-19", "public": true, "display": false},
-    {"id": "radio.summary", "publicText": "A competition modeling study combining bounded-error geometry, robust active sensing, and rolling route planning to locate and clear radio interference sources.", "status": "verified", "sourceType": "supplied_paper_and_support", "lastVerified": "2026-09-19", "public": true, "display": false}
+    {"id": "radio.summary", "publicText": "A competition modeling study combining bounded-error geometry, robust active sensing, and rolling route planning to locate and clear radio interference sources.", "status": "verified", "sourceType": "supplied_paper_and_support", "lastVerified": "2026-09-19", "public": true, "display": false},
+    {"id": "radio.competition.result", "publicText": "Provincial Second Prize", "status": "verified", "sourceType": "user_confirmation", "source": "User confirmed the CUMCM provincial second prize on 2026-10-11.", "lastVerified": "2026-10-11", "public": true, "display": false}
   ]
 }

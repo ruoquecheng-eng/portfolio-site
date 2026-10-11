@@ -6,6 +6,8 @@ import {fileURLToPath} from 'node:url';
 import path from 'node:path';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const config=JSON.parse(await readFile(path.join(root,'site.config.json'),'utf8'));
+const radio=JSON.parse(await readFile(path.join(root,'content/facts/projects/radio-localization.json'),'utf8'));
+const zhTranslations=JSON.parse(await readFile(path.join(root,'content/i18n/zh-CN.json'),'utf8'));
 const socket=createServer();await new Promise(resolve=>socket.listen(0,'127.0.0.1',resolve));
 const port=socket.address().port;await new Promise(resolve=>socket.close(resolve));
 const server=spawn(process.execPath,['scripts/serve.mjs','--port',String(port)],{cwd:root,stdio:'ignore',windowsHide:true});
@@ -36,6 +38,8 @@ try {
     const text=execFileSync('pdftotext',[file,'-'],{encoding:'utf8'});
     for(const term of ['NetSage','CommLab','3.7129','19/118','Connected-Diagram','Critical Cubic','Beyond Vertex','lbrswne','ruoquecheng-eng',locale==='zh'?'四川吉星海':'Sichuan Jixinghai'])if(!text.replace(/\s+/g,'').includes(term.replace(/\s+/g,'')))throw Error(`${locale} PDF is missing ${term}`);
     if(locale==='zh'?!text.includes('国赛')&&!text.includes('全国大学生数学建模竞赛'):!text.includes('CUMCM'))throw Error(`${locale} PDF missing modeling competition`);
+    const award=locale==='zh'?zhTranslations.strings[radio.competitionResult]:radio.competitionResult;
+    if(!award||!text.replace(/\s+/g,'').includes(award.replace(/\s+/g,'')))throw Error(`${locale} PDF missing provincial award`);
     console.log(`Verified ${path.relative(root,file)}: 1 page, key content present`);
     await page.close();
   }

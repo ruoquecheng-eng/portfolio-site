@@ -688,6 +688,12 @@ function checkInternship(pageFiles, htmlByName) {
 }
 
 function checkRadioModeling(htmlByName) {
+  for (const name of ['index.html', 'projects/index.html', 'projects/radio-localization/index.html', 'resume/index.html', 'zh/index.html', 'zh/projects/index.html', 'zh/projects/radio-localization/index.html', 'zh/resume/index.html']) {
+    const award = name.startsWith('zh/') ? zhTranslations.strings[sourceRecords.radio.competitionResult] : sourceRecords.radio.competitionResult;
+    if (!award || !visibleText(htmlByName.get(name) ?? '').includes(award)) {
+      addIssue('radio', `${name}: missing localized provincial award`);
+    }
+  }
   for (const name of ['resume/index.html', 'zh/resume/index.html']) {
     const html = htmlByName.get(name) ?? '';
     if (!html.includes('resume-radio') || !html.includes('projects/radio-localization/')) {
@@ -727,7 +733,7 @@ function valueAt(record, field) {
 
 function checkFactGovernance(pageFiles, htmlByName) {
   const requiredBindings = new Set([
-    'profile.hero.name', 'profile.hero.summary', 'netsage.summary', 'battery.dataBoundary', 'battery.summary', 'battery.competitionResult',
+    'profile.hero.name', 'profile.hero.summary', 'netsage.summary', 'battery.dataBoundary', 'battery.summary', 'battery.competitionResult', 'radio.competitionResult',
     'rail.summary', 'rail.role', 'rail.components.engineeringDesign.context', 'rail.components.engineeringDesign.role',
     'rail.components.engineeringDesign.summary', 'rail.components.engineerPlus.context', 'rail.components.engineerPlus.role',
     'rail.components.engineerPlus.summary', 'scenic.summary', 'connected.statusText', 'connected.summary', 'connected.accessText',

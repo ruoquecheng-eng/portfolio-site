@@ -4,6 +4,7 @@
     {"record": "radio", "field": "title", "factId": "radio.title"},
     {"record": "radio", "field": "type", "factId": "radio.type"},
     {"record": "radio", "field": "summary", "factId": "radio.summary"},
+    {"record": "radio", "field": "competitionResult", "factId": "radio.competition.result"},
     {
       "record": "profile",
       "field": "hero.name",
