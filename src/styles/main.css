@@ -2804,7 +2804,10 @@ html[lang="zh-CN"] .radio-hero .case-title h1 {
 }
 
 @media print {
-  .breadcrumbs, .page-contents { display: none !important; }
+  .breadcrumbs, .page-contents, .radio-section-nav,
+  .section-copy, .section-copy-status, .section-copy-fallback, .back-to-top,
+  #search-form, .search-tools, .search-type-filters, .search-suggestions, .search-clear, #search-retry,
+  .material-card .material-actions { display: none !important; }
   .media-viewer { display: none !important; }
   .media-zoom { display: contents; }
   :root,

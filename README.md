@@ -11,19 +11,37 @@ Static technical and academic portfolio, published at [ruoquecheng-eng.github.io
 
 ```powershell
 npm run build
+npm run pdf
+npm test
 npm run qa
+npm run test:browser
 npm run serve
 ```
 
 The local preview is served from `dist/`.
 
-For full browser QA, use the project-local Python environment:
+PDF export uses the pinned Playwright Chromium browser plus `pdfinfo` and
+`pdftotext`. Install Chromium with `npx playwright install chromium` when setting
+up a new checkout. CI also installs Chinese fonts and Poppler. The two current
+resume downloads are generated at `dist/assets/documents/resume-en.pdf` and
+`dist/assets/documents/resume-zh.pdf`; export checks their page count, key content
+and public link destinations.
 
-```powershell
-.\.venv\Scripts\python.exe .\tests\browser_qa.py
-```
+`npm run test:browser` checks every localized route at 360, 768 and 1440px, followed
+by interaction checks. Set `QA_SCREENSHOTS` to a directory outside the repository
+to retain screenshots. The older Python checker and `output/pdf/` artifact are
+legacy tooling, not the current release pipeline.
 
-That check also regenerates `output/pdf/wanzheng-ning-resume.pdf` from the print stylesheet.
+## Browsing features
+
+- Local bilingual search supports result types, matching excerpts, keyword
+  highlighting, suggested queries, and URL-restored query/filter state.
+- Long articles expose section navigation, shareable section links and a
+  keyboard-accessible return to the top.
+- `/materials/` and `/zh/materials/` collect approved public downloads with
+  their source pages. Document contents are not added to the search index.
+- Resume download links carry a content/style version so subsequent updates
+  request the newly generated PDF while retaining stable public filenames.
 
 ## Content rules
 
@@ -35,4 +53,4 @@ That check also regenerates `output/pdf/wanzheng-ning-resume.pdf` from the print
 
 ## Deployment configuration
 
-`site.config.json` contains the production GitHub Pages origin and `/portfolio-site/` base path. Pushes to `main` run `.github/workflows/deploy-pages.yml`; deployment proceeds only after both `npm run build` and `npm run qa` succeed.
+`site.config.json` contains the production GitHub Pages origin and `/portfolio-site/` base path. Pushes to `main` run `.github/workflows/deploy-pages.yml`; deployment proceeds after the build, both PDF exports, unit tests, static QA and browser checks succeed.

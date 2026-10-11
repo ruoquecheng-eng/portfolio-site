@@ -25,7 +25,7 @@ This must not resemble a cyberpunk developer template, a university marketing pa
 1. Evidence before decoration. Real screenshots, figures, repository references, and manuscript facts carry the page.
 2. Scope every claim. Simulation, internal validation, submission status, and individual responsibility stay visible.
 3. Reveal the system. Architecture, diagnostic flow, modeling workflow, and limitations explain how the work was done.
-4. Prioritize the strongest work. NetSage, battery modeling, and research lead; supporting projects remain concise.
+4. Prioritize the strongest work. NetSage, CommLab, radio localization, battery modeling and research form the main browsing path; supporting projects remain concise.
 5. Make scrutiny comfortable. High contrast, semantic structure, keyboard access, print support, and restrained motion are part of credibility.
 
 ## Accessibility & Inclusion

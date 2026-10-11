@@ -4,6 +4,7 @@ import path from 'node:path';
 import process from 'node:process';
 import { promisify } from 'node:util';
 import { fileURLToPath } from 'node:url';
+import { approvedMaterials, formatFileSize, resumeVersion } from './materials.mjs';
 
 const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const distRoot = path.resolve(projectRoot, process.env.QA_DIST ?? 'dist');
@@ -46,6 +47,7 @@ const allowedPublicOfficeFiles = new Set([
 
 const requiredPages = new Map([
   ['Search', ['search/index.html']],
+  ['Materials', ['materials/index.html']],
   ['Radio localization case study', ['projects/radio-localization/index.html']],
   ['Home', ['index.html']],
   ['Projects', ['projects/index.html', 'projects.html']],
@@ -116,6 +118,7 @@ const requiredAssets = new Map([
 
 const sitemapRoutes = [
   '/search/',
+  '/materials/',
   '/',
   '/projects/',
   '/projects/netsage/',
@@ -658,6 +661,81 @@ function checkBilingualPages(htmlByName) {
   }
 }
 
+async function checkMaterials(htmlByName) {
+  const sourcePages = sitemapRoutes.map((route) => ({ route, html: htmlByName.get(route === '/' ? 'index.html' : `${route.slice(1)}index.html`) ?? '' }));
+  const materials = approvedMaterials(sourceRecords, sourcePages);
+  const styles = await Promise.all(['styles/main.css', 'styles/refinement.css'].map((file) => readFile(path.join(distRoot, file), 'utf8')));
+  const versions = Object.fromEntries(['en', 'zh'].map((locale) => [locale,
+    resumeVersion(htmlByName.get(locale === 'en' ? 'resume/index.html' : 'zh/resume/index.html') ?? '', zhTranslations, styles)
+  ]));
+  for (const [name, html] of htmlByName) {
+    const file = path.join(distRoot, name);
+    const locale = name.startsWith('zh/') ? 'zh' : 'en';
+    for (const tag of html.match(/<a\b[^>]*>/gi) ?? []) {
+      const href = decodeAttribute(attribute(tag, 'href') ?? '');
+      const match = href.match(/documents\/resume-(en|zh)\.pdf(?:[?#]|$)/);
+      if (match && (match[1] !== locale || new URL(href, siteBaseUrl).searchParams.get('v') !== versions[locale])) {
+        addIssue('materials', `${name}: resume download must use the current language and content/style version`);
+      }
+    }
+    if (name === '404.html' || !html.includes('class="site-header"')) continue;
+    for (const className of ['site-nav', 'site-footer']) {
+      const block = html.match(new RegExp(`<(?:nav|footer)\\b[^>]*class="${className}"[^>]*>([\\s\\S]*?)<\\/(?:nav|footer)>`))?.[1] ?? '';
+      for (const [route, label] of [['projects/', 'Projects'], ['research/', 'Research'], ['resume/', 'Resume'], ['materials/', 'Materials'], ['search/', 'Search']]) {
+        const target = `${locale === 'zh' ? 'zh/' : ''}${route}index.html`;
+        const localizedLabel = locale === 'zh' ? zhTranslations.strings[label] : label;
+        const found = [...block.matchAll(/<a\b([^>]*)>([\s\S]*?)<\/a>/gi)].some(([, attrs, text]) =>
+          targetCandidates(file, attribute(`<a ${attrs}>`, 'href') ?? '').candidates.includes(target) && visibleText(text) === localizedLabel);
+        if (!found) addIssue('navigation', `${name}: ${className} must link to ${target} with its localized label`);
+      }
+    }
+  }
+  for (const [locale, name] of [['en', 'materials/index.html'], ['zh', 'zh/materials/index.html']]) {
+    const html = htmlByName.get(name) ?? '';
+    const file = path.join(distRoot, name);
+    const cards = [...html.matchAll(/<article class="material-card">([\s\S]*?)<\/article>/g)].map((match) => match[1]);
+    if (cards.length !== materials.length) addIssue('materials', `${name}: expected exactly ${materials.length} approved material cards`);
+    for (const material of materials) {
+      const target = `assets/${material.resume ? `documents/resume-${locale}.pdf` : material.file}`;
+      const matching = cards.filter((card) => (card.match(/<a\b[^>]*>/g) ?? []).some((tag) => targetCandidates(file, attribute(tag, 'href') ?? '').candidates.includes(target)));
+      if (matching.length !== 1) {
+        addIssue('materials', `${name}: expected one card for ${target}`);
+        continue;
+      }
+      const card = matching[0];
+      for (const className of ['material-meta', 'material-actions', 'material-source']) {
+        if (!card.includes(`class="${className}"`)) addIssue('materials', `${name}: ${target} is missing ${className}`);
+      }
+      const meta = visibleText(card.match(/<p class="material-meta">([\s\S]*?)<\/p>/)?.[1] ?? '');
+      const expectedMeta = material.resume ? 'PDF · A4' : `${path.extname(material.file).slice(1).toUpperCase()} · ${formatFileSize((await stat(path.join(projectRoot, 'src/assets', material.file))).size)}`;
+      if (meta !== expectedMeta) addIssue('materials', `${name}: ${target} has incorrect format/size metadata`);
+      const source = card.match(/<p class="material-source">([\s\S]*?)<\/p>/)?.[1] ?? '';
+      const sourceHref = attribute(source.match(/<a\b[^>]*>/)?.[0] ?? '', 'href') ?? '';
+      const expectedSource = `${locale === 'zh' ? 'zh/' : ''}${material.source.slice(1).split('#')[0]}index.html`;
+      const resolvedSource = targetCandidates(file, sourceHref);
+      if (!resolvedSource.candidates.includes(expectedSource) || resolvedSource.fragment !== (material.source.split('#')[1] ?? '')) {
+        addIssue('materials', `${name}: ${target} has an incorrect source-page link`);
+      }
+      const actions = card.match(/<div class="material-actions">([\s\S]*?)<\/div>/)?.[1] ?? '';
+      const links = actions.match(/<a\b[^>]*>/g) ?? [];
+      const pdf = target.endsWith('.pdf');
+      if (links.length !== (pdf ? 2 : 1) || !links.some((tag) => /\sdownload(?:\s|=|>)/.test(tag)) ||
+          (pdf && !links.some((tag) => attribute(tag, 'target') === '_blank' && /\bnoopener\b/.test(attribute(tag, 'rel') ?? '')))) {
+        addIssue('materials', `${name}: ${target} has incorrect open/download actions`);
+      }
+    }
+    const approved = new Set(materials.map((material) => `assets/${material.resume ? `documents/resume-${locale}.pdf` : material.file}`));
+    for (const card of cards) {
+      for (const tag of card.match(/<a\b[^>]*>/g) ?? []) {
+        const href = attribute(tag, 'href') ?? '';
+        if (/\.(pdf|zip|docx|pptx)(?:[?#]|$)/i.test(href) && !targetCandidates(file, href).candidates.some((target) => approved.has(target))) {
+          addIssue('materials', `${name}: unapproved material ${href}`);
+        }
+      }
+    }
+  }
+}
+
 function checkInternship(pageFiles, htmlByName) {
   const englishPages = [
     ['Projects', htmlByName.get(pageFiles.get('Projects')) ?? ''],
@@ -938,6 +1016,11 @@ async function main() {
     }
   }
 
+  const expectedPages = new Set(['404.html', ...bilingualSitemapRoutes.map((route) => route === '/' ? 'index.html' : `${route.slice(1)}index.html`)]);
+  if (htmlByName.size !== expectedPages.size || [...expectedPages].some((name) => !htmlByName.has(name))) {
+    addIssue('pages', 'Generated HTML must exactly cover the bilingual canonical routes and 404');
+  }
+  await checkMaterials(htmlByName);
   checkResearchAndProjectFacts(pageFiles, htmlByName);
   checkProfileLinks(pageFiles, htmlByName);
   checkBilingualPages(htmlByName);

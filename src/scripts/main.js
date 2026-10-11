@@ -15,19 +15,22 @@
   // A compact contents menu for long case studies and research articles.
   const article = document.querySelector('.case-study, .research-paper');
   const headings = article ? [...article.querySelectorAll('section h2')].filter(h => !h.closest('figure')) : [];
-  if (headings.length >= 3 && !article.querySelector('.radio-section-nav')) {
+  const radioNav = article?.querySelector('.radio-section-nav');
+  headings.forEach((heading, index) => {
+    if (heading.id) return;
+    let id = `page-section-${index + 1}`;
+    while (document.getElementById(id)) id += '-section';
+    heading.id = id;
+  });
+
+  if (headings.length >= 3 && !radioNav && !article.querySelector('.page-contents')) {
     const contents = document.createElement('details');
     contents.className = 'page-contents';
     const summary = document.createElement('summary');
     summary.textContent = isChinese ? '本页目录' : 'On this page';
     const nav = document.createElement('nav');
     nav.setAttribute('aria-label', summary.textContent);
-    headings.forEach((heading, index) => {
-      if (!heading.id) {
-        let id = `page-section-${index + 1}`;
-        while (document.getElementById(id)) id += '-section';
-        heading.id = id;
-      }
+    headings.forEach((heading) => {
       const link = document.createElement('a');
       link.href = `#${heading.id}`;
       link.textContent = (heading.closest('.section-heading')?.querySelector('p')?.textContent || heading.textContent).trim();
@@ -41,6 +44,94 @@
     contents.append(summary, nav);
     article.querySelector('header')?.after(contents);
   }
+
+  if (headings.length >= 3 || radioNav) {
+    headings.forEach((heading) => {
+      const section = heading.closest('section');
+      const target = radioNav && section.id ? section : heading;
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'section-copy';
+      button.textContent = isChinese ? '复制章节链接' : 'Copy section link';
+      button.setAttribute('aria-label', `${button.textContent}: ${heading.textContent.trim()}`);
+      const status = document.createElement('span');
+      status.className = 'section-copy-status';
+      status.setAttribute('role', 'status');
+      status.setAttribute('aria-atomic', 'true');
+      let fallback;
+      button.addEventListener('click', async () => {
+        const url = new URL(window.location.href);
+        url.search = '';
+        url.hash = target.id;
+        button.disabled = true;
+        status.textContent = isChinese ? '正在复制…' : 'Copying…';
+        try {
+          if (!navigator.clipboard?.writeText) throw new Error('Clipboard unavailable');
+          await navigator.clipboard.writeText(url.href);
+          if (fallback) fallback.hidden = true;
+          status.textContent = isChinese ? '章节链接已复制。' : 'Section link copied.';
+        } catch {
+          if (!fallback) {
+            fallback = document.createElement('label');
+            fallback.className = 'section-copy-fallback';
+            const label = document.createElement('span');
+            label.textContent = isChinese ? '章节链接（可选择并复制）' : 'Section link (select and copy)';
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.readOnly = true;
+            input.addEventListener('focus', () => input.select());
+            input.addEventListener('click', () => input.select());
+            fallback.append(label, input);
+            status.after(fallback);
+          }
+          fallback.hidden = false;
+          const input = fallback.querySelector('input');
+          input.value = url.href;
+          input.focus({ preventScroll: true });
+          input.select();
+          status.textContent = isChinese
+            ? '无法自动复制。链接已选中，请按 Ctrl+C 或 ⌘C，或使用设备的复制功能。'
+            : 'Automatic copying unavailable. Link selected; press Ctrl+C or ⌘C, or use your device’s copy action.';
+        } finally {
+          button.disabled = false;
+        }
+      });
+      heading.after(button, status);
+    });
+  }
+
+  function hashTarget(hash) {
+    try {
+      return document.getElementById(decodeURIComponent(hash.slice(1)));
+    } catch {
+      return null;
+    }
+  }
+
+  // Generated heading IDs do not exist until this script runs.
+  const initialTarget = hashTarget(window.location.hash);
+  if (initialTarget && article?.contains(initialTarget)) {
+    window.requestAnimationFrame(() => initialTarget.scrollIntoView({ behavior: 'instant' }));
+  }
+
+  const searchInput = document.getElementById('search-query');
+  if (searchInput && window.location.hash === '#search-query') searchInput.focus();
+  document.addEventListener('keydown', (event) => {
+    if (event.defaultPrevented || event.key !== '/' || event.ctrlKey || event.metaKey || event.altKey || event.shiftKey || event.isComposing) return;
+    if (event.target instanceof Element && event.target.closest('input, textarea, select, [contenteditable]:not([contenteditable="false"]), [role="textbox"]')) return;
+    if (document.querySelector('dialog[open]')) return;
+    if (searchInput) {
+      event.preventDefault();
+      searchInput.focus();
+      return;
+    }
+    const searchLink = [...document.querySelectorAll('.site-nav a[href]')].find((link) => /\/search\/(?:index\.html)?$/.test(new URL(link.href).pathname));
+    if (!searchLink) return;
+    event.preventDefault();
+    const url = new URL(searchLink.href);
+    url.hash = 'search-query';
+    window.location.assign(url.href);
+  });
 
   // Enlarge existing project figures without fetching additional media.
   let mediaViewer;
@@ -134,6 +225,11 @@
     link.addEventListener("click", () => {
       const choice = link.dataset.languageChoice;
       if (choice === "en" || choice === "zh-CN") safeStorage.set(languageKey, choice);
+      if (article && window.location.hash && hashTarget(window.location.hash)) {
+        const url = new URL(link.href);
+        url.hash = window.location.hash;
+        link.href = url.href;
+      }
     });
   });
 
@@ -208,8 +304,54 @@
 
   let progressFrame = 0;
 
+  const main = document.getElementById('main');
+  const backToTop = main ? document.createElement('button') : null;
+  if (backToTop) {
+    backToTop.type = 'button';
+    backToTop.className = 'back-to-top';
+    backToTop.textContent = isChinese ? '返回顶部 ↑' : 'Back to top ↑';
+    backToTop.hidden = true;
+    document.body.append(backToTop);
+    backToTop.addEventListener('click', () => {
+      const focusTarget = main.querySelector('h1') || main;
+      focusTarget.tabIndex = -1;
+      focusTarget.focus({ preventScroll: true });
+      window.scrollTo({ top: 0, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' });
+    });
+  }
+
+  let readingLinks = [];
+  let readingTargets = [];
+
+  function updateActiveSection() {
+    if (!readingTargets.length) return;
+    const readingLine = Math.min(200, window.innerHeight * 0.25);
+    let active = readingTargets[0];
+    for (const target of readingTargets) {
+      if (target.getBoundingClientRect().top <= readingLine) active = target;
+    }
+    if (window.scrollY > 0 && window.scrollY + window.innerHeight >= root.scrollHeight - 2) {
+      active = readingTargets[readingTargets.length - 1];
+    }
+    readingLinks.forEach(({ link, target }) => {
+      const current = target === active;
+      link.classList.toggle('is-active', current);
+      if (current) link.setAttribute('aria-current', 'location');
+      else if (link.getAttribute('aria-current') === 'location') link.removeAttribute('aria-current');
+    });
+  }
+
   function updateReadingProgress() {
     progressFrame = 0;
+    updateActiveSection();
+    if (backToTop) {
+      const hidden = window.scrollY < Math.max(600, window.innerHeight);
+      if (hidden && document.activeElement === backToTop) {
+        main.tabIndex = -1;
+        main.focus({ preventScroll: true });
+      }
+      backToTop.hidden = hidden;
+    }
     if (!progress) return;
 
     const scrollable = document.documentElement.scrollHeight - window.innerHeight;
@@ -227,9 +369,6 @@
     progress.setAttribute("aria-label", isChinese ? "阅读进度" : "Reading progress");
     progress.setAttribute("aria-valuemin", "0");
     progress.setAttribute("aria-valuemax", "100");
-    window.addEventListener("scroll", requestProgressUpdate, { passive: true });
-    window.addEventListener("resize", requestProgressUpdate, { passive: true });
-    updateReadingProgress();
   }
 
   function normalizedPath(value) {
@@ -253,34 +392,19 @@
     return url.origin === window.location.origin && normalizedPath(url.href) === currentPath && url.hash;
   });
 
-  if (sectionLinks.length && "IntersectionObserver" in window) {
-    const linkById = new Map(
-      sectionLinks.map((link) => [decodeURIComponent(new URL(link.href).hash.slice(1)), link])
-    );
-    const sections = [...linkById.keys()]
-      .map((id) => document.getElementById(id))
-      .filter(Boolean);
+  readingLinks = [...sectionLinks, ...document.querySelectorAll('.page-contents a[href], .radio-section-nav a[href]')]
+    .map((link) => {
+      const url = new URL(link.href, window.location.href);
+      const target = url.origin === window.location.origin && normalizedPath(url.href) === currentPath ? hashTarget(url.hash) : null;
+      return { link, target };
+    })
+    .filter(({ target }) => target);
+  readingTargets = [...new Set(readingLinks.map(({ target }) => target))]
+    .sort((a, b) => a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING ? -1 : 1);
 
-    const observer = new IntersectionObserver((entries) => {
-      const visible = entries
-        .filter((entry) => entry.isIntersecting)
-        .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
-
-      if (!visible) return;
-
-      sectionLinks.forEach((link) => {
-        link.classList.remove("is-active");
-        if (link.getAttribute("aria-current") === "location") link.removeAttribute("aria-current");
-      });
-
-      const active = linkById.get(visible.target.id);
-      active?.classList.add("is-active");
-      active?.setAttribute("aria-current", "location");
-    }, {
-      rootMargin: "-22% 0px -62% 0px",
-      threshold: [0, 0.2, 0.6]
-    });
-
-    sections.forEach((section) => observer.observe(section));
-  }
+  window.addEventListener('scroll', requestProgressUpdate, { passive: true });
+  window.addEventListener('resize', requestProgressUpdate, { passive: true });
+  window.addEventListener('hashchange', requestProgressUpdate);
+  window.addEventListener('load', requestProgressUpdate);
+  updateReadingProgress();
 })();

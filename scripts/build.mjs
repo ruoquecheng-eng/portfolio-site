@@ -4,6 +4,7 @@ import { createHash } from "node:crypto";
 import { fileURLToPath } from "node:url";
 import { radioCase } from "./radio-case.mjs";
 import {enrichBody, searchBody, annotateMaterials, makeSearchIndex} from './editorial.mjs';
+import { approvedMaterials, materialsBody, materialsDescription, resumeVersion, versionResumeLinks } from './materials.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const dist = path.join(root, "dist");
@@ -121,13 +122,14 @@ const figure = ({ depth, src, width, height, alt, caption, eager = false, classN
     <figcaption>${caption}</figcaption>
   </figure>`;
 
-const nav = (depth, active) => {
-  const items = [
+const navigationItems = [
     ["projects", "Projects", "projects/"],
     ["research", "Research", "research/"],
-    ["resume", "Resume", "resume/"]
-    , ["search", "Search", "search/"]
-  ];
+    ["resume", "Resume", "resume/"],
+    ["materials", "Materials", "materials/"],
+    ["search", "Search", "search/"]
+];
+const nav = (depth, active) => {
   return `
     <a class="brand" href="${local(depth)}" aria-label="Wanzheng Ning home">
       <span class="brand-mark" aria-hidden="true">WN</span>
@@ -135,7 +137,7 @@ const nav = (depth, active) => {
     </a>
     <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav">Menu</button>
     <nav class="site-nav" id="site-nav" aria-label="Primary navigation">
-      ${items.map(([key, label, href]) => `<a href="${local(depth, href)}"${active === key ? ' aria-current="page"' : ""}>${label}</a>`).join("")}
+      ${navigationItems.map(([key, label, href]) => `<a href="${local(depth, href)}"${active === key ? ' aria-current="page"' : ""}>${label}</a>`).join("")}
       <a href="${local(depth, "resume/#github-accounts")}">GitHub accounts</a>
       <button class="theme-toggle" type="button" aria-label="Switch color theme" title="Switch color theme"><span aria-hidden="true">◐</span><span class="sr-only">Switch color theme</span></button>
     </nav>`;
@@ -183,9 +185,7 @@ const page = ({ title, description, route, depth, active, body, schema, bodyClas
   <footer class="site-footer">
     <div><strong>${escapeHtml(profileName)}</strong><p>Communication engineering, network diagnostics, modeling, and research.</p></div>
     <div>
-      <a href="${local(depth, "projects/")}">Projects</a>
-      <a href="${local(depth, "research/")}">Research</a>
-      <a href="${local(depth, "resume/")}">Resume</a>
+      ${navigationItems.map(([, label, href]) => `<a href="${local(depth, href)}">${label}</a>`).join("")}
       ${publicLinks.map((link) => `<a href="${escapeHtml(link.url)}" rel="me noopener">GitHub · ${escapeHtml(link.label)}</a>`).join("")}
     </div>
     <p class="footer-note" data-last-reviewed="${escapeHtml(latestReviewDate)}">Facts last reviewed ${escapeHtml(formattedReviewDate)}. Maintained as a verified static portfolio.</p>
@@ -1087,6 +1087,12 @@ const baseRoutes = [
   }
 ];
 
+baseRoutes.push({
+  file: 'materials/index.html', route: '/materials/',
+  html: page({ title: 'Materials', description: materialsDescription, route: '/materials/', depth: 1, active: 'materials',
+    body: await materialsBody(approvedMaterials(recordsByKey, baseRoutes), { root, local, escapeHtml }) })
+});
+
 const baseNotFound = page({
   title: "Page not found",
   description: "The requested portfolio page could not be found.",
@@ -1107,7 +1113,15 @@ const chineseRoutes = baseRoutes.map((entry) => ({
   html: decorateDocument(entry.html, entry.route, "zh-CN", baseRouteSet, { demo: entry.route === "/projects/high-speed-rail/demo/" })
 }));
 const routes = [...englishRoutes, ...chineseRoutes];
-for (const entry of routes) entry.html = await annotateMaterials(entry.html, root);
+for (const entry of routes) {
+  // The central materials cards already include measured format/size metadata.
+  if (!entry.route.endsWith('/materials/')) entry.html = await annotateMaterials(entry.html, root);
+}
+const resumeStyles = await Promise.all(['styles/main.css', 'styles/refinement.css'].map((file) => readFile(path.join(root, 'src', file), 'utf8')));
+const resumeVersions = Object.fromEntries(['en', 'zh'].map((locale) => [locale,
+  resumeVersion(routes.find((entry) => entry.route === (locale === 'en' ? '/resume/' : '/zh/resume/')).html, zhTranslations, resumeStyles)
+]));
+for (const entry of routes) entry.html = versionResumeLinks(entry.html, resumeVersions);
 
 const absolutizeNotFoundLinks = (html) => html.replace(/\b(href|src)="([^"]*)"/gi, (match, attributeName, value) => {
   if (/^(?:#|https?:|mailto:|tel:|data:)/i.test(value)) return match;
@@ -1116,6 +1130,9 @@ const absolutizeNotFoundLinks = (html) => html.replace(/\b(href|src)="([^"]*)"/g
 });
 
 const bilingualNotFound = () => {
+  const chineseNavigation = Object.fromEntries([...navigationItems, ['github', 'GitHub accounts', 'resume/#github-accounts']].map(([, label, href]) => [
+    publicPath(`/${href}`), [translateString(label), publicPath(`/zh/${href}`)]
+  ]));
   const english = absolutizeNotFoundLinks(decorateDocument(baseNotFound, "/404.html", "en", baseRouteSet))
     .replaceAll(publicPath("/zh/404.html"), publicPath("/zh/"))
     .replace('<section class="not-found">', '<section class="not-found" data-404-language="en">');
@@ -1124,16 +1141,16 @@ const bilingualNotFound = () => {
     .replace("</main>", `${chinesePanel}</main>`)
     .replace("</body>", `<script>
       (()=>{try{
-        const zh=location.pathname.includes("/zh/")||(!location.pathname.includes("/projects/")&&!location.pathname.includes("/research/")&&!location.pathname.includes("/resume/")&&localStorage.getItem("portfolio-language")==="zh-CN");
+        const zh=location.pathname.includes("/zh/")||(!["projects","research","resume","materials","search"].some((route)=>location.pathname.includes("/"+route+"/"))&&localStorage.getItem("portfolio-language")==="zh-CN");
         document.documentElement.lang=zh?"zh-CN":"en";
         document.title=zh?"页面未找到 | 宁琬正 / Wanzheng Ning":"Page not found | Wanzheng Ning";
         document.querySelectorAll("[data-404-language]").forEach((panel)=>panel.hidden=panel.dataset["404Language"]!==(zh?"zh-CN":"en"));
         if(zh){
           const copy=[[".skip-link","跳到主要内容"],[".brand-text","宁琬正 / Wanzheng Ning"],[".nav-toggle","菜单"],[".site-footer strong","宁琬正 / Wanzheng Ning"],[".site-footer div:first-child p","通信工程、网络诊断、数学建模与数学研究。"],[".footer-note","公开事实最近核验于 ${formattedReviewDateZh}。本网站作为经核验的静态作品集维护。"]];
           copy.forEach(([selector,value])=>{const element=document.querySelector(selector);if(element)element.textContent=value});
-          const nav=[["项目","${publicPath("/zh/projects/")}"],["研究","${publicPath("/zh/research/")}"],["简历","${publicPath("/zh/resume/")}"],["GitHub 账号","${publicPath("/zh/resume/#github-accounts")}"]];document.querySelectorAll(".site-nav>a").forEach((link,index)=>{if(nav[index]){link.textContent=nav[index][0];link.href=nav[index][1]}});
-          const footer=[["项目","${publicPath("/zh/projects/")}"],["研究","${publicPath("/zh/research/")}"],["简历","${publicPath("/zh/resume/")}"]];document.querySelectorAll(".site-footer div:nth-child(2)>a").forEach((link,index)=>{if(footer[index]){link.textContent=footer[index][0];link.href=footer[index][1]}});
-          const theme=document.querySelector(".theme-toggle");if(theme){theme.setAttribute("aria-label","切换颜色主题");theme.setAttribute("title","切换颜色主题")}
+          const navigation=${JSON.stringify(chineseNavigation)};document.querySelectorAll(".site-nav>a,.site-footer div:nth-child(2)>a").forEach((link)=>{const url=new URL(link.href),translation=navigation[url.pathname+url.hash];if(translation){link.textContent=translation[0];link.href=translation[1]}});
+          document.querySelector('.brand')?.setAttribute("aria-label","宁琬正 / Wanzheng Ning 首页");document.querySelector('.brand')?.setAttribute("href","${publicPath('/zh/')}");document.querySelector('.site-nav')?.setAttribute("aria-label","主导航");
+          const theme=document.querySelector(".theme-toggle");if(theme){theme.setAttribute("aria-label","切换颜色主题");theme.setAttribute("title","切换颜色主题");const label=theme.querySelector('.sr-only');if(label)label.textContent="切换颜色主题"}
           const group=document.querySelector(".language-switcher");if(group)group.setAttribute("aria-label","语言选择");
           document.querySelector('[data-language-choice="en"]')?.removeAttribute("aria-current");document.querySelector('[data-language-choice="zh-CN"]')?.setAttribute("aria-current","page");
         }

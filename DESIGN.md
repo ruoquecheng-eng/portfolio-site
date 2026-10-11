@@ -42,6 +42,20 @@ Search is local to the browser and current language. Static indexes include
 public text and bilingual keyword aliases, never PDF contents or certificate
 identifiers. Every term must match; titles outrank keywords, summaries and body.
 The query persists in `q`. Initial, loading, empty and retry states are explicit.
+Result types persist in `type`. Suggestions and clear controls use ordinary
+buttons; Chinese composition must finish before it triggers a search. Matching
+excerpts and text-node highlighting expose why a result matched without turning
+query text into markup. Explicit committed state changes support browser history.
+
+Materials has its own bilingual navigation destination. Cards group the approved
+file with its purpose, format/known size, source page, and open/download actions.
+Generated resume sizes are not guessed. Resume links use a content/style version
+query to request updated PDFs without renaming the public files.
+
+Long-page directories mark the current section with `aria-current="location"`.
+Section-copy actions provide localized feedback and a selectable URL fallback.
+The back-to-top control appears after scrolling, restores useful keyboard focus,
+and respects reduced motion. These reading controls are omitted from print.
 
 ## Resume and print
 
