@@ -2984,12 +2984,9 @@ html[lang="zh-CN"] .radio-hero .case-title h1 {
   }
 
   .resume-award-prize {
-    padding: 0.3mm 1.2mm;
-    border: 0.3mm solid black;
     color: black;
-    background: transparent;
-    font-size: 10pt;
-    font-weight: 800;
+    font-size: inherit;
+    font-weight: 700;
     white-space: nowrap;
   }
 

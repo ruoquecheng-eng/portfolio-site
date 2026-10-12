@@ -190,7 +190,8 @@ main :is(h2[id],section[id]) { scroll-margin-top: calc(var(--header-height) + 1.
 .resume-entry p { margin-top: .45rem; }
 .resume-entry strong a { color: var(--ink); text-underline-offset: .2em; }
 .resume-award-heading { display: flex; flex-wrap: wrap; align-items: center; gap: .4rem .75rem; font-size: 1rem; line-height: 1.5; }
-.resume-award-prize { display: inline-block; padding: .15em .6em; border: 1px solid var(--signal); border-radius: .25rem; color: var(--signal); background: color-mix(in oklch, var(--signal) 8%, var(--surface)); font-weight: 800; white-space: nowrap; }
+.resume-award-prize { color: #000; font-weight: 700; white-space: nowrap; }
+:root[data-theme="dark"] .resume-award-prize { color: var(--ink); }
 .resume-competition-project { display: block; margin-top: .4rem; color: var(--ink-soft); font-size: .88rem; }
 .resume .academic-metrics { gap: 1rem 2rem; margin-top: .75rem; font-variant-numeric: tabular-nums; }
 .resume .academic-metrics dd { font-size: 1.1rem; }
