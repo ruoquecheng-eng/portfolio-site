@@ -338,7 +338,7 @@ const homeBody = `
       <p>Selected work</p>
       <h2>Systems that can be inspected.</h2>
     </div>
-    <p class="section-lead">The primary work below shows implementation, modeling choices, validation boundaries, and limitations. Supporting projects remain available in the full project index.</p>
+    <p class="section-lead">Explore the implementation, modeling choices, and results behind these projects. Browse the full project index for more work.</p>
   </section>
   <section class="section selected-work">
     ${projectRow({
@@ -440,8 +440,8 @@ const commlabBody = `
       </div>
       <img class="case-wide-visual" src="${local(2, "assets/images/commlab-ofdm-link.webp")}" width="1440" height="1000" alt="Running CommLab OFDM link laboratory with local controls, BER, EVM, and a received constellation">
     </header>
-    <section class="section notice-section" aria-label="Evidence boundary">
-      <strong>Evidence boundary</strong><p>CommLab is a local simulation and research platform. Its numerical outputs use explicit synthetic models and assumptions; they are not measurements from a calibrated radio, standards-compliance certification, or live base-station deployment.</p>
+    <section class="section notice-section" aria-label="Simulation setup">
+      <strong>Simulation setup</strong><p>CommLab runs local experiments with explicit synthetic models and assumptions. Numerical results describe the selected simulation settings.</p>
     </section>
     <section class="section split-section" id="overview">
       <div><p class="project-type">System purpose</p><h2>One workbench across the communication stack</h2><p>The project connects waveform and receiver experiments to scheduling, edge inference, resilient control, and offline policy evaluation. The aim is to study cross-layer trade-offs without requiring a cloud account, rented server, real base station, or GPU.</p></div>
@@ -464,21 +464,21 @@ const commlabBody = `
     </section>
     <section class="section" id="running-interface">
       <div class="section-heading"><p>Running interface</p><h2>Four views from the current local Dashboard</h2></div>
-      <p class="section-lead">These screenshots come from a locally running v3.7.1 Dashboard. Values are reproducible simulation outputs for the displayed seed and controls, not field-performance claims.</p>
+      <p class="section-lead">These screenshots show the locally running v3.7.1 Dashboard. The displayed seed and controls reproduce the simulation outputs.</p>
       <div class="commlab-gallery">
         ${figure({depth: 2, src: "images/commlab-ofdm-link.webp", width: 1440, height: 1000, alt: "Running CommLab OFDM link laboratory with local controls, BER, EVM, and a received constellation", caption: "OFDM link. QPSK symbols, channel impairment controls, BER, RMS EVM, and the received constellation are shown in one local experiment.", className: "commlab-figure"})}
-        ${figure({depth: 2, src: "images/commlab-isac.webp", width: 1440, height: 1000, alt: "Running CommLab ISAC laboratory with local controls, metrics, and a range-Doppler result", caption: "OFDM sensing / ISAC. The range-Doppler view and CFAR detections come from a normalized monostatic simulation, not calibrated radar hardware.", className: "commlab-figure"})}
+        ${figure({depth: 2, src: "images/commlab-isac.webp", width: 1440, height: 1000, alt: "Running CommLab ISAC laboratory with local controls, metrics, and a range-Doppler result", caption: "OFDM sensing / ISAC. A normalized monostatic simulation produces the range-Doppler view and CFAR detections.", className: "commlab-figure"})}
         ${figure({depth: 2, src: "images/commlab-resilience.webp", width: 1440, height: 1000, alt: "Running CommLab unified resilience-budget laboratory showing cross-layer controls and deadline metrics", caption: "Unified resilience budget. Radio duplication, replica execution, and proactive migration share an illustrative decision budget while physical metrics remain separate.", className: "commlab-figure"})}
         ${figure({depth: 2, src: "images/commlab-ope.webp", width: 1440, height: 1000, alt: "Running CommLab propensity-robust policy evaluation laboratory showing uncertainty and a failed coverage warning", caption: "Propensity-robust OPE. The interface preserves a negative result: the selected odds envelope fails row-wise coverage under the displayed hidden-confounding stress.", className: "commlab-figure"})}
       </div>
     </section>
     <section class="section split-section" id="architecture">
       <div><p class="project-type">Architecture</p><h2>Local code, reproducible experiments, recorded results</h2><p><code>app/dashboard.py</code> is the interactive entry point; reusable simulation modules live under <code>src/commlab</code>; experiment scripts and recorded CSV/PNG outputs remain available for reproduction and audit.</p></div>
-      <div><p class="project-type">Decision integrity</p><h2>No hidden genie in adaptive policies</h2><p>Adaptive decisions use forecasts, pre-transmission observations, delayed feedback, or explicitly available telemetry. Realized packet outcomes and component failures are reserved for evaluation and are not exposed to the policy before it acts.</p></div>
+      <div><p class="project-type">Decision integrity</p><h2>Information available at decision time</h2><p>Adaptive decisions use forecasts, pre-transmission observations, delayed feedback, or explicitly available telemetry. Realized packet outcomes and component failures are reserved for evaluation and are not exposed to the policy before it acts.</p></div>
     </section>
     <section class="section limitations">
       <div><h2>Validation and limitations</h2>${factList(commlab, "fact-list compact")}</div>
-      <p>The successful Windows artifact proves that the portable package and installer built on the GitHub Windows runner. It does not replace testing on a broader matrix of Windows versions, restricted accounts, antivirus products, and installation paths.</p>
+      <p>The portable ZIP and installer build successfully on the GitHub Windows runner. Compatibility across Windows versions, restricted accounts, antivirus products, and installation paths requires separate testing.</p>
     </section>
     <section class="section final-link"><p>Inspect the current source, experiments, tests, release records, and <a href="${escapeHtml(commlab.windowsBuild)}" rel="noopener">successful Windows build</a> on GitHub.</p><a class="button" href="${escapeHtml(commlab.repository)}" rel="noopener">Open CommLab on GitHub</a></section>
   </article>`;
@@ -502,7 +502,7 @@ const netsageBody = `
     </section>
     <section class="section split-section" id="problem">
       <div><h2>Problem</h2></div>
-      <div><h2>Diagnosis philosophy</h2><p>The engine uses explicit rules and evidence matching. Evidence strength is a deterministic ranking aid, not a probability produced by a trained machine-learning model.</p></div>
+      <div><h2>Diagnosis philosophy</h2><p>The engine matches observations against explicit rules and ranks diagnostic hypotheses using deterministic evidence scores.</p></div>
     </section>
     <section class="section netsage-screens" id="app-walkthrough">
       <div class="section-heading"><p>Real Android build</p><h2>Eleven verified screens across the primary workflow</h2></div>
@@ -514,7 +514,7 @@ const netsageBody = `
         ${figure({depth: 2, src: "images/netsage-app-scenarios.webp", width: 1080, height: 2400, alt: "NetSage fault scenario library grouped into DNS, connection, TLS, HTTP, and packet loss cases", caption: "Scenario library. Ten offline troubleshooting scenarios can be sent into the diagnostic workflow.", className: "netsage-screen"})}
         ${figure({depth: 2, src: "images/netsage-app-v020-checkup.webp", width: 1080, height: 2400, alt: "NetSage 0.2.0 quick checkup form showing an explicit warning when HTTP is selected", caption: "Quick checkup. Selecting HTTP displays a clear plaintext warning; HTTPS is never silently downgraded.", className: "netsage-screen"})}
         ${figure({depth: 2, src: "images/netsage-app-combined.webp", width: 1080, height: 2400, alt: "NetSage combined diagnosis form that combines an optional log with a user-selected HTTPS target", caption: "Combined diagnosis. A user-confirmed target and optional log evidence are retained in one local session.", className: "netsage-screen"})}
-        ${figure({depth: 2, src: "images/netsage-app-active-result.webp", width: 1080, height: 2400, alt: "NetSage active quick check result showing an Android emulator network snapshot and successful DNS lookup for example.com", caption: "Active check result. The on-device run records its network snapshot and DNS evidence; it is a functional emulator check, not a field-performance claim.", className: "netsage-screen"})}
+        ${figure({depth: 2, src: "images/netsage-app-active-result.webp", width: 1080, height: 2400, alt: "NetSage active quick check result showing an Android emulator network snapshot and successful DNS lookup for example.com", caption: "Active check result. This Android emulator run records the network snapshot and DNS evidence from an on-device functional check.", className: "netsage-screen"})}
         ${figure({depth: 2, src: "images/netsage-app-log-result.webp", width: 1080, height: 2400, alt: "NetSage local diagnostic result for a bundled DNS NXDOMAIN sample with evidence and repair steps", caption: "Rule-based log result. A bundled DNS sample shows ranked evidence, a bounded rule score, and three repair steps.", className: "netsage-screen"})}
         ${figure({depth: 2, src: "images/netsage-app-history.webp", width: 1080, height: 2400, alt: "NetSage on-device diagnostic session history showing a retained local DNS result and its actions", caption: "Diagnostic sessions. Inputs, evidence, top hypotheses, and retest differences remain on the device; this capture shows one bundled DNS session.", className: "netsage-screen"})}
         ${figure({depth: 2, src: "images/netsage-app-reference.webp", width: 1080, height: 2400, alt: "NetSage offline error code and terminology reference with category filters and suggested actions", caption: "Error-code reference. Searchable local entries connect common terms and error codes to concise handling suggestions.", className: "netsage-screen"})}
@@ -523,7 +523,7 @@ const netsageBody = `
     </section>
     <section class="section section-dark" id="pipeline">
       <div class="section-heading"><p>Conceptual diagnostic flow</p><h2>The rule engine stays visible.</h2></div>
-      ${figure({depth: 2, src: "visuals/netsage-diagnostic-flow.svg", width: 1280, height: 520, alt: "Conceptual NetSage diagnostic flow from log input through rule matching, ranked causes, evidence, recommendations, actions, and retest", caption: "Conceptual Diagnostic Flow. This diagram represents the implemented rule sequence; it is not a measured network topology.", className: "flow-figure"})}
+      ${figure({depth: 2, src: "visuals/netsage-diagnostic-flow.svg", width: 1280, height: 520, alt: "Conceptual NetSage diagnostic flow from log input through rule matching, ranked causes, evidence, recommendations, actions, and retest", caption: "Diagnostic flow. The diagram traces the implemented sequence from log input through rule matching, evidence ranking, and retesting.", className: "flow-figure"})}
     </section>
     <section class="section architecture" id="architecture">
       <div class="section-heading"><p>Architecture</p><h2>A serverless Android diagnostic workflow</h2></div>
@@ -535,7 +535,7 @@ const netsageBody = `
       </div>
     </section>
     <section class="section split-section" id="explainability">
-      <div><h2>Explainability</h2><p>A diagnosis is presented as a set of hypotheses rather than a single opaque answer. Each hypothesis carries evidence strength, matched and conflicting evidence, and repair actions.</p></div>
+      <div><h2>Explainability</h2><p>Each diagnostic hypothesis includes evidence strength, matched and conflicting evidence, and repair actions.</p></div>
       <div><h2>Action flow</h2><p>Checklists, action branches, command templates, and offline references help a user move from explanation to a concrete test, then retest after a change.</p></div>
     </section>
     <section class="section" id="implementation">
@@ -543,7 +543,7 @@ const netsageBody = `
       <div class="two-column-lists"><div><h3>Product capabilities</h3>${textList(netsage.features)}</div><div><h3>Implementation evidence</h3>${textList(netsage.implementation)}</div></div>
     </section>
     <section class="section evidence-section" id="evidence">
-      <div class="section-heading"><p>Evidence</p><h2>Repository state and visual boundary</h2></div>
+      <div class="section-heading"><p>Evidence</p><h2>Source and runtime evidence</h2></div>
       <dl class="evidence-ledger">
         <div><dt>Repository</dt><dd><a href="${escapeHtml(netsage.repository)}">github.com/lbrswne/NetSage</a></dd></div>
         <div><dt>Verified main commit</dt><dd><code>${escapeHtml(netsage.commit)}</code></dd></div>
@@ -560,7 +560,7 @@ const netsageBody = `
 const batteryFigures = `
   <div class="figure-stack battery-figure-grid">
     ${figure({depth: 2, src: "images/battery-rul-parity.webp", width: 2160, height: 833, alt: "Three-panel original model output showing RUL predictions, interval coverage by degradation stage, and interval width", caption: "Real model output. The original Chinese labels show observed versus predicted RUL, nominal 90% interval coverage, and interval width. Results use fully simulated data generated with semi-empirical assumptions."})}
-    ${figure({depth: 2, src: "images/battery-compatibility-graph.webp", width: 2520, height: 1890, alt: "Four-panel original model output showing retired-cell grades, gate failures, compatibility graph density, and one complete group", caption: "Real model output. The compatibility graph is generated after scenario-specific hard gates. The displayed group is evidence from the simulated candidate pool, not a physical battery assembly."})}
+    ${figure({depth: 2, src: "images/battery-compatibility-graph.webp", width: 2520, height: 1890, alt: "Four-panel original model output showing retired-cell grades, gate failures, compatibility graph density, and one complete group", caption: "Model output from the simulated candidate pool. Scenario-specific hard gates determine the compatibility graph and the displayed group."})}
     ${figure({depth: 2, src: "images/battery-strategy-comparison.webp", width: 2134, height: 1615, alt: "Four-panel original model output comparing nominal, adaptive, and robust strategies across six stress scenarios", caption: "Real model output. Strategy comparison covers expected value, constraint risk, utilization, and lower-tail lifetime under six simulated stress scenarios."})}
   </div>`;
 
@@ -577,7 +577,7 @@ const batteryPaperFeature = `
         <p class="manuscript-label">Competition modeling paper</p>
         <h2 id="battery-paper-heading" lang="zh-CN">锂电池剩余寿命预测与梯次利用筛选优化</h2>
         <p class="project-type">Full paper · Chinese · 169 pages</p>
-        <p>The report documents RUL prediction, risk assessment, cascade utilization screening, and optimization under the simulated-data boundary stated above.</p>
+        <p>The report presents RUL prediction, risk assessment, cascade utilization screening, and optimization using fully simulated data.</p>
         <div class="manuscript-actions">
           <a class="button" href="${batteryPaperHref}" target="_blank" rel="noopener">View full paper <span aria-hidden="true">↗</span></a>
           <a class="text-link" href="${batteryPaperHref}" download="lithium-ion-battery-rul-cascade-utilization-modeling.pdf">Download PDF <span aria-hidden="true">↓</span></a>
@@ -596,8 +596,8 @@ const batteryBody = `
       </div>
       <img class="case-wide-visual" src="${local(2, "assets/visuals/battery-workflow.svg")}" width="1240" height="650" alt="Conceptual workflow connecting Q1 degradation analysis, Q2 prediction, Q3 grouping, and Q4 robust stress testing">
     </header>
-    <section class="section notice-section" aria-label="Data boundary">
-      <strong>Data boundary</strong><p>Every numerical result on this page comes from fully simulated data generated with semi-empirical assumptions. The project does not claim an experimental battery platform, industrial validation, or real-world deployment.</p>
+    <section class="section notice-section" aria-label="Data and evaluation">
+      <strong>Data and evaluation</strong><p>All numerical results on this page use fully simulated data generated from semi-empirical assumptions. Evaluation uses internal holdout sets.</p>
     </section>
     ${batteryPaperFeature}
     <section class="section" id="problem">
@@ -632,7 +632,7 @@ const batteryBody = `
       <p class="repro-note">The source package records deterministic seeds, frozen outputs, figure generation, LaTeX assembly, and clean-package verification. The full simulated dataset is not published from this portfolio; the complete modeling paper is available above.</p>
     </section>
     <section class="section limitations" id="limitations">
-      <div class="section-heading"><p>Limitations</p><h2>Simulation is not field validation</h2></div>
+      <div class="section-heading"><p>Limitations</p><h2>Simulation scope and physical testing</h2></div>
       ${textList(battery.limitations)}
     </section>
   </article>`;
@@ -650,21 +650,21 @@ const railModules = [
     hash: "risk",
     image: "engineerplus-risk-simulator.webp",
     alt: "EngineerPlus risk simulator with guarantee and climate sliders, a coverage display, and a process diagram",
-    description: "A slider-driven interaction based on a simple client-side formula. It demonstrates interface behavior, not a validated risk model."
+    description: "Adjust sliders to explore a simple client-side formula and its interface response."
   },
   {
     title: "Compliance Hub",
     hash: "compliance",
     image: "engineerplus-compliance-hub.webp",
     alt: "EngineerPlus compliance workflow mockup showing staged checks and simulated node confirmations",
-    description: "A timed browser workflow that visualizes staged verification. It does not connect to a blockchain or regulatory service."
+    description: "A timed browser animation demonstrates the interface states of staged verification."
   },
   {
     title: "Impact Dashboard",
     hash: "impact",
     image: "engineerplus-impact-dashboard.webp",
     alt: "EngineerPlus impact dashboard with illustrative social and carbon charts and a regional map",
-    description: "Charts and a map present illustrative social, carbon, and regional indicators rather than live project-impact data."
+    description: "Charts and a schematic map present illustrative social, carbon, and regional indicators."
   }
 ];
 
@@ -928,7 +928,7 @@ const researchBody = `
     ${researchItem({depth: 1, href: "research/critical-cubic-crossover/", record: cubic, question: "What changes at the critical cubic crossover from Hermite universality in Riemann-xi Jensen polynomials?"})}
     ${researchItem({depth: 1, href: "research/hypergraph-tensor/", record: hypergraph, question: "What spectral information is carried by the arrangement of vertex profiles inside nonuniform hyperedges?"})}
   </section>
-  <section class="section research-policy"><div class="section-heading"><p>Publication policy</p><h2>Status and authorship are stated at the lowest verified level.</h2></div><p>The two reviewed manuscripts and their private submission materials are unavailable because the current submission agreements restrict public sharing. The separately submitted hypergraph manuscript remains publicly available with its complete verified author order.</p></section>`;
+  <section class="section research-policy"><div class="section-heading"><p>Publication policy</p><h2>Read the research summaries and available manuscript.</h2></div><p>The hypergraph-tensor manuscript is available in full. Summaries, journals, and review status are listed for all three papers; submission agreements restrict public sharing of the other two manuscripts.</p></section>`;
 
 const manuscriptFeature = (record) => {
   const manuscript = record.manuscript;
@@ -973,7 +973,7 @@ const reviewedResearchDetailBody = (record) => {
       <header class="paper-hero"><div>${status(claims.status)}<p class="project-type">${escapeHtml(claims.authorship)}</p><h1>${escapeHtml(record.title)}</h1><p>${escapeHtml(claims.byline)}</p></div></header>
       <section class="section split-section"><div><p class="project-type">Journal</p><h2>${escapeHtml(record.journal)}</h2><p>Submitted ${escapeHtml(record.submittedDate)}</p></div><div><p class="project-type">Verified research record</p><h2>Current status</h2><p>${escapeHtml(claims.summary)}</p></div></section>
       <section class="section keyword-section"><h2>Keywords</h2><ul class="keyword-list">${record.keywords.map((keyword) => `<li>${escapeHtml(keyword)}</li>`).join("")}</ul></section>
-      <section class="section limitations paper-access"><div><h2>Access and status boundary</h2><p>${escapeHtml(claims.access)}</p></div><a class="button-secondary" href="${local(2, "research/")}">Back to research</a></section>
+      <section class="section limitations paper-access"><div><h2>Manuscript access</h2><p>${escapeHtml(claims.access)}</p></div><a class="button-secondary" href="${local(2, "research/")}">Back to research</a></section>
     </article>`;
 };
 

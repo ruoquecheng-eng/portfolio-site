@@ -478,8 +478,25 @@ function checkResearchAndProjectFacts(pageFiles, htmlByName) {
   if (new Set(commlabScreens).size !== 4) {
     addIssue('projects', 'CommLab page must publish four distinct verified runtime screenshots');
   }
-  if (!/not measurements from a calibrated radio/i.test(commlabText) || !/No hidden genie/i.test(commlabText)) {
+  if (!/explicit synthetic models and assumptions/i.test(commlabText) ||
+      !/no claim of standards compliance, calibrated hardware, or live base-station validation/i.test(commlabText) ||
+      !/forecasts, pre-transmission observations, delayed feedback/i.test(commlabText) ||
+      !/reserved for evaluation and are not exposed to the policy before it acts/i.test(commlabText)) {
     addIssue('truthfulness', 'CommLab page is missing its simulation or adaptive-decision boundary');
+  }
+
+  const revisedCopy = [commlabText, visibleText(netsage), batteryText,
+    visibleText(htmlByName.get('research/index.html') ?? '')].join(' ');
+  for (const phrase of ['lowest verified level', 'No hidden genie', 'not a field-performance claim',
+    'not field-performance claims', 'not a physical battery assembly', 'The project does not claim an experimental battery platform']) {
+    if (revisedCopy.includes(phrase)) addIssue('copy', `Replace defensive framing with precise scope: ${phrase}`);
+  }
+  for (const [name, expected] of [
+    ['zh/projects/commlab/index.html', '决策时可用的信息'],
+    ['zh/projects/battery-rul/index.html', '全模拟数据，评估采用内部留出集'],
+    ['zh/research/index.html', '查看研究摘要与公开稿件'],
+  ]) {
+    if (!visibleText(htmlByName.get(name) ?? '').includes(expected)) addIssue('copy', `${name}: revised Chinese copy is missing`);
   }
 
   const projects = htmlByName.get(pageFiles.get('Projects')) ?? '';
