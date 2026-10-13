@@ -11,6 +11,16 @@
   "summary": "A local-first research platform spanning wireless physical layers, edge intelligence, reliability orchestration, networked control, and robust offline policy evaluation.",
   "facts": [
     {
+      "id": "commlab.contribution",
+      "publicText": "I independently developed the simulation modules, reproducible experiment scripts, Streamlit workbench, and Windows launcher, and validated the platform through regression tests and SHA-256 release checks.",
+      "status": "verified",
+      "sourceType": "user_confirmation",
+      "source": "User confirmed on 2026-10-13 that CommLab was independently completed. Implementation scope follows the existing source and release records.",
+      "lastVerified": "2026-10-13",
+      "public": true,
+      "display": false
+    },
+    {
       "id": "commlab.summary",
       "publicText": "A local-first research platform spanning wireless physical layers, edge intelligence, reliability orchestration, networked control, and robust offline policy evaluation.",
       "status": "verified",

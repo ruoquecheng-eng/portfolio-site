@@ -1,6 +1,7 @@
 export function radioCase({ radio, summary, competitionResult, local, escapeHtml, figure }) {
   const pdf = local(2, `assets/${radio.paper}`);
   const support = local(2, `assets/${radio.support}`);
+  const contribution = radio.facts.find((fact) => fact.id === "radio.contribution" && fact.public === true && fact.status === "verified")?.publicText ?? "";
   const formalRows = radio.formal.map(({ question, runs }) => {
     const sources = runs.reduce((sum, run) => sum + run.sources, 0);
     const seconds = runs.reduce((sum, run) => sum + run.virtualSeconds, 0);
@@ -15,6 +16,7 @@ export function radioCase({ radio, summary, competitionResult, local, escapeHtml
         <h1>${escapeHtml(radio.title)}</h1>
         <div class="case-meta"><span class="status">${escapeHtml(competitionResult)}</span></div>
         <p>${escapeHtml(summary)}</p>
+        ${contribution ? `<p>${escapeHtml(contribution)}</p>` : ""}
         <div class="manuscript-actions"><a class="button" href="#results">Explore the results</a><a class="button-secondary" href="${pdf}" target="_blank" rel="noopener">View full paper <span aria-hidden="true">↗</span></a></div>
       </div>
     </header>

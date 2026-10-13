@@ -33,6 +33,7 @@
     "privacy": "Public ZIP omits six .jlog files whose headers contain the team identifier. PUBLIC-MANIFEST.json records retained file hashes."
   },
   "facts": [
+    {"id": "radio.contribution", "publicText": "I independently formulated the bounded-error localization model, implemented robust active sensing and rolling clearance scheduling, and wrote the experiment code and competition paper.", "status": "verified", "sourceType": "user_confirmation", "source": "User confirmed on 2026-10-13 that the radio-localization project was independently completed. Method and deliverable scope follows the supplied paper and supporting materials.", "lastVerified": "2026-10-13", "public": true, "display": false},
     {"id": "radio.title", "publicText": "Radio Interference Localization and Clearance", "status": "verified", "sourceType": "supplied_paper", "lastVerified": "2026-09-19", "public": true, "display": false},
     {"id": "radio.type", "publicText": "2026 CUMCM · Problem B", "status": "verified", "sourceType": "supplied_paper_reference_1", "lastVerified": "2026-09-19", "public": true, "display": false},
     {"id": "radio.summary", "publicText": "A competition modeling study combining bounded-error geometry, robust active sensing, and rolling route planning to locate and clear radio interference sources.", "status": "verified", "sourceType": "supplied_paper_and_support", "lastVerified": "2026-09-19", "public": true, "display": false},

@@ -3,26 +3,32 @@
   "slug": "netsage",
   "title": "NetSage",
   "type": "Android network diagnostics",
-  "summary": "A local-first, rule-based Android network diagnostics workbench that combines log analysis with on-device DNS, TCP, TLS, and HTTP probes, ranked evidence, retesting, and local session export.",
+  "summary": "A local-first Android network diagnostics workbench combining rule-based log analysis, on-device probes, optional reference-target checks, and evidence-based retesting.",
+  "contribution": "I independently designed and developed NetSage, including the Android interface, local diagnostic rules, network probes, session storage, report sharing, and test suite.",
   "repository": "https://github.com/lbrswne/NetSage",
-  "commit": "a920026",
+  "commit": "4f0fbfb",
   "features": [
     "Quick checkup, log diagnosis, and combined diagnosis workflows",
     "On-device network snapshot plus DNS, TCP, TLS, and HTTP probes",
+    "Optional reference-target checks with network-change warnings",
+    "Separate IPv4/IPv6 TCP checks with optional three-attempt connection sampling",
     "Top-three hypotheses ranked by evidence strength rather than statistical probability",
     "Matched evidence, conflicting evidence, and step-by-step repair suggestions",
     "Repair-and-retest comparison across diagnostic sessions",
     "Text import, Android share intake, and Markdown or JSON export",
     "Scenario and sample libraries",
     "Troubleshooting checklists and action branches",
-    "Complete local diagnostic sessions, legacy history, favorites, and command templates",
+    "Searchable local session history with mode filters and deletion confirmation",
+    "Report sharing with an explicit privacy confirmation",
+    "Local diagnostic sessions, favorites, and command templates",
     "Offline reference, privacy onboarding, and local persistence"
   ],
   "implementation": [
     "Kotlin and Jetpack Compose Android client",
     "Versioned local JSON rules with structured observation parsing",
     "Isolated cancellable probes with per-step timeout handling",
-    "116 JVM unit tests plus six Android 36.1 emulator integration tests using local loopback servers",
+    "135 JVM tests passed on 13 October 2026; retained Android 36.1 emulator report records 17 passing tests",
+    "HTTPS-to-HTTP redirect downgrade blocking",
     "Local session persistence plus Android Storage Access Framework import and export",
     "No NetSage server, account, telemetry, or advertising SDK in the v0.2 runtime"
   ],
@@ -34,27 +40,27 @@
   "facts": [
     {
       "id": "netsage.summary",
-      "publicText": "A local-first, rule-based Android network diagnostics workbench that combines log analysis with on-device DNS, TCP, TLS, and HTTP probes, ranked evidence, retesting, and local session export.",
+      "publicText": "A local-first Android network diagnostics workbench combining rule-based log analysis, on-device probes, optional reference-target checks, and evidence-based retesting.",
       "status": "verified",
       "sourceType": "source_code",
-      "lastVerified": "2026-09-01",
+      "lastVerified": "2026-10-13",
       "public": true,
       "display": false
     },
     {
       "id": "netsage.version.commit",
-      "publicText": "Verified against main commit a920026",
+      "publicText": "Verified against main commit 4f0fbfb",
       "status": "verified",
       "sourceType": "repository",
-      "lastVerified": "2026-09-01",
+      "lastVerified": "2026-10-13",
       "public": true
     },
     {
       "id": "netsage.testing",
-      "publicText": "Verified with 116 JVM unit tests and six Android 36.1 emulator integration tests covering local HTTP success, same-host redirects, refused connections, timeouts, self-signed TLS failures, and cancellation",
+      "publicText": "135 JVM tests passed on 13 October 2026; a retained report dated 29 September 2026 records 17 passing Android 36.1 emulator tests covering network probes, HTTPS downgrade blocking, history actions, and sharing confirmation",
       "status": "verified",
       "sourceType": "test_results",
-      "lastVerified": "2026-09-01",
+      "lastVerified": "2026-10-13",
       "public": true
     },
     {
@@ -62,7 +68,7 @@
       "publicText": "Local rule-based diagnosis with on-device DNS, TCP, TLS, and HTTP probes",
       "status": "verified",
       "sourceType": "source_code",
-      "lastVerified": "2026-09-01",
+      "lastVerified": "2026-10-13",
       "public": true
     },
     {
@@ -70,16 +76,17 @@
       "publicText": "Ranks up to three hypotheses using evidence strength, matched and conflicting evidence, and suggested actions",
       "status": "verified",
       "sourceType": "source_code",
-      "lastVerified": "2026-09-01",
+      "lastVerified": "2026-10-13",
       "public": true
     },
     {
       "id": "netsage.ownership",
-      "publicText": "",
-      "status": "needs_confirmation",
+      "publicText": "I independently designed and developed NetSage, including the Android interface, local diagnostic rules, network probes, session storage, report sharing, and test suite.",
+      "status": "verified",
       "sourceType": "user_confirmation",
-      "lastVerified": "2026-08-22",
-      "public": false
+      "lastVerified": "2026-10-13",
+      "public": true,
+      "display": false
     },
     {
       "id": "netsage.metrics.target",

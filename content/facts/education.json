@@ -35,11 +35,27 @@
     },
     {
       "id": "education.graduation",
-      "publicText": "",
-      "status": "needs_confirmation",
+      "publicText": "2029 (expected)",
+      "status": "verified",
       "sourceType": "user_confirmation",
-      "lastVerified": "2026-08-22",
-      "public": false
+      "lastVerified": "2026-10-13",
+      "public": true
+    },
+    {
+      "id": "education.admission",
+      "publicText": "2025",
+      "status": "verified",
+      "sourceType": "user_confirmation",
+      "lastVerified": "2026-10-13",
+      "public": true
+    },
+    {
+      "id": "education.gpaScale",
+      "publicText": "5.0",
+      "status": "verified",
+      "sourceType": "user_confirmation",
+      "lastVerified": "2026-10-13",
+      "public": true
     }
   ]
 }
