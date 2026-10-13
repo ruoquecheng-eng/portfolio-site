@@ -577,7 +577,7 @@ function checkResearchAndProjectFacts(pageFiles, htmlByName) {
 
   for (const [pageName, journal] of [
     ['Connected-diagram research', 'Advances in Mathematics'],
-    ['Critical cubic crossover research', 'Journal of the London Mathematical Society'],
+    ['Critical cubic crossover research', 'Bulletin of the Malaysian Mathematical Sciences Society'],
   ]) {
     const manuscriptHtml = htmlByName.get(pageFiles.get(pageName)) ?? '';
     const manuscriptText = visibleText(manuscriptHtml);
