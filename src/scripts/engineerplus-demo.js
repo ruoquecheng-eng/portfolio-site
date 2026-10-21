@@ -167,7 +167,7 @@
       : text("The simplified output falls below the demonstration threshold and would be flagged for review.", "简化计算结果低于演示阈值，应标记为需要复核。")
     const meter = $(".risk-meter");
     meter.setAttribute("aria-valuenow", coverage);
-    $("[data-risk-meter]").style.width = `${clamp(((coverage - 50) / 90) * 100, 0, 100)}%`;
+    $("[data-risk-meter]").style.transform = `scaleX(${clamp((coverage - 50) / 90, 0, 1)})`;
     $("[data-risk-meter]").style.backgroundColor = buffered ? "var(--success)" : "var(--warning)";
   }
 
@@ -183,9 +183,10 @@
       step.classList.toggle("is-active", !complete && index === state.compliance.completedStep + 1);
     });
     const progress = complete ? 100 : Math.max(0, ((state.compliance.completedStep + 1) / 4) * 100);
-    $("[data-compliance-progress]").style.width = `${progress}%`;
+    $("[data-compliance-progress]").style.transform = `scaleX(${progress / 100})`;
     $(".progress-track").setAttribute("aria-valuenow", progress);
     $('[name="projectId"]').value = state.compliance.projectId;
+    $('[data-compliance-form] button[type="submit"]').disabled = state.compliance.status === "running";
     $("[data-compliance-rerun]").hidden = !complete;
     $("[data-compliance-status]").textContent = complete
       ? text(`Simulated workflow complete for ${state.compliance.projectId}. No external verification occurred.`, `已完成 ${state.compliance.projectId} 的模拟流程；未进行外部验证。`)
@@ -207,7 +208,14 @@
       text("Completing local interface state…", "正在完成本地界面状态…")
     ];
     const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const delay = reduced ? 20 : 650;
+    if (reduced) {
+      state.compliance.status = "complete";
+      state.compliance.completedStep = 3;
+      saveState();
+      renderCompliance();
+      return;
+    }
+    const delay = 650;
     messages.forEach((message, index) => {
       complianceTimers.push(setTimeout(() => {
         state.compliance.completedStep = index;
@@ -217,7 +225,7 @@
           step.classList.toggle("is-active", stepIndex === index);
         });
         const progress = ((index + 1) / 4) * 100;
-        $("[data-compliance-progress]").style.width = `${progress}%`;
+        $("[data-compliance-progress]").style.transform = `scaleX(${progress / 100})`;
         $(".progress-track").setAttribute("aria-valuenow", progress);
         if (index === messages.length - 1) {
           state.compliance.status = "complete";
@@ -250,7 +258,7 @@
     $("[data-impact-label]").textContent = values.label;
     for (const metric of ["access", "carbon", "regional"]) {
       $(`[data-impact-${metric}]`).textContent = values[metric];
-      $(`[data-impact-bar="${metric}"]`).style.width = `${values[metric]}%`;
+      $(`[data-impact-bar="${metric}"]`).style.transform = `scaleX(${values[metric] / 100})`;
       $(`[data-impact-bar-label="${metric}"]`).textContent = values[metric];
     }
     $$('[data-map-region]').forEach((region) => {

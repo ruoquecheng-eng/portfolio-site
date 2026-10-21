@@ -5,6 +5,7 @@ import {createServer} from 'node:net';
 import {readFile,mkdir} from 'node:fs/promises';
 import {fileURLToPath} from 'node:url';
 import path from 'node:path';
+import {motionChecks} from './motion-qa.mjs';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const config=JSON.parse(await readFile(path.join(root,'site.config.json'),'utf8'));
 let server,base=process.env.QA_BASE;
@@ -180,4 +181,5 @@ try{
   }
   flows++;await dark.close();
   assert.deepEqual(errors,[]);console.log(`PASS ${layouts} responsive pages; ${flows} browsing, recovery, no-JS and dark-mode flows; no page errors.`);
+  await motionChecks(browser,base,screenshotDir);
 }finally{await browser.close();server?.kill();}

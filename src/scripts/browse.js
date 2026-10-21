@@ -129,7 +129,7 @@ if(typeof document!=='undefined') {
       const category=new URLSearchParams(location.search).get('category');
       (choices.find(input=>input.value===category)||choices[0]).checked=true;
     };
-    const update=()=>{
+    const update=(event)=>{
       const category=filter.querySelector('input:checked').value;
       const url=new URL(location.href);
       category==='all'?url.searchParams.delete('category'):url.searchParams.set('category',category);
@@ -140,6 +140,7 @@ if(typeof document!=='undefined') {
         const section=document.querySelector(selector);
         if(section)section.hidden=![...section.querySelectorAll('[data-project-category]')].some(i=>!i.hidden);
       }
+      if(event?.type==='change')document.dispatchEvent(new CustomEvent('portfolio:content',{detail:{targets:items.filter(i=>!i.hidden)}}));
     };
     restore();filter.hidden=false;filter.addEventListener('change',update);update();
     window.addEventListener('popstate',()=>{restore();update();});
@@ -190,10 +191,12 @@ if(typeof document!=='undefined') {
           kind.className='search-result-type';kind.textContent=labels[doc.type]||labels.pages;
           h.append(a);li.append(kind,h,p);results.append(li);
         }
+        document.dispatchEvent(new CustomEvent('portfolio:content',{detail:{targets:[...results.children]}}));
       }catch {
         if(current!==revision)return;
         status.textContent=zh?'搜索暂时不可用。请检查网络后重试，或从导航浏览项目与研究。':'Search is unavailable. Check your connection and retry, or browse Projects and Research.';
         retry.hidden=false;indexPromise=undefined;
+        document.dispatchEvent(new CustomEvent('portfolio:content',{detail:{targets:[retry]}}));
       }
     }
     function update(commit=true,preserveDraft=false) {

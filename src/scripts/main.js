@@ -16,7 +16,9 @@
   const article = document.querySelector('.case-study, .research-paper');
   const headings = article ? [...article.querySelectorAll('section h2')].filter(h => !h.closest('figure')) : [];
   const radioNav = article?.querySelector('.radio-section-nav');
-  headings.forEach((heading, index) => {
+  // New showcase headings have explicit IDs; keep previously shared numbered
+  // chapters stable, including positions occupied by existing explicit IDs.
+  headings.filter(heading => !heading.closest('[data-showcase]')).forEach((heading, index) => {
     if (heading.id) return;
     let id = `page-section-${index + 1}`;
     while (document.getElementById(id)) id += '-section';

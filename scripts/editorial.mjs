@@ -1,5 +1,6 @@
 import {stat} from 'node:fs/promises';
 import path from 'node:path';
+import {homeWorkbench, netsageShowcase, commlabShowcase, methodShowcase} from './motion-content.mjs';
 
 export const categories = {'netsage':'engineering','commlab':'engineering','battery-rul':'modeling','radio-localization':'modeling'};
 const escape = text => String(text).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;');
@@ -8,7 +9,7 @@ export function enrichBody(body, route, {local,depth,name,radioTitle,radioSummar
     body=body.replace(/<p class="hero-kicker">[\s\S]*?<\/p>/,`<p class="hero-kicker home-name">${escape(name)}</p>`);
     body=body.replace(/<h1>[\s\S]*?<\/h1>/,'<h1>Communication engineering.<br>Software, models, and research.</h1>');
     body=body.replace(/<p class="hero-summary">[\s\S]*?<\/p>/,'<p class="hero-summary">I build network diagnostic tools and communication simulations, and study mathematical models. Explore the implementation, results, and supporting materials behind each project.</p>');
-    body=body.replace(/<div class="hero-visual">[\s\S]*?<\/div>/,'<div class="hero-visual"><img src="assets/images/commlab-ofdm-link.webp" width="1440" height="1000" alt="Running CommLab OFDM link laboratory with local controls, BER, EVM, and a received constellation" fetchpriority="high"></div>');
+    body=body.replace(/<div class="hero-visual">[\s\S]*?<\/div>/,homeWorkbench);
     const radio=`<article class="project-row" data-project-category="modeling"><div class="project-index" aria-hidden="true">03</div><div class="project-copy"><p class="project-type">2026 CUMCM · Problem B</p><h2><a href="projects/radio-localization/">${escape(radioTitle)}</a></h2><p>${escape(radioSummary)}</p><p class="project-meta">${escape(radioCompetitionResult)}</p><a class="text-link" href="projects/radio-localization/">Read case study <span aria-hidden="true">→</span></a></div><a class="project-preview-link" href="projects/radio-localization/" aria-label="${escape(radioTitle)}"><div class="project-visual"><img src="assets/images/radio-overview.webp" width="1143" height="570" alt="Radio localization modeling workflow" loading="lazy"></div></a></article>`;
     const battery=body.indexOf('<article class="project-row">',body.indexOf('projects/commlab/')+1);
     if(battery>=0)body=body.slice(0,battery)+radio+body.slice(battery).replace('>03</div>','>04</div>');
@@ -16,6 +17,10 @@ export function enrichBody(body, route, {local,depth,name,radioTitle,radioSummar
     body=body.replace(/(<article class="project-row research-preview">)\s*<div class="project-index"[^>]*>.*?<\/div>/,'$1');
     body=body.replace(/<section class="section system-logic">[\s\S]*?<\/section>/,`<section class="section home-resume"><div><p class="hero-kicker">Resume</p><h2>The complete record, in one place.</h2><p>Education, experience, projects, research, and supporting records.</p></div><a class="button" href="resume/">Open resume</a></section>`);
   }
+  if(route==='/projects/netsage/') body=body.replace('<section class="section netsage-screens"',netsageShowcase+'<section class="section netsage-screens"');
+  if(route==='/projects/commlab/') body=body.replace(/<div class="commlab-gallery">[\s\S]*?<\/div>/,commlabShowcase);
+  if(route==='/projects/radio-localization/') body=body.replace('<section class="section" id="method">',methodShowcase('radio')+'<section class="section" id="method">');
+  if(route==='/projects/battery-rul/') body=body.replace(/<section class="section[^\"]*" id="workflow">/,match=>methodShowcase('battery')+match);
   if(route==='/projects/') {
     body=body.replace('<section class="section project-index-page">',`<section class="section project-filter-bar" hidden data-project-filter><fieldset><legend>Browse projects</legend>${[['all','All'],['engineering','Engineering software'],['modeling','Mathematical modeling'],['design','Design and interaction']].map(([value,label])=>`<label><input type="radio" name="project-category" value="${value}" ${value==='all'?'checked':''}><span>${label}</span></label>`).join('')}</fieldset><p data-filter-count role="status"></p></section><section class="section project-index-page">`);
     body=body.replace(/<article class="project-row">([\s\S]*?)<\/article>/g,(all,inner)=>{

@@ -8,7 +8,7 @@ import { approvedMaterials, materialsBody, materialsDescription, resumeVersion, 
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const dist = path.join(root, "dist");
-const sharedAssets = ['styles/main.css', 'styles/refinement.css', 'scripts/main.js', 'scripts/browse.js'];
+const sharedAssets = ['styles/main.css', 'styles/refinement.css', 'scripts/main.js', 'scripts/browse.js', 'scripts/motion.js'];
 const assetVersions = Object.fromEntries(await Promise.all(sharedAssets.map(async (asset) => [
   asset, createHash('sha256').update(await readFile(path.join(root, 'src', asset))).digest('hex').slice(0, 12)
 ])));
@@ -195,6 +195,7 @@ const page = ({ title, description, route, depth, active, body, schema, bodyClas
     <p class="footer-note" data-last-reviewed="${escapeHtml(latestReviewDate)}">Facts last reviewed ${escapeHtml(formattedReviewDate)}. Maintained as a verified static portfolio.</p>
   </footer>
   <script src="${local(depth, "scripts/main.js")}?v=${assetVersions['scripts/main.js']}" defer></script>
+  <script src="${local(depth, 'scripts/motion.js')}?v=${assetVersions['scripts/motion.js']}" defer></script>
   <script type="module" src="${local(depth, 'scripts/browse.js')}?v=${assetVersions['scripts/browse.js']}"></script>
 </body>
 </html>`;

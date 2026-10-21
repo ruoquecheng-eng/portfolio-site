@@ -18,6 +18,10 @@
   --shadow: none;
   --radius: 10px;
   --max: 1160px;
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --duration-fast: 160ms;
+  --motion-press: 120ms;
+  --motion-select: 200ms;
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   font-synthesis: none;
 }
@@ -208,6 +212,28 @@ select:focus-visible,
   border: 1px solid #9dc9ef;
   background: #e8f5ff;
   color: var(--blue-950);
+}
+
+.demo-back,
+.demo-reset,
+.primary-action,
+.secondary-action,
+.demo-nav a,
+.demo-language-switcher a {
+  transition: transform var(--motion-press) var(--ease-out), background-color var(--duration-fast) ease, color var(--duration-fast) ease, border-color var(--duration-fast) ease;
+}
+
+button:disabled { opacity: 0.6; cursor: wait; }
+
+@media (hover: hover) and (pointer: fine) {
+  .demo-back:hover,
+  .secondary-action:hover { background: var(--blue-50); }
+  .demo-reset:hover,
+  .primary-action:not(:disabled):hover { filter: brightness(0.95); }
+  .demo-back:active:not(:focus-visible),
+  .demo-reset:active:not(:focus-visible),
+  .primary-action:not(:disabled):active:not(:focus-visible),
+  .secondary-action:active:not(:focus-visible) { transform: scale(0.98); }
 }
 
 .demo-nav {
@@ -419,7 +445,7 @@ input[type="range"] {
 .form-status { min-height: 1.5em; margin: 0; color: var(--muted); font-size: 0.82rem; }
 
 .allocation-bar { display: flex; min-height: 28px; overflow: hidden; border-radius: 7px; background: var(--surface-soft); }
-.allocation-bar span { min-width: 1px; transition: width 300ms ease; }
+.allocation-bar span { min-width: 1px; }
 .allocation-bar span:nth-child(1), .legend-swatch.public { background: #155493; }
 .allocation-bar span:nth-child(2), .legend-swatch.institutional { background: #2a8aba; }
 .allocation-bar span:nth-child(3), .legend-swatch.green { background: #47a876; }
@@ -440,7 +466,7 @@ input[type="range"] {
 .risk-value { display: block; margin: 1.5rem 0 1rem; color: var(--blue-950); font-size: clamp(3.2rem, 9vw, 6.5rem); line-height: 0.9; }
 .risk-value small { color: var(--muted); font-size: 0.85rem; letter-spacing: 0; }
 .risk-meter { height: 14px; overflow: hidden; border-radius: 999px; background: #dde7f0; }
-.risk-meter span { display: block; height: 100%; border-radius: inherit; background: var(--success); transition: width 240ms ease, background-color 240ms ease; }
+.risk-meter span { display: block; width: 100%; height: 100%; border-radius: inherit; background: var(--success); transform-origin: left; transition: transform var(--motion-select) var(--ease-out), background-color var(--duration-fast) ease; }
 .risk-result > p { color: var(--muted); }
 .risk-flow { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; margin: 2rem 0 0; padding: 0; list-style: none; }
 .risk-flow li { position: relative; padding: 2.2rem 0.4rem 0; color: var(--muted); font-size: 0.75rem; text-align: center; }
@@ -449,7 +475,7 @@ input[type="range"] {
 .risk-flow li:last-child::after { display: none; }
 
 .progress-track { height: 10px; overflow: hidden; border-radius: 999px; background: #dde7f0; }
-.progress-track span { display: block; width: 0; height: 100%; border-radius: inherit; background: var(--blue-600); transition: width 300ms ease; }
+.progress-track span { display: block; width: 100%; height: 100%; border-radius: inherit; background: var(--blue-600); transform-origin: left; transition: transform var(--motion-select) var(--ease-out); }
 .compliance-steps { display: grid; gap: 0; margin: 1.5rem 0 0; padding: 0; list-style: none; }
 .compliance-steps li { display: grid; grid-template-columns: auto 1fr; gap: 0.85rem; padding: 1rem 0; border-top: 1px solid var(--line); color: var(--muted); }
 .compliance-steps li > span { display: grid; width: 32px; height: 32px; place-items: center; border: 1px solid var(--line); border-radius: 50%; font-weight: 800; }
@@ -467,14 +493,21 @@ input[type="range"] {
 .region-map g { cursor: pointer; }
 .region-map path { fill: #d6e5f2; stroke: var(--surface); stroke-width: 7; transition: fill 180ms ease; }
 .region-map text { fill: var(--blue-900); font-size: 24px; font-weight: 850; pointer-events: none; text-anchor: middle; }
-.region-map g:hover path, .region-map g.is-selected path { fill: #79b7e2; }
+.region-map g.is-selected path { fill: #79b7e2; }
 .region-map g.is-selected path { stroke: var(--blue-700); }
+.region-map g:focus-visible path { stroke: #f5a623; }
+@media (hover: hover) and (pointer: fine) {
+  .region-map g:hover path { fill: #79b7e2; }
+}
 .map-caption, .chart-note { margin: 0; color: var(--muted); font-size: 0.78rem; }
 .impact-bars { display: grid; gap: 1.25rem; margin: 2.5rem 0; }
 .impact-bars > div { display: grid; grid-template-columns: 5rem minmax(0, 1fr) 2rem; align-items: center; gap: 0.75rem; }
 .impact-bars span, .impact-bars strong { font-size: 0.78rem; }
 .impact-bars i { height: 13px; overflow: hidden; border-radius: 999px; background: #dde7f0; }
-.impact-bars b { display: block; width: 0; height: 100%; border-radius: inherit; background: var(--blue-600); transition: width 260ms ease; }
+.impact-bars b { display: block; width: 100%; height: 100%; border-radius: inherit; background: var(--blue-600); transform-origin: left; transition: transform var(--motion-select) var(--ease-out); }
+
+/* Keyboard changes remain immediate while preserving each control's focus ring. */
+body:has(:focus-visible) :is(.risk-meter span, .impact-bars b) { transition: none; }
 
 .demo-footer {
   display: flex;
@@ -549,14 +582,20 @@ input[type="range"] {
   .allocation-bar, .risk-meter, .progress-track, .impact-bars i { background: #253c51; }
   .region-map path { fill: #294761; stroke: var(--surface); }
   .region-map text { fill: #dceefe; }
-  .region-map g:hover path, .region-map g.is-selected path { fill: #276f9f; }
+  .region-map g.is-selected path { fill: #276f9f; }
+  @media (hover: hover) and (pointer: fine) {
+    .region-map g:hover path { fill: #276f9f; }
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     scroll-behavior: auto !important;
-    transition-duration: 0.001ms !important;
-    animation-duration: 0.001ms !important;
-    animation-iteration-count: 1 !important;
+    transition: none !important;
+    animation: none !important;
   }
+  .demo-back:active,
+  .demo-reset:active,
+  .primary-action:active,
+  .secondary-action:active { transform: none !important; }
 }

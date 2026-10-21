@@ -57,6 +57,80 @@ Section-copy actions provide localized feedback and a selectable URL fallback.
 The back-to-top control appears after scrolling, restores useful keyboard focus,
 and respects reduced motion. These reading controls are omitted from print.
 
+## Motion and interactive showcases
+
+Motion explains a project or confirms an action. The shared white, gray, navy
+and blue palette remains the source of color; screenshots carry the visual
+weight. Reading text, formal paper titles, research status, authorship, awards
+and numerical evidence remain stable. No continuous background animation,
+scroll hijacking, automatic screenshot carousel or simulated live metrics.
+
+The screen tokens in `refinement.css` are `--duration-fast: 160ms`,
+`--duration: 240ms`, `--motion-press: 120ms`, `--motion-select: 200ms`, and
+`--motion-gallery: 260ms`. Motion uses the existing
+`--ease-out: cubic-bezier(0.23, 1, 0.32, 1)` from `main.css`; small color and
+border changes use `ease`. Pointer and touch presses scale to 0.98 in 100ms;
+link arrows move 3px, project images scale to 1.018 and enlargement triggers
+to 1.01. These hover movements require hover, fine pointer and no reduced
+motion. Touch selection is immediate and does not require hover.
+
+The homepage workbench uses the actual CommLab OFDM capture and NetSage
+Android dashboard. The window enters in 720ms with at most 12px of travel;
+the phone follows after 60ms. The trace draws in 700ms after a 100ms delay
+(800ms total). Text and links are already readable and operable. The intro
+plays once per browser-tab session across both languages, tracked by
+`portfolio-intro-v1` in session storage. Back/forward restoration skips it;
+storage failure leaves the final static composition. On narrow screens the
+phone becomes a separate column rather than an overlapping screenshot.
+
+A shared showcase pairs four keyboard-selectable steps with real screenshots
+or an explicitly conceptual SVG. NetSage exposes input/target, device checks,
+evidence/hypotheses and retest/report. Offline rule-based log diagnosis and
+direct device probes are distinct entry paths, with no machine-learning claim.
+All eleven original v0.2.0 screens remain in the complete walkthrough below.
+The optional DNS/TCP/TLS/HTTP sequence lasts 1600ms, plays once per explicit
+action, and supports pause, resume and replay. It makes no network request and
+creates no diagnostic evidence.
+
+CommLab retains all four v3.7.1 dashboard captures: OFDM, ISAC, resilience
+budget and robust OPE. The current project release remains v3.8.1; screenshot
+and release versions must be labeled separately. The failed row-wise coverage
+under hidden-confounding stress remains a negative result in both languages.
+Radio localization uses a conceptual competition-simulator decision loop.
+Battery Q1–Q4 uses fully simulated data generated with semi-empirical
+assumptions. Original figures and retained results remain outside the tabs.
+
+Pointer-triggered panel entry uses 220ms, opacity 0.7 to 1 and 6px travel.
+Keyboard selection skips this entry; keyboard input also suppresses press
+transforms and dialog/menu transitions via `html[data-input="keyboard"]`. Local browse/search feedback uses 180ms
+and 4px travel; selected project previews may enter once in 420ms and 8px.
+The longer first-view preview is occasional presentation, not a delay on an
+input or navigation action. Image dialogs use 200ms, 6px and scale 0.98;
+Escape dismissal and focus return belong to the existing dialog controller.
+Rapid changes settle the previous animation and expose the latest selection.
+No layout dimensions are animated and no continuous animation loop is needed.
+
+Tab controls expose `tablist`, `tab`, `tabpanel`, `aria-controls`,
+`aria-labelledby` and `aria-selected`. Left/Right wrap through tabs, Home/End
+select the first/last tab, and Tab reaches the selected panel. Focus outlines
+stay visible. The original screenshot enlargement and complete-method links
+remain available. Chinese strings are static dictionary entries, including
+SVG text and accessible names; product names, formal English paper titles,
+protocol abbreviations and version numbers retain their identity. Do not mutate
+the translation dictionary at build or runtime: it participates in PDF hashes.
+
+Without JavaScript, every panel is visible in document order and unused tab
+and playback controls stay hidden. Reduced motion shows the final homepage,
+switches panels immediately, exposes the static probe order and hides playback.
+Changing that preference settles active animation. Hidden tabs, page exit and
+printing cancel transient entries and pause the probe sequence; leaving the
+sequence viewport pauses it without an automatic restart. No prose is hidden
+while waiting for a scroll observer. Print shows every panel, restores opacity
+and transforms, and hides tab/playback controls and progress; print behavior
+must not depend on animation completing. Homepage decoration is omitted by
+the existing print rules. Screen refinement remains isolated from resume print
+typography and the one-page bilingual PDF contract.
+
 ## Resume and print
 
 Screen resumes share the editorial system. Print remains independent, black
