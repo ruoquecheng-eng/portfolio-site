@@ -770,7 +770,7 @@
     "Control UEP, Multi-Connectivity and adaptive duplication": "控制 UEP、多连接与自适应复制",
     "Unified resilience budgets, confounding stress tests and robust off-policy evaluation": "统一韧性预算、混杂压力测试与稳健离线策略评估",
     "Running interface": "运行界面",
-    "Four views from the current local Dashboard": "当前本地仪表盘的四个视图",
+    "Four views from the v3.7.1 local Dashboard": "v3.7.1 本地仪表盘的四个视图",
     "These screenshots show the locally running v3.7.1 Dashboard. The displayed seed and controls reproduce the simulation outputs.": "这些截图展示本地运行的 v3.7.1 仪表盘，可使用图中的随机种子和控件设置复现仿真结果。",
     "OFDM link. QPSK symbols, channel impairment controls, BER, RMS EVM, and the received constellation are shown in one local experiment.": "OFDM 链路：在一个本地实验中展示 QPSK 符号、信道损伤控制、BER、RMS EVM 与接收星座图。",
     "OFDM sensing / ISAC. A normalized monostatic simulation produces the range-Doppler view and CFAR detections.": "OFDM 感知 / ISAC：归一化单基地仿真生成距离-多普勒视图与 CFAR 检测结果。",

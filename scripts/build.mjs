@@ -470,7 +470,7 @@ const commlabBody = `
       </div>
     </section>
     <section class="section" id="running-interface">
-      <div class="section-heading"><p>Running interface</p><h2>Four views from the current local Dashboard</h2></div>
+      <div class="section-heading"><p>Running interface</p><h2>Four views from the v3.7.1 local Dashboard</h2></div>
       <p class="section-lead">These screenshots show the locally running v3.7.1 Dashboard. The displayed seed and controls reproduce the simulation outputs.</p>
       <div class="commlab-gallery">
         ${figure({depth: 2, src: "images/commlab-ofdm-link.webp", width: 1440, height: 1000, alt: "Running CommLab OFDM link laboratory with local controls, BER, EVM, and a received constellation", caption: "OFDM link. QPSK symbols, channel impairment controls, BER, RMS EVM, and the received constellation are shown in one local experiment.", className: "commlab-figure"})}
@@ -490,6 +490,8 @@ const commlabBody = `
     <section class="section final-link"><p>Inspect the current source, experiments, tests, release records, and <a href="${escapeHtml(commlab.windowsBuild)}" rel="noopener">successful Windows build</a> on GitHub.</p><a class="button" href="${escapeHtml(commlab.repository)}" rel="noopener">Open CommLab on GitHub</a></section>
   </article>`;
 
+// Explicit page-section IDs keep previously shared chapter links stable after
+// the empty "Problem" heading was removed.
 const netsageBody = `
   <article class="case-study">
     <header class="case-hero netsage-hero">
@@ -508,12 +510,11 @@ const netsageBody = `
       <p class="section-lead">NetSage organizes common network symptoms into an explainable diagnostic sequence. Instead of hiding a conclusion behind a model score, it exposes the matched evidence, ranked causes, and actions that a user can attempt and retest.</p>
       ${factList(netsage)}
     </section>
-    <section class="section split-section" id="problem">
-      <div><h2>Problem</h2></div>
-      <div><h2>Diagnosis philosophy</h2><p>The engine matches observations against explicit rules and ranks diagnostic hypotheses using deterministic evidence scores.</p></div>
+    <section class="section" id="problem">
+      <div><h2 id="page-section-3">Diagnosis philosophy</h2><p>The engine matches observations against explicit rules and ranks diagnostic hypotheses using deterministic evidence scores.</p></div>
     </section>
     <section class="section netsage-screens" id="app-walkthrough">
-      <div class="section-heading"><p>Real Android build</p><h2>Eleven verified screens across the primary workflow</h2></div>
+      <div class="section-heading"><p>Real Android build</p><h2 id="page-section-4">Eleven verified screens across the primary workflow</h2></div>
       <p class="section-lead">All eleven screens document the running NetSage 0.2.0 Android build on an Android 36.1 emulator. Together they cover local log analysis, bundled offline examples, direct on-device checks, explainable results, retained sessions, and field-reference tools.</p>
       <div class="netsage-screen-grid">
         ${figure({depth: 2, src: "images/netsage-app-v020-home.webp", width: 1080, height: 2400, alt: "NetSage 0.2.0 Android dashboard describing its local-first and serverless diagnostic boundary", caption: "v0.2 dashboard. Local log analysis, diagnostic sessions, privacy boundaries, and access to the expanded workflow.", className: "netsage-screen"})}
@@ -530,11 +531,11 @@ const netsageBody = `
       </div>
     </section>
     <section class="section section-dark" id="pipeline">
-      <div class="section-heading"><p>Conceptual diagnostic flow</p><h2>The rule engine stays visible.</h2></div>
+      <div class="section-heading"><p>Conceptual diagnostic flow</p><h2 id="page-section-5">The rule engine stays visible.</h2></div>
       ${figure({depth: 2, src: "visuals/netsage-diagnostic-flow.svg", width: 1280, height: 520, alt: "Conceptual NetSage diagnostic flow from log input through rule matching, ranked causes, evidence, recommendations, actions, and retest", caption: "Diagnostic flow. The diagram traces the implemented sequence from log input through rule matching, evidence ranking, and retesting.", className: "flow-figure"})}
     </section>
     <section class="section architecture" id="architecture">
-      <div class="section-heading"><p>Architecture</p><h2>A serverless Android diagnostic workflow</h2></div>
+      <div class="section-heading"><p>Architecture</p><h2 id="page-section-6">A serverless Android diagnostic workflow</h2></div>
       <div class="evidence-grid">
         <div><h3>Presentation</h3><p>Jetpack Compose screens handle symptom input, diagnosis results, scenario browsing, saved reports, history, and settings.</p></div>
         <div><h3>Diagnosis</h3><p>A structured parser and versioned local rules combine log observations with DNS, TCP, TLS, HTTP, and network-snapshot evidence.</p></div>
@@ -543,15 +544,15 @@ const netsageBody = `
       </div>
     </section>
     <section class="section split-section" id="explainability">
-      <div><h2>Explainability</h2><p>Each diagnostic hypothesis includes evidence strength, matched and conflicting evidence, and repair actions.</p></div>
-      <div><h2>Action flow</h2><p>Checklists, action branches, command templates, and offline references help a user move from explanation to a concrete test, then retest after a change.</p></div>
+      <div><h2 id="page-section-7">Explainability</h2><p>Each diagnostic hypothesis includes evidence strength, matched and conflicting evidence, and repair actions.</p></div>
+      <div><h2 id="page-section-8">Action flow</h2><p>Checklists, action branches, command templates, and offline references help a user move from explanation to a concrete test, then retest after a change.</p></div>
     </section>
     <section class="section" id="implementation">
-      <div class="section-heading"><p>Engineering implementation</p><h2>Verified capabilities in the current source</h2></div>
+      <div class="section-heading"><p>Engineering implementation</p><h2 id="page-section-9">Verified capabilities in the current source</h2></div>
       <div class="two-column-lists"><div><h3>Product capabilities</h3>${textList(netsage.features)}</div><div><h3>Implementation evidence</h3>${textList(netsage.implementation)}</div></div>
     </section>
     <section class="section evidence-section" id="evidence">
-      <div class="section-heading"><p>Evidence</p><h2>Source and runtime evidence</h2></div>
+      <div class="section-heading"><p>Evidence</p><h2 id="page-section-10">Source and runtime evidence</h2></div>
       <dl class="evidence-ledger">
         <div><dt>Repository</dt><dd><a href="${escapeHtml(netsage.repository)}">github.com/lbrswne/NetSage</a></dd></div>
         <div><dt>Verified main commit</dt><dd><code>${escapeHtml(netsage.commit)}</code></dd></div>
@@ -559,7 +560,7 @@ const netsageBody = `
       </dl>
     </section>
     <section class="section limitations" id="limitations">
-      <div class="section-heading"><p>Limitations</p><h2>Claims intentionally left outside the page</h2></div>
+      <div class="section-heading"><p>Limitations</p><h2 id="page-section-11">Claims intentionally left outside the page</h2></div>
       ${textList(netsage.limitations)}
     </section>
     <section class="section final-link"><p>Inspect the current source and branch history on GitHub.</p><a class="button" href="${escapeHtml(netsage.repository)}" rel="noopener">View NetSage source</a></section>
