@@ -944,6 +944,38 @@ h1, h2, h3 {
   animation: none !important;
 }
 
+/* Resume evidence on screen: small thumbnails that open the full record,
+   so education, projects and awards stay in the first screen. Print keeps
+   its own sizing in main.css. */
+@media screen {
+  .resume .academic-evidence {
+    grid-template-columns: repeat(auto-fill, minmax(0, 8.5rem));
+    gap: 0.75rem;
+  }
+  .resume .academic-evidence img,
+  .resume .resume-internship-proof img {
+    height: 5.5rem;
+    max-height: none;
+    object-fit: cover;
+    object-position: center top;
+    border-radius: 0.35rem;
+    transition: border-color 200ms ease, transform 200ms var(--ease-out);
+  }
+  .resume .resume-internship-proof {
+    width: 8.5rem;
+    margin-top: 0.75rem;
+  }
+  .resume :is(.academic-evidence, .resume-internship-proof) a:hover img {
+    border-color: var(--signal);
+    transform: translateY(-2px);
+  }
+  .resume :is(.academic-evidence, .resume-internship-proof) figcaption {
+    margin-top: 0.35rem;
+    font-size: 0.72rem;
+    line-height: 1.35;
+  }
+}
+
 /* ---------- Footer ---------- */
 
 .site-footer {
