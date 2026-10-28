@@ -59,11 +59,11 @@
     },
     {
       "id": "profile.email",
-      "publicText": "",
-      "status": "needs_confirmation",
+      "publicText": "ruoquecheng@gmail.com",
+      "status": "verified",
       "sourceType": "user_confirmation",
-      "lastVerified": "2026-08-22",
-      "public": false
+      "lastVerified": "2026-10-28",
+      "public": true
     }
   ]
 }

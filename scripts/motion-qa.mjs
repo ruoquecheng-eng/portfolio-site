@@ -37,14 +37,13 @@ export async function motionChecks(browser, base, screenshotDir) {
     const page = await context.newPage();
     page.on('pageerror', error => errors.push(error.message));
     await page.goto(`${base}/${locale}`);
-    assert.equal(await page.locator('.hero-workbench img').count(), 2, 'Home presents two real project interfaces'); checks++;
-    assert.ok(await page.locator('.hero-copy h1').isVisible());
-    await page.reload();
-    assert.equal(await page.locator('.hero-workbench').getAttribute('data-intro'), null, 'Home intro does not replay'); checks++;
+    assert.ok(await page.locator('.stage-name').isVisible(), 'Home stage shows the name'); checks++;
+    await page.waitForFunction(() => Number(document.querySelector('[data-readout="symbols"]')?.textContent.replace(/,/g,'')) > 0);
+    assert.match(await page.locator('[data-readout="snr"]').textContent(), /^-?\d+\.\d dB$/, 'Signal readout reports a computed SNR'); checks++;
+    assert.equal(await page.locator('.chapter').count(), 4, 'Home presents four project chapters'); checks++;
     await page.locator('.language-switcher a:not([aria-current="page"])').click();
-    assert.equal(await page.locator('.hero-workbench').getAttribute('data-intro'), null, 'Language switch does not replay intro'); checks++;
+    assert.ok(await page.locator('.stage-name').isVisible(), 'Language switch keeps the stage'); checks++;
     await page.goBack();
-    assert.equal(await page.locator('.hero-workbench').getAttribute('data-intro'), null, 'History return does not replay intro'); checks++;
     await page.goto(`${base}/${locale}projects/`);
     const categories = page.locator('input[name="project-category"]');
     // Native radio clicks in one browser task exercise cancellation without
@@ -157,7 +156,7 @@ export async function motionChecks(browser, base, screenshotDir) {
     const reducedPage = await reduced.newPage();
     reducedPage.on('pageerror', error => errors.push(error.message));
     await reducedPage.goto(`${base}/${locale}`);
-    assert.equal(await reducedPage.locator('.hero-workbench').getAttribute('data-intro'), null, 'Reduced motion skips homepage intro');
+    assert.equal(await reducedPage.locator('[data-reveal].is-pending').count(), 0, 'Reduced motion keeps all content revealed');
     await assertNoMovement(reducedPage, 'Reduced-motion homepage has no movement'); checks++;
     for(const slug of ['netsage','commlab','radio-localization','battery-rul']) {
       await reducedPage.goto(`${base}/${locale}projects/${slug}/`);

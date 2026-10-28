@@ -1,22 +1,10 @@
 import {stat} from 'node:fs/promises';
 import path from 'node:path';
-import {homeWorkbench, netsageShowcase, commlabShowcase, methodShowcase} from './motion-content.mjs';
+import {netsageShowcase, commlabShowcase, methodShowcase} from './motion-content.mjs';
 
 export const categories = {'netsage':'engineering','commlab':'engineering','battery-rul':'modeling','radio-localization':'modeling'};
 const escape = text => String(text).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;');
-export function enrichBody(body, route, {local,depth,name,radioTitle,radioSummary,radioCompetitionResult}) {
-  if(route==='/') {
-    body=body.replace(/<p class="hero-kicker">[\s\S]*?<\/p>/,`<p class="hero-kicker home-name">${escape(name)}</p>`);
-    body=body.replace(/<h1>[\s\S]*?<\/h1>/,'<h1>Communication engineering.<br>Software, models, and research.</h1>');
-    body=body.replace(/<p class="hero-summary">[\s\S]*?<\/p>/,'<p class="hero-summary">I build network diagnostic tools and communication simulations, and study mathematical models. Explore the implementation, results, and supporting materials behind each project.</p>');
-    body=body.replace(/<div class="hero-visual">[\s\S]*?<\/div>/,homeWorkbench);
-    const radio=`<article class="project-row" data-project-category="modeling"><div class="project-index" aria-hidden="true">03</div><div class="project-copy"><p class="project-type">2026 CUMCM · Problem B</p><h2><a href="projects/radio-localization/">${escape(radioTitle)}</a></h2><p>${escape(radioSummary)}</p><p class="project-meta">${escape(radioCompetitionResult)}</p><a class="text-link" href="projects/radio-localization/">Read case study <span aria-hidden="true">→</span></a></div><a class="project-preview-link" href="projects/radio-localization/" aria-label="${escape(radioTitle)}"><div class="project-visual"><img src="assets/images/radio-overview.webp" width="1143" height="570" alt="Radio localization modeling workflow" loading="lazy"></div></a></article>`;
-    const battery=body.indexOf('<article class="project-row">',body.indexOf('projects/commlab/')+1);
-    if(battery>=0)body=body.slice(0,battery)+radio+body.slice(battery).replace('>03</div>','>04</div>');
-    body=body.replace('<article class="project-row research-preview">','</section><section class="section home-research"><div class="section-heading"><p>Research</p><h2>Mathematical research, with sources.</h2></div><article class="project-row research-preview">');
-    body=body.replace(/(<article class="project-row research-preview">)\s*<div class="project-index"[^>]*>.*?<\/div>/,'$1');
-    body=body.replace(/<section class="section system-logic">[\s\S]*?<\/section>/,`<section class="section home-resume"><div><p class="hero-kicker">Resume</p><h2>The complete record, in one place.</h2><p>Education, experience, projects, research, and supporting records.</p></div><a class="button" href="resume/">Open resume</a></section>`);
-  }
+export function enrichBody(body, route, {local,depth,name,radioTitle,radioSummary,radioCompetitionResult,email}) {
   if(route==='/projects/netsage/') body=body.replace('<section class="section netsage-screens"',netsageShowcase+'<section class="section netsage-screens"');
   if(route==='/projects/commlab/') body=body.replace(/<div class="commlab-gallery">[\s\S]*?<\/div>/,commlabShowcase);
   if(route==='/projects/radio-localization/') body=body.replace('<section class="section" id="method">',methodShowcase('radio')+'<section class="section" id="method">');

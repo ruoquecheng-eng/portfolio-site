@@ -4,11 +4,12 @@ import { createHash } from "node:crypto";
 import { fileURLToPath } from "node:url";
 import { radioCase } from "./radio-case.mjs";
 import {enrichBody, searchBody, annotateMaterials, makeSearchIndex} from './editorial.mjs';
+import { homeBody as renderHomeBody } from './home.mjs';
 import { approvedMaterials, materialsBody, materialsDescription, resumeVersion, versionResumeLinks } from './materials.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const dist = path.join(root, "dist");
-const sharedAssets = ['styles/main.css', 'styles/refinement.css', 'scripts/main.js', 'scripts/browse.js', 'scripts/motion.js'];
+const sharedAssets = ['styles/main.css', 'styles/refinement.css', 'styles/stage.css', 'scripts/signal.js', 'scripts/main.js', 'scripts/browse.js', 'scripts/motion.js'];
 const assetVersions = Object.fromEntries(await Promise.all(sharedAssets.map(async (asset) => [
   asset, createHash('sha256').update(await readFile(path.join(root, 'src', asset))).digest('hex').slice(0, 12)
 ])));
@@ -44,6 +45,7 @@ const escapeHtml = (value = "") => String(value)
 const recordsByKey = { profile, education, internship, netsage, commlab, battery, rail, scenic, connected, cubic, hypergraph, radio };
 const publicFacts = (record) => (record.facts || []).filter((fact) => fact.public === true && fact.status === "verified" && fact.publicText);
 const displayFacts = (record) => publicFacts(record).filter((fact) => fact.display !== false);
+const profileEmail = publicFacts(profile).find((fact) => fact.id === "profile.email")?.publicText || "";
 const publicLinks = (profile.links || []).filter((link) => link.public === true && link.status === "verified" && link.label && link.url);
 const claimBindings = new Map(publicClaimsData.claims.map((binding) => [`${binding.record}.${binding.field}`, binding]));
 const valueAt = (record, field) => field.split(".").reduce((value, key) => value?.[key], record);
@@ -150,7 +152,7 @@ const nav = (depth, active) => {
 const jsonLd = (value) => value ? `<script type="application/ld+json">${JSON.stringify(value).replaceAll("<", "\\u003c")}</script>` : "";
 
 const page = ({ title, description, route, depth, active, body, schema, bodyClass = "" }) => {
-  body = enrichBody(body, route, {local,depth,name:profileName,radioTitle:radio.title,radioSummary,radioCompetitionResult});
+  body = enrichBody(body, route, {local,depth,name:profileName,radioTitle:radio.title,radioSummary,radioCompetitionResult,email:profileEmail});
   const fullTitle = title === config.title ? title : `${title} | Wanzheng Ning`;
   const url = canonical(route);
   const breadcrumb = /^\/(projects|research)\/[^/]+\/$/.test(route)
@@ -179,6 +181,8 @@ const page = ({ title, description, route, depth, active, body, schema, bodyClas
   <script>try{const r=document.documentElement,s=localStorage.getItem("portfolio-theme"),t=["light","dark"].includes(s)?s:"system";r.dataset.themePreference=t;r.dataset.theme=t==="system"?(matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"):t}catch{}</script>
   <link rel="stylesheet" href="${local(depth, "styles/main.css")}?v=${assetVersions['styles/main.css']}">
   <link rel="stylesheet" href="${local(depth, "styles/refinement.css")}?v=${assetVersions['styles/refinement.css']}" media="screen">
+  <link rel="stylesheet" href="${local(depth, "styles/stage.css")}?v=${assetVersions['styles/stage.css']}">
+  <link rel="preload" href="${local(depth, "assets/fonts/archivo-variable-latin.woff2")}" as="font" type="font/woff2" crossorigin>
   ${jsonLd(schema)}
 </head>
 <body class="${bodyClass}">
@@ -197,6 +201,7 @@ const page = ({ title, description, route, depth, active, body, schema, bodyClas
   <script src="${local(depth, "scripts/main.js")}?v=${assetVersions['scripts/main.js']}" defer></script>
   <script src="${local(depth, 'scripts/motion.js')}?v=${assetVersions['scripts/motion.js']}" defer></script>
   <script type="module" src="${local(depth, 'scripts/browse.js')}?v=${assetVersions['scripts/browse.js']}"></script>
+  ${route === "/" ? `<script src="${local(depth, 'scripts/signal.js')}?v=${assetVersions['scripts/signal.js']}" defer></script>` : ""}
 </body>
 </html>`;
 };
@@ -297,6 +302,7 @@ const decorateDocument = (html, route, locale, routeSet, { demo = false } = {}) 
   output = demo
     ? output.replace('<div class="demo-header-actions">', `<div class="demo-header-actions">${languageControl}`)
     : output.replace('<button class="theme-toggle"', `${languageControl}<button class="theme-toggle"`);
+  if (locale === "zh-CN" && route === "/") output = output.replace(/(<h1 class="stage-name" id="stage-name">)[\s\S]*?(<\/h1>)/i, '$1宁琬正<span class="stage-name-latin" lang="en">Wanzheng Ning</span>$2');
   if (locale === "zh-CN" && route === "/resume/") output = output.replace(/(<h1 class="resume-name">)[\s\S]*?(<\/h1>)/i, "$1宁琬正$2");
   if (locale === 'zh-CN') output = output.replaceAll('documents/resume-en.pdf','documents/resume-zh.pdf');
   if (route === "/" && locale === "en") {
@@ -320,88 +326,17 @@ const projectRow = ({ depth, href, index, type, title, summary, meta, visual }) 
 
 const netsagePreview = (depth) => `<div class="project-visual project-visual-netsage screenshot-pair"><img src="${local(depth, 'assets/images/netsage-app-v020-home.webp')}" width="1080" height="2400" alt="NetSage 0.2.0 Android dashboard describing its local-first and serverless diagnostic boundary" loading="lazy" decoding="async"><img src="${local(depth, 'assets/images/netsage-app-input.webp')}" width="1080" height="2400" alt="NetSage log diagnosis workspace with text input, input quality guidance, a sample shortcut, and local file import" loading="lazy" decoding="async"></div>`;
 
-const homeBody = `
-  <section class="hero hero-home">
-    <div class="hero-grid">
-      <div class="hero-copy">
-        <p class="hero-kicker">Communication Engineering</p>
-        <h1>${escapeHtml(profile.hero.title)}</h1>
-        <p class="hero-summary">${escapeHtml(profileSummary)}</p>
-        <div class="hero-actions">
-          <a class="button" href="projects/">View projects</a>
-          <a class="button-secondary" href="research/">View research</a>
-          <a class="text-link text-link-on-dark" href="resume/">Open resume</a>
-        </div>
-      </div>
-      <div class="hero-visual">
-        <img src="assets/visuals/signal-field.svg" width="880" height="640" alt="Conceptual signal field connecting diagnostics, systems, modeling, and research" fetchpriority="high">
-      </div>
-    </div>
-    <div class="hero-foot" aria-label="Focus areas"><span>Network diagnostics</span><span>Wireless systems</span><span>Edge intelligence</span><span>Mathematical modeling</span><span>Spectral research</span></div>
-  </section>
-  <section class="section section-intro">
-    <div class="section-heading">
-      <p>Selected work</p>
-      <h2>Systems that can be inspected.</h2>
-    </div>
-    <p class="section-lead">Explore the implementation, modeling choices, and results behind these projects. Browse the full project index for more work.</p>
-  </section>
-  <section class="section selected-work">
-    ${projectRow({
-      depth: 0,
-      href: "projects/netsage/",
-      index: "01",
-      type: netsage.type,
-      title: netsage.title,
-      summary: netsageSummary,
-      meta: "Kotlin · Jetpack Compose · rule engine · offline-first",
-      visual: netsagePreview(0)
-    })}
-    ${projectRow({
-      depth: 0,
-      href: "projects/commlab/",
-      index: "02",
-      type: commlab.type,
-      title: commlab.title,
-      summary: commlabSummary,
-      meta: "Python · Streamlit · wireless systems · edge intelligence · reliability orchestration",
-      visual: `<div class="project-visual project-visual-commlab"><img src="assets/images/commlab-isac.webp" width="1440" height="1000" alt="Running CommLab ISAC laboratory with local controls, metrics, and a range-Doppler result" loading="lazy"></div>`
-    })}
-    ${projectRow({
-      depth: 0,
-      href: "projects/battery-rul/",
-      index: "03",
-      type: `${battery.type} · ${batteryDataBoundary}`,
-      title: battery.title,
-      summary: batterySummary,
-      meta: `${batteryCompetitionResult} · Change-point regression · Weibull AFT · compatibility graph · MILP`,
-      visual: `<div class="project-visual project-visual-battery"><img src="assets/visuals/battery-workflow.svg" width="1240" height="650" alt="Conceptual four-stage battery modeling workflow" loading="lazy"></div>`
-    })}
-    <article class="project-row research-preview">
-      <div class="project-index" aria-hidden="true">04</div>
-      <div class="project-copy">
-        <p class="project-type">Mathematical research</p>
-        <h2><a href="research/">Three research records in asymptotic analysis and tensor spectra</a></h2>
-        <p>Current work spans Hermite–Jensen asymptotics, Riemann-xi Jensen polynomials, and edge-local spectral structure in nonuniform hypergraph tensors.</p>
-        <p class="research-status-summary">${escapeHtml(homeResearchStatusSummary)}</p>
-        <a class="text-link" href="research/">View research <span aria-hidden="true">→</span></a>
-      </div>
-      <div class="research-mini-list">
-        <a href="research/connected-diagram-expansions/"><span>${escapeHtml(connectedStatus)}</span><strong>Connected-diagram expansions for Hermite–Jensen multipliers</strong></a>
-        <a href="research/critical-cubic-crossover/"><span>${escapeHtml(cubicStatus)}</span><strong>Critical cubic crossover in Riemann-xi Jensen polynomials</strong></a>
-        <a href="research/hypergraph-tensor/"><span>${escapeHtml(hypergraphStatus)}</span><strong>Edge-local spectra of nonuniform hypergraph tensors</strong></a>
-      </div>
-    </article>
-  </section>
-  <section class="section system-logic">
-    <div class="section-heading"><p>Working method</p><h2>Define, build, validate, delimit.</h2></div>
-    <ol class="method-flow">
-      <li><span>Define</span><p>Turn an open engineering or mathematical question into an explicit object and scope.</p></li>
-      <li><span>Build</span><p>Implement a system, model, proof structure, or reproducible analysis chain.</p></li>
-      <li><span>Validate</span><p>Use tests, holdouts, source files, and exact statements to support the result.</p></li>
-      <li><span>Delimit</span><p>State what remains simulated, unmeasured, unpublished, or outside the current implementation.</p></li>
-    </ol>
-  </section>`;
+const educationFact = (id) => publicFacts(education).find((fact) => fact.id === id)?.publicText || "";
+const homeBody = renderHomeBody({
+  escape: escapeHtml, name: profileName, email: profileEmail,
+  institution: educationFact("education.institution"), program: educationFact("education.program"),
+  educationPeriod, educationGpa, educationRank: educationFact("education.rank"),
+  internshipTitle: publicClaim("internship", "title"), internshipOrganization: publicClaim("internship", "organization"), internshipDates: publicClaim("internship", "dateRange"),
+  netsageType: netsage.type, netsageSummary, commlabType: commlab.type, commlabSummary,
+  radioTitle: radio.title, radioSummary, radioCompetitionResult,
+  batteryType: battery.type, batteryTitle: battery.title, batterySummary, batteryCompetitionResult, batteryDataBoundary,
+  connectedStatus, connectedJournal: connected.journal, cubicStatus, cubicJournal: cubic.journal, hypergraphStatus, hypergraphVenue, homeResearchStatusSummary,
+});
 
 const projectsBody = `
   <section class="page-hero page-hero-dark">
@@ -1000,7 +935,7 @@ const hypergraphDetailBody = (record) => `
 const resumeBody = `
   <article class="resume">
     <header class="resume-header">
-      <div><p class="hero-kicker">HTML resume</p><h1 class="resume-name">${escapeHtml(profileName)}</h1><p>Communication Engineering · Network Diagnostics · Mathematical Modeling · Mathematical Research</p></div>
+      <div><p class="hero-kicker">HTML resume</p><h1 class="resume-name">${escapeHtml(profileName)}</h1><p>Communication Engineering · Network Diagnostics · Mathematical Modeling · Mathematical Research</p>${profileEmail ? `<p class="resume-email">Email · <a href="mailto:${escapeHtml(profileEmail)}">${escapeHtml(profileEmail)}</a></p>` : ""}</div>
       <button class="button print-button" type="button" onclick="window.print()">Print or save as PDF</button>
     </header>
     <section class="resume-section"><h2>Education</h2><div class="resume-entry"><div><strong>${escapeHtml(publicFacts(education).find((fact) => fact.id === "education.institution")?.publicText || "")}</strong><span>${escapeHtml(educationPeriod)}</span></div><p>${escapeHtml(publicFacts(education).find((fact) => fact.id === "education.program")?.publicText || "")}</p><dl class="academic-metrics"><div><dt>Current GPA</dt><dd>${escapeHtml(educationGpa)}</dd></div><div><dt>Rank</dt><dd>${escapeHtml(publicFacts(education).find((fact) => fact.id === "education.rank")?.publicText || "")}</dd></div></dl></div><div class="academic-evidence" aria-label="Academic record evidence"><figure><a href="${local(1, "assets/images/academic-record-gpa.png")}" target="_blank" rel="noopener"><img src="${local(1, "assets/images/academic-record-gpa.png")}" width="1388" height="1124" alt="Course results and cumulative GPA" loading="lazy" decoding="async"></a><figcaption>Course results and cumulative GPA</figcaption></figure><figure><a href="${local(1, "assets/images/chsi-enrollment-status.jpg")}" target="_blank" rel="noopener"><img src="${local(1, "assets/images/chsi-enrollment-status.jpg")}" width="1205" height="2048" alt="CHSI enrollment status" loading="lazy" decoding="async"></a><figcaption>CHSI enrollment status</figcaption></figure></div></section>

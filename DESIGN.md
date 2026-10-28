@@ -1,4 +1,4 @@
-# Design system: light editorial portfolio
+# Design system: signal stage
 
 The portfolio helps admissions readers and recruiters understand direction,
 contribution, research status, and supporting evidence. English and Chinese
@@ -6,18 +6,25 @@ share the same structure. Formal paper titles are not translated.
 
 ## Visual system
 
-- White reading surfaces, pale gray sections, navy text and blue interactive
-  accents. Light mode has no large navy hero panel.
-- Maximum content width: 1160px. Body text: 16px with generous line spacing.
-- Homepage heading: 36–48px desktop, 28–34px mobile. Long research titles use
-  a smaller scale and wrap naturally without truncation.
-- Flat sections, restrained borders and small corner radii. Real screenshots,
-  charts and paper previews carry the visual identity.
-- `src/styles/refinement.css` owns shared screen presentation, organized by
-  component and breakpoint. Base structural and print rules remain in
-  `main.css`; the demo uses a compatible token-based stylesheet.
-- Dark mode preserves readable surfaces and the saved theme. Reduced-motion
-  users retain complete functionality.
+- Visual thesis: an instrument at night. A deep ink stage (header, homepage
+  hero, inner-page heroes, research band, footer) carries one live signal;
+  light reading surfaces carry the evidence. One accent: signal teal.
+- Type: self-hosted Archivo Variable (width + weight axes) for display and
+  body, JetBrains Mono Variable for metadata and readouts. Chinese falls back
+  to system CJK fonts. Licences sit beside the files in `src/assets/fonts/`.
+- Homepage hero: `src/scripts/signal.js` draws a 16-QAM constellation over
+  AWGN plus an OFDM-style waveform on a canvas. The readout (SNR, EVM,
+  symbols) is computed from the drawn symbols and labelled as an in-browser
+  simulation; pointer position sets the target SNR. It pauses off-screen and
+  renders one static frame under reduced motion.
+- Homepage sections come from `scripts/home.mjs`: four project chapters with
+  alternating media, research list, education/experience ledger, contact.
+- `src/styles/stage.css` (loaded last) owns tokens, fonts, header, heroes,
+  homepage and reveal motion. `refinement.css` and `main.css` keep component,
+  structural and print rules.
+- Motion: staged hero entrance, scroll reveals (only for content still below
+  the fold; clip-path wipe on project media), one sweep across inner heroes.
+  Reduced motion and keyboard input skip entrance motion; print reveals all.
 
 ## Structure and components
 

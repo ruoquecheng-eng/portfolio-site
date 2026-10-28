@@ -23,16 +23,6 @@
     animation.finished.then(() => { if(active.get(element)===animation) active.delete(element); }).catch(() => {});
   }
 
-  const hero = document.querySelector('.hero-workbench');
-  if (hero) {
-    try {
-      const seen = sessionStorage.getItem('portfolio-intro-v1');
-      sessionStorage.setItem('portfolio-intro-v1','seen');
-      const restored = performance.getEntriesByType('navigation')[0]?.type === 'back_forward';
-      if (!seen && !restored && !reduce.matches) hero.dataset.intro = 'true';
-    } catch { /* Intro is optional when session storage is unavailable. */ }
-  }
-
   document.querySelectorAll('[data-showcase]').forEach(showcase => {
     const controls = showcase.querySelector('[data-showcase-controls]');
     const tabs = [...showcase.querySelectorAll('[data-showcase-tab]')];
@@ -138,17 +128,35 @@
     },{threshold:.12});
     document.querySelectorAll('.selected-work .project-preview-link').forEach(element => observer.observe(element));
   }
+  // Scroll reveal: only elements still below the fold start pending, so content
+  // that is already visible never disappears, and printing reveals everything.
+  const revealables = [...document.querySelectorAll('[data-reveal], main > article > .section:not(.notice-section), .project-index-page > .project-row, .project-card, .research-list > li')];
+  revealables.forEach(element => element.setAttribute('data-reveal',''));
+  function revealAll() { revealables.forEach(element => element.classList.remove('is-pending')); }
+  document.addEventListener('keydown',revealAll,{capture:true,once:true});
+  if('IntersectionObserver' in window && !reduce.matches && revealables.length) {
+    const reveal = new IntersectionObserver(entries => {
+      for(const entry of entries) if(entry.isIntersecting) {
+        entry.target.classList.remove('is-pending'); reveal.unobserve(entry.target);
+      }
+    },{threshold:.15,rootMargin:'0px 0px -8% 0px'});
+    revealables.forEach(element => {
+      if(element.getBoundingClientRect().top > innerHeight * .9) element.classList.add('is-pending');
+      reveal.observe(element);
+    });
+    document.documentElement.dataset.revealReady = 'true';
+  }
+
   document.addEventListener('portfolio:content',event => {
     for(const element of active.keys()) if(element.hidden || !element.isConnected) settle(element);
     (event.detail?.targets||[]).slice(0,4).forEach(element => enter(element,180,4));
   });
   function finish() {
     for(const element of active.keys()) settle(element);
-    document.querySelectorAll('.hero-workbench').forEach(element => delete element.dataset.intro);
     players.forEach(player => player.pause());
   }
   document.addEventListener('visibilitychange', () => { if(document.hidden) finish(); });
   window.addEventListener('pagehide',finish);
-  window.addEventListener('beforeprint',finish);
-  reduce.addEventListener('change', () => { finish(); players.forEach(player => player.staticState()); });
+  window.addEventListener('beforeprint',() => { finish(); revealAll(); });
+  reduce.addEventListener('change', () => { finish(); revealAll(); players.forEach(player => player.staticState()); });
 })();

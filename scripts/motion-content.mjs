@@ -3,13 +3,6 @@ const image = (file, alt, width=1440, height=1000) => `<img src="../../assets/im
 const tabs = (id, labels) => `<div class="showcase-tabs" data-showcase-controls hidden aria-label="Choose a view">${labels.map((label,i)=>`<button type="button" id="${id}-tab-${i}" data-showcase-tab="${i}"><span class="showcase-number" aria-hidden="true">0${i+1}</span><span>${label}</span></button>`).join('')}</div>`;
 const panel = (id,i,body,classes='') => `<div class="showcase-panel ${classes}" id="${id}-panel-${i}" data-panel="${i}">${body}</div>`;
 
-export const homeWorkbench = `<figure class="hero-visual hero-workbench">
-  <div class="workbench-window"><div class="workbench-caption"><span>CommLab</span><span>OFDM · v3.7.1</span></div><img src="assets/images/commlab-ofdm-link.webp" width="1440" height="1000" alt="Running CommLab OFDM link laboratory with local controls, BER, EVM, and a received constellation" fetchpriority="high"></div>
-  <div class="workbench-phone"><img src="assets/images/netsage-app-v020-home.webp" width="1080" height="2400" alt="NetSage 0.2.0 Android dashboard describing its local-first and serverless diagnostic boundary"><span>NetSage · Android</span></div>
-  <div class="workbench-trace" aria-hidden="true"><span></span><i></i><i></i><i></i></div>
-  <figcaption>Independent projects. Real interfaces.</figcaption>
-</figure>`;
-
 const netSteps = [
   ['Input and target','netsage-app-input','A local starting point','Paste a log, load a bundled sample, or choose a target for a direct device check. The two entry paths remain distinct.','NetSage log diagnosis workspace with text input, input quality guidance, a sample shortcut, and local file import'],
   ['On-device checks','netsage-app-v020-checkup','Observe each network layer','Direct Android checks collect DNS, TCP, TLS, and HTTP evidence. Probe availability depends on the device and current network.','NetSage on-device network check interface'],
